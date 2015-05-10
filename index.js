@@ -17,15 +17,25 @@ module.exports = function download (opts, cb) {
   var cache = path.join(homeDir, './.electron')
   
   var cachedZip = path.join(cache, filename)
-  if (pathExists.sync(cachedZip)) {
-    return cb(null, cachedZip)
-  } else {
+  pathExists(cachedZip, function (err, exists) {
+    if (err) return cb(err)
+    if (exists) return cb(null, cachedZip)
+    // otherwise download it
     mkdir(cache, function (err) {
       if (err) return cb(err)
-      nugget(url, {target: filename, dir: cache, resume: true, verbose: true}, function (err) {
+      // download to tmpdir
+      var tmpdir = path.join(os.tmpdir(), 'electron-tmp-download')
+      mkdir(tmpdir, function (err) {
         if (err) return cb(err)
-        cb(null, cachedZip)
+        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true}, function (err) {
+          if (err) return cb(err)
+          // when dl is done then put in cache
+          fs.rename(path.join(tmpdir, filename), cachedZip, function (err) {
+            if (err) return cb(err)
+            cb(null, cachedZip)
+          })
+        })
       })
     })
-  }
+  })
 }
