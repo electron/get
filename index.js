@@ -12,10 +12,11 @@ module.exports = function download (opts, cb) {
   var version = opts.version
   if (!version) return cb(new Error('must specify version'))
   var filename = 'electron-v' + version + '-' + platform + '-' + arch + '.zip'
-  var url = 'https://github.com/atom/electron/releases/download/v' + version + '/electron-v' + version + '-' + platform + '-' + arch + '.zip'
+  var url = process.env.ELECTRON_MIRROR || 'https://github.com/atom/electron/releases/download/v' + version
+  url += '/electron-v' + version + '-' + platform + '-' + arch + '.zip'
   var homeDir = homePath()
   var cache = path.join(homeDir, './.electron')
-  
+
   var cachedZip = path.join(cache, filename)
   pathExists(cachedZip, function (err, exists) {
     if (err) return cb(err)
