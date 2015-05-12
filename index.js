@@ -5,6 +5,7 @@ var pathExists = require('path-exists')
 var mkdir = require('mkdirp')
 var nugget = require('nugget')
 var homePath = require('home-path')
+var mv = require('mv')
 
 module.exports = function download (opts, cb) {
   var platform = opts.platform || os.platform()
@@ -31,7 +32,7 @@ module.exports = function download (opts, cb) {
         nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true}, function (err) {
           if (err) return cb(err)
           // when dl is done then put in cache
-          fs.rename(path.join(tmpdir, filename), cachedZip, function (err) {
+          mv(path.join(tmpdir, filename), cachedZip, function (err) {
             if (err) return cb(err)
             cb(null, cachedZip)
           })
