@@ -4,7 +4,7 @@
   "description": "download electron prebuilt binary zips from github releases",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard && node test.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
     "mv": "^2.0.3",
     "nugget": "^1.5.1",
     "path-exists": "^1.0.0"
+  },
+  "devDependencies": {
+    "standard": "^3.11.1"
   }
 }

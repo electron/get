@@ -1,4 +1,3 @@
-var fs = require('fs')
 var os = require('os')
 var path = require('path')
 var pathExists = require('path-exists')
@@ -16,15 +15,16 @@ module.exports = function download (opts, cb) {
   var url = process.env.ELECTRON_MIRROR || 'https://github.com/atom/electron/releases/download/v'
   url += version + '/electron-v' + version + '-' + platform + '-' + arch + '.zip'
   var homeDir = homePath()
-  var cache = path.join(homeDir, './.electron')
+  var cache = opts.cache || path.join(homeDir, './.electron')
 
   var cachedZip = path.join(cache, filename)
   pathExists(cachedZip, function (err, exists) {
     if (err) return cb(err)
     if (exists) return cb(null, cachedZip)
     // otherwise download it
-    mkdir(cache, function (err) {
+    mkCacheDir(function (err, actualCache) {
       if (err) return cb(err)
+      cachedZip = path.join(actualCache, filename) // in case cache dir changed
       // download to tmpdir
       var tmpdir = path.join(os.tmpdir(), 'electron-tmp-download')
       mkdir(tmpdir, function (err) {
@@ -40,4 +40,19 @@ module.exports = function download (opts, cb) {
       })
     })
   })
+
+  function mkCacheDir (cb) {
+    mkdir(cache, function (err) {
+      if (err) {
+        if (err.code !== 'EACCES') return cb(err)
+        // try local folder if homedir is off limits (e.g. some linuxes return '/' as homedir)
+        var localCache = path.resolve('./.electron')
+        return mkdir(localCache, function (err) {
+          if (err) return cb(err)
+          cb(null, localCache)
+        })
+      }
+      cb(null, cache)
+    })
+  }
 }
