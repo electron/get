@@ -5,6 +5,7 @@ var mkdir = require('mkdirp')
 var nugget = require('nugget')
 var homePath = require('home-path')
 var mv = require('mv')
+var debug = require('debug')('electron-download')
 
 module.exports = function download (opts, cb) {
   var platform = opts.platform || os.platform()
@@ -20,7 +21,12 @@ module.exports = function download (opts, cb) {
   var cachedZip = path.join(cache, filename)
   pathExists(cachedZip, function (err, exists) {
     if (err) return cb(err)
-    if (exists) return cb(null, cachedZip)
+    if (exists) {
+      debug('zip exists', cachedZip)
+      return cb(null, cachedZip)
+    }
+
+    debug('creating cache/tmp dirs')
     // otherwise download it
     mkCacheDir(function (err, actualCache) {
       if (err) return cb(err)
@@ -29,9 +35,11 @@ module.exports = function download (opts, cb) {
       var tmpdir = path.join(os.tmpdir(), 'electron-tmp-download')
       mkdir(tmpdir, function (err) {
         if (err) return cb(err)
+        debug('downloading zip', url, 'to', tmpdir)
         nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true}, function (err) {
           if (err) return cb(err)
           // when dl is done then put in cache
+          debug('moving zip to', cachedZip)
           mv(path.join(tmpdir, filename), cachedZip, function (err) {
             if (err) return cb(err)
             cb(null, cachedZip)
