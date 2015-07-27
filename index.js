@@ -18,7 +18,7 @@ module.exports = function download (opts, cb) {
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
 
-  debug('info', {cache: opts.cache, filename: filename, url: url})
+  debug('info', {cache: cache, filename: filename, url: url})
 
   var cachedZip = path.join(cache, filename)
   pathExists(cachedZip, function (err, exists) {
