@@ -34,7 +34,7 @@ module.exports = function download (opts, cb) {
       if (err) return cb(err)
       cachedZip = path.join(actualCache, filename) // in case cache dir changed
       // download to tmpdir
-      var tmpdir = path.join(os.tmpdir(), 'electron-tmp-download')
+      var tmpdir = path.join(os.tmpdir(), 'electron-tmp-download-' + process.pid + '-' + Date.now())
       mkdir(tmpdir, function (err) {
         if (err) return cb(err)
         debug('downloading zip', url, 'to', tmpdir)
