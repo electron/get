@@ -1,4 +1,4 @@
-var download = require('electron-download')
+var download = require('./')
 
 download({
   version: '0.25.1',

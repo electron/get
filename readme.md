@@ -27,4 +27,9 @@ download({
 
 if you don't specify `arch` or `platform` args it will use `require('os')` to get them from the current OS. specifying `version` is mandatory.
 
-You can set the `ELECTRON_MIRROR` env variable to use a custom base URL for grabbing electron zips.
+You can set the `ELECTRON_MIRROR` env or `mirror` opt variable to use a custom base URL for grabbing electron zips.
+
+```plain
+## Electron Mirror of China
+ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/"
+```
