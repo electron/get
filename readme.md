@@ -8,6 +8,11 @@ used by [electron-prebuilt](https://npmjs.org/electron-prebuilt) and [electron-p
 
 ### usage
 
+```plain
+$ npm install --global electron-download
+$ electron-download --version=0.31.1
+```
+
 ```
 var download = require('electron-download')
 

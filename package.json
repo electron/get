@@ -3,6 +3,7 @@
   "version": "1.0.8",
   "description": "download electron prebuilt binary zips from github releases",
   "main": "index.js",
+  "bin": "cli.js",
   "scripts": {
     "test": "standard && node test.js"
   },
@@ -19,6 +20,7 @@
   "dependencies": {
     "debug": "^2.2.0",
     "home-path": "^0.1.1",
+    "minimist": "^1.2.0",
     "mkdirp": "^0.5.0",
     "mv": "^2.0.3",
     "nugget": "^1.5.1",
