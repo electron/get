@@ -1,6 +1,6 @@
 {
   "name": "electron-download",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "download electron prebuilt binary zips from github releases",
   "main": "index.js",
   "bin": "cli.js",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/maxogden/electron-download.git"
   },
   "author": "max ogden",
-  "license": "BSD",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/maxogden/electron-download/issues"
   },
