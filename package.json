@@ -5,7 +5,7 @@
   "main": "index.js",
   "bin": "cli.js",
   "scripts": {
-    "test": "standard && node test.js"
+    "test": "standard && node test.js && node test_symbols.js"
   },
   "repository": {
     "type": "git",
