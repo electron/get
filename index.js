@@ -6,6 +6,7 @@ var nugget = require('nugget')
 var homePath = require('home-path')
 var mv = require('mv')
 var debug = require('debug')('electron-download')
+var npmrc = require('rc')('npm')
 
 module.exports = function download (opts, cb) {
   var platform = opts.platform || os.platform()
@@ -18,6 +19,7 @@ module.exports = function download (opts, cb) {
   url += version + '/electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
+  var proxy = npmrc && npmrc.proxy ? npmrc.proxy : ''
 
   debug('info', {cache: cache, filename: filename, url: url})
 
@@ -39,7 +41,7 @@ module.exports = function download (opts, cb) {
       mkdir(tmpdir, function (err) {
         if (err) return cb(err)
         debug('downloading zip', url, 'to', tmpdir)
-        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true}, function (err) {
+        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true, proxy: proxy}, function (err) {
           if (err) return cb(err)
           // when dl is done then put in cache
           debug('moving zip to', cachedZip)
