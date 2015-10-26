@@ -25,7 +25,9 @@ module.exports = function download (opts, cb) {
     strictSSL = false
   }
 
-  var proxy = (npmrc && npmrc.proxy) ? npmrc.proxy : (npmrc['https-proxy'] ? npmrc['https-proxy'] : '')
+  var proxy
+  if (npmrc && npmrc.proxy) proxy = npmrc.proxy
+  if (npmrc && npmrc['https-proxy']) proxy = npmrc['https-proxy']
 
   debug('info', {cache: cache, filename: filename, url: url})
 
@@ -47,7 +49,8 @@ module.exports = function download (opts, cb) {
       mkdir(tmpdir, function (err) {
         if (err) return cb(err)
         debug('downloading zip', url, 'to', tmpdir)
-        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL, proxy: proxy}, function (err) {
+        var nuggetOpts = {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL, proxy: proxy}
+        nugget(url, nuggetOpts, function (err) {
           if (err) return cb(err)
           // when dl is done then put in cache
           debug('moving zip to', cachedZip)
