@@ -19,6 +19,11 @@ module.exports = function download (opts, cb) {
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
 
+  var strictSSL = true
+  if (opts.strictSSL === false) {
+    strictSSL = false
+  }
+
   debug('info', {cache: cache, filename: filename, url: url})
 
   var cachedZip = path.join(cache, filename)
@@ -39,7 +44,7 @@ module.exports = function download (opts, cb) {
       mkdir(tmpdir, function (err) {
         if (err) return cb(err)
         debug('downloading zip', url, 'to', tmpdir)
-        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true}, function (err) {
+        nugget(url, {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL}, function (err) {
           if (err) return cb(err)
           // when dl is done then put in cache
           debug('moving zip to', cachedZip)
