@@ -19,7 +19,8 @@ module.exports = function download (opts, cb) {
   url += version + '/electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
-  var proxy = npmrc && npmrc.proxy ? npmrc.proxy : ''
+
+  var proxy = (npmrc && npmrc.proxy) ? npmrc.proxy : (npmrc['https-proxy'] ? npmrc['https-proxy'] : '')
 
   debug('info', {cache: cache, filename: filename, url: url})
 
