@@ -32,7 +32,7 @@ download({
 
 if you don't specify `arch` or `platform` args it will use `require('os')` to get them from the current OS. specifying `version` is mandatory.
 
-You can set the `ELECTRON_MIRROR` env or `mirror` opt variable to use a custom base URL for grabbing electron zips.
+You can set the `ELECTRON_MIRROR` or [`NPM_CONFIG_ELECTRON_MIRROR`](https://docs.npmjs.com/misc/config#environment-variables) env or `mirror` opt variable to use a custom base URL for grabbing electron zips.
 
 ```plain
 ## Electron Mirror of China
