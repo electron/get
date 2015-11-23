@@ -15,7 +15,10 @@ module.exports = function download (opts, cb) {
   var symbols = opts.symbols || false
   if (!version) return cb(new Error('must specify version'))
   var filename = 'electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
-  var url = process.env.ELECTRON_MIRROR || opts.mirror || 'https://github.com/atom/electron/releases/download/v'
+  var url = process.env.NPM_CONFIG_ELECTRON_MIRROR || 
+    process.env.ELECTRON_MIRROR || 
+    opts.mirror || 
+    'https://github.com/atom/electron/releases/download/v'
   url += version + '/electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
