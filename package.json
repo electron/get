@@ -3,20 +3,22 @@
   "version": "1.4.1",
   "description": "download electron prebuilt binary zips from github releases",
   "main": "index.js",
-  "bin": "cli.js",
+  "bin": {
+    "electron-download": "cli.js"
+  },
   "scripts": {
     "test": "standard && node test.js && node test_symbols.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxogden/electron-download.git"
+    "url": "git+https://github.com/electron-userland/electron-download.git"
   },
   "author": "max ogden",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/maxogden/electron-download/issues"
+    "url": "https://github.com/electron-userland/electron-download/issues"
   },
-  "homepage": "https://github.com/maxogden/electron-download#readme",
+  "homepage": "https://github.com/electron-userland/electron-download#readme",
   "dependencies": {
     "debug": "^2.2.0",
     "home-path": "^1.0.1",
@@ -29,5 +31,6 @@
   },
   "devDependencies": {
     "standard": "^3.11.1"
-  }
+  },
+  "keywords": []
 }
