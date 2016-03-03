@@ -15,9 +15,9 @@ module.exports = function download (opts, cb) {
   var symbols = opts.symbols || false
   if (!version) return cb(new Error('must specify version'))
   var filename = 'electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
-  var url = process.env.NPM_CONFIG_ELECTRON_MIRROR || 
-    process.env.ELECTRON_MIRROR || 
-    opts.mirror || 
+  var url = process.env.NPM_CONFIG_ELECTRON_MIRROR ||
+    process.env.ELECTRON_MIRROR ||
+    opts.mirror ||
     'https://github.com/atom/electron/releases/download/v'
   url += version + '/electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
   var homeDir = homePath()
@@ -54,6 +54,13 @@ module.exports = function download (opts, cb) {
         debug('downloading zip', url, 'to', tmpdir)
         var nuggetOpts = {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL, proxy: proxy}
         nugget(url, nuggetOpts, function (err) {
+          if (/404/.test(err)) {
+            if (symbols) {
+              err = Error('Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url)
+            } else {
+              err = Error('Failed to find Electron v' + version + ' for ' + platform + '-' + arch + ' at ' + url)
+            }
+          }
           if (err) return cb(err)
           // when dl is done then put in cache
           debug('moving zip to', cachedZip)
