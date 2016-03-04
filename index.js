@@ -55,7 +55,8 @@ module.exports = function download (opts, cb) {
         var nuggetOpts = {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL, proxy: proxy}
         nugget(url, nuggetOpts, function (errors) {
           if (errors) {
-            var error = errors[0]
+            var error = errors[0] // nugget returns an array of errors but we only need 1st because we only have 1 url
+            if (error.message.indexOf('404') === -1) return cb(error)
             if (symbols) {
               error.message = 'Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url
             } else {
