@@ -56,9 +56,9 @@ module.exports = function download (opts, cb) {
         nugget(url, nuggetOpts, function (err) {
           if (/404/.test(err)) {
             if (symbols) {
-              err = Error('Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url)
+              err.message = 'Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url
             } else {
-              err = Error('Failed to find Electron v' + version + ' for ' + platform + '-' + arch + ' at ' + url)
+              err.message = 'Failed to find Electron v' + version + ' for ' + platform + '-' + arch + ' at ' + url
             }
           }
           if (err) return cb(err)
