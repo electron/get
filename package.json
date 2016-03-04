@@ -7,7 +7,7 @@
     "electron-download": "cli.js"
   },
   "scripts": {
-    "test": "standard && node test.js && node test_symbols.js && node test_404.js"
+    "test": "standard && node test.js && node test_symbols.js && node test_404.js && echo PASSED"
   },
   "repository": {
     "type": "git",
