@@ -53,15 +53,16 @@ module.exports = function download (opts, cb) {
         if (err) return cb(err)
         debug('downloading zip', url, 'to', tmpdir)
         var nuggetOpts = {target: filename, dir: tmpdir, resume: true, verbose: true, strictSSL: strictSSL, proxy: proxy}
-        nugget(url, nuggetOpts, function (err) {
-          if (/404/.test(err)) {
+        nugget(url, nuggetOpts, function (errors) {
+          if (errors) {
+            var error = errors[0]
             if (symbols) {
-              err.message = 'Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url
+              error.message = 'Failed to find Electron symbols v' + version + ' for ' + platform + '-' + arch + ' at ' + url
             } else {
-              err.message = 'Failed to find Electron v' + version + ' for ' + platform + '-' + arch + ' at ' + url
+              error.message = 'Failed to find Electron v' + version + ' for ' + platform + '-' + arch + ' at ' + url
             }
+            return cb(error)
           }
-          if (err) return cb(err)
           // when dl is done then put in cache
           debug('moving zip to', cachedZip)
           mv(path.join(tmpdir, filename), cachedZip, function (err) {
