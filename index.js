@@ -19,9 +19,9 @@ module.exports = function download (opts, cb) {
     process.env.ELECTRON_MIRROR ||
     opts.mirror ||
     'https://github.com/atom/electron/releases/download/v'
-  url += process.env.ELECTRON_CUSTOM_DIR || opts.customDir || version;
-  url += '/';
-  url += process.env.ELECTRON_CUSTOM_FILENAME || opts.customFilename || 'electron-v' + version + '-' + platform + '-' + arch + (symbols ? '-symbols' : '') + '.zip'
+  url += process.env.ELECTRON_CUSTOM_DIR || opts.customDir || version
+  url += '/'
+  url += process.env.ELECTRON_CUSTOM_FILENAME || opts.customFilename || filename
   var homeDir = homePath()
   var cache = opts.cache || path.join(homeDir, './.electron')
 
