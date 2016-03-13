@@ -1,6 +1,6 @@
 {
   "name": "electron-download",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "download electron prebuilt binary zips from github releases",
   "main": "index.js",
   "bin": {
