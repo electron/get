@@ -32,9 +32,16 @@ download({
 
 if you don't specify `arch` or `platform` args it will use `require('os')` to get them from the current OS. specifying `version` is mandatory.
 
-You can set the `ELECTRON_MIRROR` or [`NPM_CONFIG_ELECTRON_MIRROR`](https://docs.npmjs.com/misc/config#environment-variables) env or `mirror` opt variable to use a custom base URL for grabbing electron zips.
+If you would like to override the mirror location, three options are available. The mirror URL is composed as `url = ELECTRON_MIRROR} + ELECTRON_CUSTOM_DIR + '/' + ELECTRON_CUSTOM_FILENAME`.
+
+You can set the `ELECTRON_MIRROR` or [`NPM_CONFIG_ELECTRON_MIRROR`](https://docs.npmjs.com/misc/config#environment-variables) env or `mirror` opt variable to use a custom base URL for grabbing electron zips. The same pattern applies to `ELECTRON_CUSTOM_DIR` and `ELECTRON_CUSTOM_FILENAME`
 
 ```plain
 ## Electron Mirror of China
 ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/"
+
+## or for a local mirror
+ELECTRON_MIRROR="https://10.1.2.105/"
+ELECTRON_CUSTOM_DIR="our/internal/filePath"
 ```
+
