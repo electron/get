@@ -18,7 +18,7 @@ module.exports = function download (opts, cb) {
   var url = process.env.NPM_CONFIG_ELECTRON_MIRROR ||
     process.env.ELECTRON_MIRROR ||
     opts.mirror ||
-    'https://github.com/atom/electron/releases/download/v'
+    'https://github.com/electron/electron/releases/download/v'
   url += process.env.ELECTRON_CUSTOM_DIR || opts.customDir || version
   url += '/'
   url += process.env.ELECTRON_CUSTOM_FILENAME || opts.customFilename || filename
