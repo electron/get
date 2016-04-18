@@ -26,7 +26,7 @@ module.exports = function download (opts, cb) {
   var cache = opts.cache || path.join(homeDir, './.electron')
 
   var strictSSL = true
-  if (opts.strictSSL === false) {
+  if (opts.strictSSL === false || npmrc['strict-ssl'] === false) {
     strictSSL = false
   }
 
