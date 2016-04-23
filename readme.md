@@ -1,5 +1,7 @@
 # electron-download
 
+[![Build Status](https://travis-ci.org/electron-userland/electron-download.svg?branch=master)](https://travis-ci.org/electron-userland/electron-download)
+
 [![NPM](https://nodei.co/npm/electron-download.png)](https://nodei.co/npm/electron-download/)
 
 downloads a electron release zip from github
