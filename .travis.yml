@@ -7,8 +7,7 @@ language: node_js
 node_js:
 - '4'
 - '5'
-# Does not yet work on OSX/GCE
-# See: https://github.com/travis-ci/travis-ci/issues/4011
+- '6'
 cache:
 - directories:
   - "$HOME/.npm"
