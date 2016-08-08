@@ -80,8 +80,7 @@ class ElectronDownloader {
   }
 
   checkForCachedZip (cb) {
-    pathExists(this.cachedZip, (err, exists) => {
-      if (err) return cb(err)
+    pathExists(this.cachedZip).then(exists => {
       if (exists) {
         debug('zip exists', this.cachedZip)
         return cb(null, this.cachedZip)
@@ -126,7 +125,7 @@ class ElectronDownloader {
       target: this.filename,
       dir: this.tmpdir,
       resume: true,
-      verbose: true,
+      quiet: false,
       strictSSL: this.strictSSL,
       proxy: this.proxy
     }
