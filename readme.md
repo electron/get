@@ -47,3 +47,8 @@ ELECTRON_MIRROR="https://10.1.2.105/"
 ELECTRON_CUSTOM_DIR="our/internal/filePath"
 ```
 
+You can set these variables in `.npmrc` as well, with lower-case name
+
+```plain
+electron_mirror=https://10.1.2.105/
+```
