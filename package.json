@@ -7,7 +7,7 @@
     "electron-download": "cli.js"
   },
   "scripts": {
-    "test": "standard && node test.js && node test_symbols.js && node test_404.js && echo PASSED"
+    "test": "eslint . && node test.js && node test_symbols.js && node test_404.js && echo PASSED"
   },
   "repository": {
     "type": "git",
@@ -30,7 +30,21 @@
     "rc": "^1.1.2"
   },
   "devDependencies": {
-    "standard": "^3.11.1"
+    "eslint": "^3.2.0",
+    "eslint-config-standard": "^5.2.0",
+    "eslint-plugin-promise": "^2.0.0",
+    "eslint-plugin-standard": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "standard",
+    "parserOptions": {
+      "sourceType": "script"
+    },
+    "rules": {
+      "strict": [
+        "error"
+      ]
+    }
   },
   "keywords": []
 }
