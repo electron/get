@@ -2,6 +2,7 @@
 
 const download = require('./')
 
+console.log('404 test')
 download({
   version: '0.25.1',
   arch: 'ia32',
@@ -12,5 +13,4 @@ download({
     throw Error('Download did not throw an error with a custom 404 message: ' + err.message)
   }
   console.log('OK! got expected error:', err.message)
-  process.exit(0)
 })

@@ -34,7 +34,7 @@ download({
 })
 ```
 
-If you don't specify `arch` or `platform` args it will use the built-in `os` module to get the values from the current OS. Specifying `version` is mandatory.
+If you don't specify `arch` or `platform` args it will use the built-in `os` module to get the values from the current OS. Specifying `version` is mandatory. If there is a `SHASUMS256.txt` file available for the `version`, the file downloaded will be validated against its checksum to ensure that it was downloaded without errors.
 
 If you would like to override the mirror location, three options are available. The mirror URL is composed as `url = ELECTRON_MIRROR + ELECTRON_CUSTOM_DIR + '/' + ELECTRON_CUSTOM_FILENAME`.
 

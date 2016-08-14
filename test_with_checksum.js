@@ -2,12 +2,12 @@
 
 const download = require('./')
 
-console.log('Symbols test')
+console.log('Checksum test')
 download({
-  version: '0.26.1',
+  version: '1.3.3',
   arch: 'x64',
-  platform: 'darwin',
-  symbols: 'true'
+  platform: 'win32',
+  symbols: true
 }, (err, zipPath) => {
   if (err) throw err
   console.log('OK! zip:', zipPath)
