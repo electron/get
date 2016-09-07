@@ -1,6 +1,8 @@
 # electron-download
 
-[![Build Status](https://travis-ci.org/electron-userland/electron-download.svg?branch=master)](https://travis-ci.org/electron-userland/electron-download)
+[![Travis Build Status](https://travis-ci.org/electron-userland/electron-download.svg?branch=master)](https://travis-ci.org/electron-userland/electron-download)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/dtu6of8wgtva0t8l?svg=true)](https://ci.appveyor.com/project/Atom/electron-download)
+
 
 [![NPM](https://nodei.co/npm/electron-download.png)](https://nodei.co/npm/electron-download/)
 
