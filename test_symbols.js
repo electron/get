@@ -4,6 +4,7 @@ const download = require('./')
 
 download({
   version: '0.26.1',
+  arch: 'x64',
   platform: 'darwin',
   symbols: 'true'
 }, (err, zipPath) => {
