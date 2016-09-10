@@ -1,5 +1,3 @@
-'use strict'
-
 const debug = require('debug')('electron-download')
 const fs = require('fs-extra')
 const homePath = require('home-path')
