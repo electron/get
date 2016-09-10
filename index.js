@@ -1,15 +1,14 @@
-'use strict'
-
-const debug = require('debug')('electron-download')
-const fs = require('fs-extra')
-const homePath = require('home-path')
-const npmrc = require('rc')('npm')
-const nugget = require('nugget')
-const os = require('os')
-const path = require('path')
-const pathExists = require('path-exists')
-const semver = require('semver')
-const sumchecker = require('sumchecker')
+'use strict';
+var debug = require('debug')('electron-download')
+var fs = require('fs-extra')
+var homePath = require('home-path')
+var npmrc = require('rc')('npm')
+var nugget = require('nugget')
+var os = require('os')
+var path = require('path')
+var pathExists = require('path-exists')
+var semver = require('semver')
+var sumchecker = require('sumchecker')
 
 class ElectronDownloader {
   constructor (opts) {

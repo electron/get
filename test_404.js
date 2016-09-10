@@ -1,5 +1,3 @@
-'use strict'
-
 const download = require('./')
 
 console.log('404 test')
