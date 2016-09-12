@@ -8,7 +8,9 @@
   },
   "scripts": {
     "prepublish": "babel --out-dir build lib",
-    "test": "tape -r babel-register test/*.js && eslint lib test"
+    "lint": "eslint lib test",
+    "unit-tests": "tape -r babel-register test/*.js",
+    "test": "npm run unit-tests && npm run lint"
   },
   "repository": {
     "type": "git",

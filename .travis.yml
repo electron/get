@@ -16,3 +16,8 @@ cache:
 branches:
   only:
   - master
+before_script:
+  - nvm install stable
+  - npm run lint
+  - nvm use $TRAVIS_NODE_VERSION
+  - npm run unit-tests
