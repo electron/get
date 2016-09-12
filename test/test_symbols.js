@@ -1,14 +1,16 @@
 'use strict'
 
-const download = require('./')
+const download = require('..')
+const test = require('tape')
 
-console.log('Symbols test')
-download({
-  version: '0.26.1',
-  arch: 'x64',
-  platform: 'darwin',
-  symbols: 'true'
-}, (err, zipPath) => {
-  if (err) throw err
-  console.log('OK! zip:', zipPath)
+test('Symbols test', (t) => {
+  download({
+    version: '0.26.1',
+    arch: 'x64',
+    platform: 'darwin',
+    symbols: 'true'
+  }, (err, zipPath) => {
+    t.error(err, 'The error should be null')
+    t.end()
+  })
 })

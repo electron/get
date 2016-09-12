@@ -1,14 +1,16 @@
 'use strict'
 
-const download = require('./')
+const download = require('..')
+const test = require('tape')
 
-console.log('Checksum test')
-download({
-  version: '1.3.3',
-  arch: 'x64',
-  platform: 'win32',
-  symbols: true
-}, (err, zipPath) => {
-  if (err) throw err
-  console.log('OK! zip:', zipPath)
+test('Checksum test', (t) => {
+  download({
+    version: '1.3.3',
+    arch: 'x64',
+    platform: 'win32',
+    symbols: true
+  }, (err, zipPath) => {
+    t.error(err, 'The error should be null')
+    t.end()
+  })
 })
