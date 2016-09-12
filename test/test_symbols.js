@@ -12,6 +12,7 @@ test('Symbols test', (t) => {
     symbols: true
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
+    t.ok(/-symbols\.zip$/.test(zipPath), 'Zip path should end with -symbols.zip')
     t.end()
   })
 })
