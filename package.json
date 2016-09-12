@@ -7,8 +7,7 @@
     "electron-download": "build/cli.js"
   },
   "scripts": {
-    "build": "babel --out-dir build lib",
-    "prepublish": "npm run build",
+    "prepublish": "babel --out-dir build lib",
     "test": "tape -r babel-register test/*.js && eslint lib test"
   },
   "repository": {
