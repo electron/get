@@ -72,6 +72,10 @@ class ElectronDownloader {
     return proxy
   }
 
+  get quiet () {
+    return this.opts.quiet || false
+  }
+
   get strictSSL () {
     let strictSSL = true
     if (this.opts.strictSSL === false || npmrc['strict-ssl'] === false) {
@@ -163,7 +167,7 @@ class ElectronDownloader {
       target: filename,
       dir: this.tmpdir,
       resume: true,
-      quiet: false,
+      quiet: this.quiet,
       strictSSL: this.strictSSL,
       proxy: this.proxy
     }

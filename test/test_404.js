@@ -8,7 +8,8 @@ test('404 test', (t) => {
   download({
     version: '0.25.1',
     arch: 'ia32',
-    platform: 'darwin'
+    platform: 'darwin',
+    quiet: true
   }, (err, zipPath) => {
     if (!err) t.fail('Download should throw an error')
     t.equal(fs.existsSync(zipPath), false, 'Zip path should not exist')
