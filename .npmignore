@@ -2,3 +2,4 @@
 .travis.yml
 appveyor.yml
 test
+lib

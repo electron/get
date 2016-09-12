@@ -2,12 +2,14 @@
   "name": "electron-download",
   "version": "2.2.0",
   "description": "download electron prebuilt binary zips from github releases",
-  "main": "index.js",
+  "main": "build/index.js",
   "bin": {
-    "electron-download": "cli.js"
+    "electron-download": "build/cli.js"
   },
   "scripts": {
-    "test": "tape test/*.js && eslint ."
+    "build": "babel --out-dir build lib",
+    "prepublish": "npm run build",
+    "test": "tape -r babel-register test/*.js && eslint lib test"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "babel-cli": "^6.14.0",
     "babel-preset-es2015": "^6.14.0",
+    "babel-register": "^6.14.0",
     "eslint": "^3.2.0",
     "eslint-config-standard": "^5.2.0",
     "eslint-plugin-promise": "^2.0.0",
@@ -49,6 +52,11 @@
         "error"
       ]
     }
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "keywords": []
 }
