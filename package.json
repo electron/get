@@ -7,7 +7,7 @@
     "electron-download": "cli.js"
   },
   "scripts": {
-    "test": "tape test/*.js && eslint ."
+    "test": "tape test/test.js && eslint ."
   },
   "repository": {
     "type": "git",
