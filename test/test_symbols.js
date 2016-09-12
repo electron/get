@@ -1,8 +1,8 @@
 'use strict'
 
 const download = require('..')
-const fs = require('fs')
 const test = require('tape')
+const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('Symbols test', (t) => {
   download({
@@ -11,9 +11,7 @@ test('Symbols test', (t) => {
     platform: 'darwin',
     symbols: true
   }, (err, zipPath) => {
-    t.error(err, 'Error should be null')
-    t.equal(fs.statSync(zipPath).isFile(), true, 'Zip path should exist')
-    t.notEqual(fs.statSync(zipPath).size, 0, 'Zip path should be non-empty')
+    verifyDownloadedZip(t, err, zipPath)
     t.end()
   })
 })
