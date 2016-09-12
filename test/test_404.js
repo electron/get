@@ -1,6 +1,6 @@
 'use strict'
 
-const download = require('..')
+const download = require('../lib/index')
 const fs = require('fs')
 const test = require('tape')
 
