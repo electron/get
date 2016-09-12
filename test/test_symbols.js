@@ -9,7 +9,7 @@ test('Symbols test', (t) => {
     version: '0.26.1',
     arch: 'x64',
     platform: 'darwin',
-    symbols: 'true'
+    symbols: true
   }, (err, zipPath) => {
     t.error(err, 'Error should be null')
     t.equal(fs.statSync(zipPath).isFile(), true, 'Zip path should exist')
