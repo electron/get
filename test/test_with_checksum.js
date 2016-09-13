@@ -9,7 +9,8 @@ test('Checksum test', (t) => {
     version: '1.3.3',
     arch: 'x64',
     platform: 'win32',
-    symbols: true
+    symbols: true,
+    quiet: true
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
     t.end()

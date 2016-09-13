@@ -9,7 +9,8 @@ test('Symbols test', (t) => {
     version: '0.26.1',
     arch: 'x64',
     platform: 'darwin',
-    symbols: true
+    symbols: true,
+    quiet: true
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
     t.ok(/-symbols\.zip$/.test(zipPath), 'Zip path should end with -symbols.zip')
