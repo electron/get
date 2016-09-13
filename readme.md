@@ -4,7 +4,7 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/dtu6of8wgtva0t8l?svg=true)](https://ci.appveyor.com/project/Atom/electron-download)
 
 
-[![NPM](https://nodei.co/npm/electron-download.png)](https://nodei.co/npm/electron-download/)
+[![NPM](https://nodei.co/npm/electron-download.png?downloads=true)](https://www.npmjs.com/package/electron-download)
 
 Downloads an Electron release zip from GitHub.
 
