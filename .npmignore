@@ -2,3 +2,5 @@
 .travis.yml
 appveyor.yml
 test
+lib
+npm-debug.log
