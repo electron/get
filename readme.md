@@ -24,7 +24,7 @@ download({
   version: '0.25.1',
   arch: 'ia32',
   platform: 'win32',
-  cache: './zips' // defaults to <user's home directory>/.electron
+  cache: './zips' // defaults to <user's cache directory>/electron-download
 }, function (err, zipPath) {
   // zipPath will be the path of the zip that it downloaded.
   // If the zip was already cached it will skip

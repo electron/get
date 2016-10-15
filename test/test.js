@@ -38,3 +38,27 @@ test('Force option', (t) => {
     t.end()
   })
 })
+
+test('Cache directory is moved to new location', (t) => {
+  // Download to old cache directory location
+  download({
+    version: '1.4.3',
+    arch: 'x64',
+    platform: 'linux',
+    cache: path.join(homePath(), './.electron')
+  }, (err, oldZipPath) => {
+    verifyDownloadedZip(t, err, oldZipPath)
+    download({
+      version: '1.4.4',
+      arch: 'x64',
+      platform: 'linux'
+    }, (err, zipPath) => {
+      const oldZipPathName = path.parse(oldZipPath).base
+      const movedOldZipPath = path.parse(zipPath)
+      movedOldZipPath.base = oldZipPathName
+
+      verifyDownloadedZip(t, err, path.format(movedOldZipPath))
+      t.end()
+    })
+  })
+})

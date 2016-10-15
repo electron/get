@@ -24,6 +24,7 @@
   "homepage": "https://github.com/electron-userland/electron-download#readme",
   "dependencies": {
     "debug": "^2.2.0",
+    "env-paths": "^0.3.0",
     "fs-extra": "^0.30.0",
     "home-path": "^1.0.1",
     "minimist": "^1.2.0",
