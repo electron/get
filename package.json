@@ -23,13 +23,12 @@
   },
   "homepage": "https://github.com/electron-userland/electron-download#readme",
   "dependencies": {
-    "debug": "^2.2.0",
-    "fs-extra": "^0.30.0",
-    "home-path": "^1.0.1",
+    "debug": "^2.3.2",
+    "fs-extra": "^1.0.0",
     "minimist": "^1.2.0",
-    "nugget": "^2.0.0",
-    "path-exists": "^2.1.0",
-    "rc": "^1.1.2",
+    "nugget": "^2.0.1",
+    "path-exists": "^3.0.0",
+    "rc": "^1.1.6",
     "semver": "^5.3.0",
     "sumchecker": "^1.2.0"
   },
@@ -58,8 +57,11 @@
   },
   "babel": {
     "presets": [
-      "es2015"
+      "es2015-node4"
     ]
   },
-  "keywords": []
+  "keywords": [],
+  "engines": {
+     "node": ">= 4.0"
+   }
 }
