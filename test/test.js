@@ -1,7 +1,9 @@
 'use strict'
 
 const download = require('../lib/index')
+const envPaths = require('env-paths')
 const fs = require('fs')
+const homePath = require('home-path')
 const path = require('path')
 const temp = require('temp').track()
 const test = require('tape')
@@ -19,6 +21,7 @@ test('Basic test', (t) => {
   })
 })
 
+<<<<<<< 6cd027ea33232966abc4efcaf1215133df966572
 test('Force option', (t) => {
   const cachePath = temp.mkdirSync('electron-download-')
 
@@ -40,25 +43,29 @@ test('Force option', (t) => {
 })
 
 test('Cache directory is moved to new location', (t) => {
-  // Download to old cache directory location
-  download({
-    version: '1.4.3',
-    arch: 'x64',
-    platform: 'linux',
-    cache: path.join(homePath(), './.electron')
-  }, (err, oldZipPath) => {
-    verifyDownloadedZip(t, err, oldZipPath)
+  const oldCachePath = path.join(homePath(), './.electron')
+  const newCachePath = envPaths('electron-download', {suffix: ''}).cache
+
+  fs.mkdir(oldCachePath, () => {
+    // Put file in old cache location
+    fs.writeFileSync(path.join(oldCachePath, 'moveMe'))
+
     download({
-      version: '1.4.4',
+      version: '1.1.0',
       arch: 'x64',
       platform: 'linux'
-    }, (err, zipPath) => {
-      const oldZipPathName = path.parse(oldZipPath).base
-      const movedOldZipPath = path.parse(zipPath)
-      movedOldZipPath.base = oldZipPathName
+    }, (downloadError, zipPath) => {
+      t.false(downloadError)
 
-      verifyDownloadedZip(t, err, path.format(movedOldZipPath))
-      t.end()
+      fs.stat(path.join(newCachePath, 'moveMe'), (error) => {
+        // If file exists no error is returned
+        t.false(error, 'File should be moved to new cache directory')
+
+        // Cleanup
+        fs.unlinkSync(path.join(newCachePath, 'moveMe'))
+
+        t.end()
+      })
     })
   })
 })
