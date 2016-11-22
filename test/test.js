@@ -44,7 +44,7 @@ test('Force option', (t) => {
 
 test('Cache directory is moved to new location', (t) => {
   const oldCachePath = path.join(homePath(), './.electron')
-  const newCachePath = envPaths('electron-download', {suffix: ''}).cache
+  const newCachePath = envPaths('electron', {suffix: ''}).cache
 
   fs.mkdir(oldCachePath, () => {
     // Put file in old cache location
