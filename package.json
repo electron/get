@@ -41,6 +41,7 @@
     "eslint-config-standard": "^5.2.0",
     "eslint-plugin-promise": "^2.0.0",
     "eslint-plugin-standard": "^2.0.0",
+    "mkdirp": "^0.5.1",
     "tape": "^4.6.0"
   },
   "eslintConfig": {
