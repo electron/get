@@ -36,6 +36,12 @@ download({
 
 If you don't specify `arch` or `platform` args it will use the built-in `os` module to get the values from the current OS. Specifying `version` is mandatory. If there is a `SHASUMS256.txt` file available for the `version`, the file downloaded will be validated against its checksum to ensure that it was downloaded without errors.
 
+You can also use `electron-download` to download the `chromedriver`, `ffmpeg`,
+`mksnapshot`, and symbols assets for a specific Electron release. This can be
+configured by setting the `chromedriver`, `ffmpeg`, `mksnapshot`, or
+`symbols` property to `true` in the specified options object. Only one of
+these options may be specified per download call.
+
 If you would like to override the mirror location, three options are available. The mirror URL is composed as `url = ELECTRON_MIRROR + ELECTRON_CUSTOM_DIR + '/' + ELECTRON_CUSTOM_FILENAME`.
 
 You can set the `ELECTRON_MIRROR` or [`NPM_CONFIG_ELECTRON_MIRROR`](https://docs.npmjs.com/misc/config#environment-variables) environment variable or `mirror` opt variable to use a custom base URL for grabbing Electron zips. The same pattern applies to `ELECTRON_CUSTOM_DIR` and `ELECTRON_CUSTOM_FILENAME`:
