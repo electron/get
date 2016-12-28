@@ -42,6 +42,9 @@ configured by setting the `chromedriver`, `ffmpeg`, `mksnapshot`, or
 `symbols` property to `true` in the specified options object. Only one of
 these options may be specified per download call.
 
+You can force a re-download of the asset and the `SHASUM` file by setting the
+`force` option to `true`.
+
 If you would like to override the mirror location, three options are available. The mirror URL is composed as `url = ELECTRON_MIRROR + ELECTRON_CUSTOM_DIR + '/' + ELECTRON_CUSTOM_FILENAME`.
 
 You can set the `ELECTRON_MIRROR` or [`NPM_CONFIG_ELECTRON_MIRROR`](https://docs.npmjs.com/misc/config#environment-variables) environment variable or `mirror` opt variable to use a custom base URL for grabbing Electron zips. The same pattern applies to `ELECTRON_CUSTOM_DIR` and `ELECTRON_CUSTOM_FILENAME`:
