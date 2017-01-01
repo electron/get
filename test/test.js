@@ -21,7 +21,6 @@ test('Basic test', (t) => {
   })
 })
 
-<<<<<<< 6cd027ea33232966abc4efcaf1215133df966572
 test('Force option', (t) => {
   const cachePath = temp.mkdirSync('electron-download-')
 
