@@ -12,13 +12,15 @@ Used by [electron-prebuilt](https://npmjs.org/electron-prebuilt) and [electron-p
 
 ### Usage
 
+**Note: Requires Node >= 4.0 to run.**
+
 ```shell
 $ npm install --global electron-download
 $ electron-download --version=0.31.1
 ```
 
 ```javascript
-var download = require('electron-download')
+const download = require('electron-download')
 
 download({
   version: '0.25.1',

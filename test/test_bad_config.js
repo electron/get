@@ -2,8 +2,8 @@
 
 const download = require('../lib/index')
 const fs = require('fs')
-const os = require('os')
 const mkdirp = require('mkdirp').sync
+const os = require('os')
 const path = require('path')
 const test = require('tape')
 const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
