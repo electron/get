@@ -2,14 +2,14 @@
 
 const download = require('../lib/index')
 const fs = require('fs')
-const homePath = require('home-path')
 const mkdirp = require('mkdirp').sync
+const os = require('os')
 const path = require('path')
 const test = require('tape')
 const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('bad config test', (t) => {
-  const configPath = path.join(homePath(), '.config', 'npm', 'config')
+  const configPath = path.join(os.homedir(), '.config', 'npm', 'config')
   mkdirp(path.dirname(configPath))
   fs.writeFileSync(configPath, '{')
 

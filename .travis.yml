@@ -5,20 +5,13 @@ os:
 osx_image: xcode7.3
 language: node_js
 node_js:
-- '0.10'
-- '0.12'
 - '4'
 - '5'
 - '6'
+- '7'
 cache:
 - directories:
   - "$HOME/.npm"
 branches:
   only:
   - master
-before_install:
-  - nvm install stable
-script:
-  - npm run lint
-  - nvm use $TRAVIS_NODE_VERSION
-  - npm run unit-tests

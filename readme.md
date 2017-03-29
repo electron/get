@@ -1,8 +1,7 @@
 # electron-download
 
 [![Travis Build Status](https://travis-ci.org/electron-userland/electron-download.svg?branch=master)](https://travis-ci.org/electron-userland/electron-download)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/dtu6of8wgtva0t8l?svg=true)](https://ci.appveyor.com/project/Atom/electron-download)
-
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/fmfbjmrs42d7bctn/branch/master?svg=true)](https://ci.appveyor.com/project/electron-bot/electron-download/branch/master)
 
 [![NPM](https://nodei.co/npm/electron-download.png?downloads=true)](https://www.npmjs.com/package/electron-download)
 
@@ -12,13 +11,15 @@ Used by [electron-prebuilt](https://npmjs.org/electron-prebuilt) and [electron-p
 
 ### Usage
 
+**Note: Requires Node >= 4.0 to run.**
+
 ```shell
 $ npm install --global electron-download
 $ electron-download --version=0.31.1
 ```
 
 ```javascript
-var download = require('electron-download')
+const download = require('electron-download')
 
 download({
   version: '0.25.1',
