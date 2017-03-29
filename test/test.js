@@ -1,9 +1,7 @@
 'use strict'
 
 const download = require('../lib/index')
-const envPaths = require('env-paths')
 const fs = require('fs')
-const homePath = require('home-path')
 const path = require('path')
 const temp = require('temp').track()
 const test = require('tape')
@@ -38,33 +36,5 @@ test('Force option', (t) => {
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
     t.end()
-  })
-})
-
-test('Cache directory is moved to new location', (t) => {
-  const oldCachePath = path.join(homePath(), './.electron')
-  const newCachePath = envPaths('electron', {suffix: ''}).cache
-
-  fs.mkdir(oldCachePath, () => {
-    // Put file in old cache location
-    fs.writeFileSync(path.join(oldCachePath, 'moveMe'))
-
-    download({
-      version: '1.1.0',
-      arch: 'x64',
-      platform: 'linux'
-    }, (downloadError, zipPath) => {
-      t.false(downloadError)
-
-      fs.stat(path.join(newCachePath, 'moveMe'), (error) => {
-        // If file exists no error is returned
-        t.false(error, 'File should be moved to new cache directory')
-
-        // Cleanup
-        fs.unlinkSync(path.join(newCachePath, 'moveMe'))
-
-        t.end()
-      })
-    })
   })
 })

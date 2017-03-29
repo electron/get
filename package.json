@@ -25,7 +25,6 @@
     "debug": "^2.2.0",
     "env-paths": "^0.3.0",
     "fs-extra": "^2.0.0",
-    "home-path": "^1.0.1",
     "minimist": "^1.2.0",
     "nugget": "^2.0.0",
     "path-exists": "^3.0.0",
