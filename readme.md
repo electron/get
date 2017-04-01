@@ -1,8 +1,7 @@
 # electron-download
 
 [![Travis Build Status](https://travis-ci.org/electron-userland/electron-download.svg?branch=master)](https://travis-ci.org/electron-userland/electron-download)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/dtu6of8wgtva0t8l?svg=true)](https://ci.appveyor.com/project/Atom/electron-download)
-
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/fmfbjmrs42d7bctn/branch/master?svg=true)](https://ci.appveyor.com/project/electron-bot/electron-download/branch/master)
 
 [![NPM](https://nodei.co/npm/electron-download.png?downloads=true)](https://www.npmjs.com/package/electron-download)
 
@@ -26,7 +25,7 @@ download({
   version: '0.25.1',
   arch: 'ia32',
   platform: 'win32',
-  cache: './zips' // defaults to <user's home directory>/.electron
+  cache: './zips'
 }, function (err, zipPath) {
   // zipPath will be the path of the zip that it downloaded.
   // If the zip was already cached it will skip
@@ -65,3 +64,10 @@ You can set ELECTRON_MIRROR in `.npmrc` as well, using the lowercase name:
 ```plain
 electron_mirror=https://10.1.2.105/
 ```
+
+### Cache location
+The location of the cache depends on the operating system, the defaults are:
+- Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
+- MacOS: `~/Library/Caches/electron/`
+- Windows: `$LOCALAPPDATA/electron/Cache` or `~/AppData/Local/electron/Cache/`
+
