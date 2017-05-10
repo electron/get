@@ -66,8 +66,12 @@ electron_mirror=https://10.1.2.105/
 ```
 
 ### Cache location
+
 The location of the cache depends on the operating system, the defaults are:
 - Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
 - MacOS: `~/Library/Caches/electron/`
 - Windows: `$LOCALAPPDATA/electron/Cache` or `~/AppData/Local/electron/Cache/`
 
+**Note:** In previous releases `~/.electron` was used as the cache location.
+You can move the files in that folder to the new locations mentioned above
+to reuse the cached assets.
