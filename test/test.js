@@ -8,6 +8,9 @@ const test = require('tape')
 const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('Basic test', (t) => {
+  console.log('stdout rows?', process.stdout.rows)
+  console.log('TTY?', process.stdout.isTTY)
+
   download({
     version: '0.25.1',
     arch: 'ia32',
