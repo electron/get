@@ -59,6 +59,8 @@ ELECTRON_MIRROR="https://10.1.2.105/"
 ELECTRON_CUSTOM_DIR="our/internal/filePath"
 ```
 
+You can also disable checksum verification with environment variable ELECTRON_NO_CHECKSUM set to "true"
+
 You can set ELECTRON_MIRROR in `.npmrc` as well, using the lowercase name:
 
 ```plain
