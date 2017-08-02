@@ -57,13 +57,38 @@ ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/"
 ## or for a local mirror
 ELECTRON_MIRROR="https://10.1.2.105/"
 ELECTRON_CUSTOM_DIR="our/internal/filePath"
+ELECTRON_CUSTOM_FILENAME="electron.zip"
 ```
 
 You can set ELECTRON_MIRROR in `.npmrc` as well, using the lowercase name:
 
 ```plain
 electron_mirror=https://10.1.2.105/
+electron_custom_dir="our/internal/filePath"
+electron_custom_filename="electron.zip"
 ```
+
+You can also set the same variables in your project's package.json:
+
+```json
+{
+    "name" : "my-electron-project",
+    "config" : {
+        "electron_mirror": "https://10.1.2.105/",
+        "electron_custom_dir": "our/internal/filePath",
+        "electron_custom_filename": "electron.zip"
+    }
+}
+```
+
+The order of precedence is:
+
+1. environment variables (`process.env.ELECTRON_*`)
+1. npm config or .npmrc (`process.env.npm_config_electron_*`)
+1. npm config or .npmrc, but uppercase (`process.env.NPM_PACKAGE_CONFIG_ELECTRON_*`)
+1. package.json (`process.env.npm_package_config_electron_*`)
+1. the options given to `download`
+1. defaults
 
 ### Cache location
 The location of the cache depends on the operating system, the defaults are:
