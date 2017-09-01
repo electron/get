@@ -2,7 +2,7 @@
 
 const download = require('../lib/index')
 const fs = require('fs')
-const mkdirp = require('mkdirp').sync
+const ensureDir = require('fs-extra').ensureDirSync
 const os = require('os')
 const path = require('path')
 const test = require('tape')
@@ -10,7 +10,7 @@ const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('bad config test', (t) => {
   const configPath = path.join(os.homedir(), '.config', 'npm', 'config')
-  mkdirp(path.dirname(configPath))
+  ensureDir(path.dirname(configPath))
   fs.writeFileSync(configPath, '{')
 
   download({
