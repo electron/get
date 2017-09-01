@@ -15,10 +15,6 @@ cache:
   directories:
   - node_modules
 
-before_install:
-  - curl -L https://yarnpkg.com/latest.tar.gz | tar xvz && mv dist $HOME/.yarn
-  - export PATH="$HOME/.yarn/bin:$PATH"
-
 branches:
   only:
   - master

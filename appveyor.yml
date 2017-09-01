@@ -17,9 +17,9 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - yarn
+  - npm install
 
 test_script:
   - node --version
-  - yarn --version
-  - yarn unit-tests
+  - npm --version
+  - npm run unit-tests
