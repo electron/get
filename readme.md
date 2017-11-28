@@ -69,7 +69,7 @@ electron_mirror=https://10.1.2.105/
 The location of the cache depends on the operating system, the defaults are:
 - Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
 - MacOS: `~/Library/Caches/electron/`
-- Windows: `$LOCALAPPDATA/electron/Cache` or `~/AppData/Local/electron/Cache/`
+- Windows: `%USERPROFILE%/.electron` or `~/.electron`
 
 You can set the `ELECTRON_CACHE` environment variable to set cache location explicitly.
 
