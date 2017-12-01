@@ -1,10 +1,10 @@
 {
-  "name": "electron-download",
+  "name": "jdk-download",
   "version": "4.1.0",
-  "description": "download electron prebuilt binary zips from github releases",
+  "description": "download openjdk prebuilt binary zips from github releases",
   "main": "lib/index.js",
   "bin": {
-    "electron-download": "lib/cli.js"
+    "jdk-download": "lib/cli.js"
   },
   "scripts": {
     "lint": "eslint lib test",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-userland/electron-download.git"
+    "url": "git+https://github.com/ferrerojosh/jdk-download.git"
   },
   "author": "max ogden",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/electron-userland/electron-download/issues"
+    "url": "https://github.com/ferrerojosh/jdk-download/issues"
   },
-  "homepage": "https://github.com/electron-userland/electron-download#readme",
+  "homepage": "https://github.com/ferrerojosh/jdk-download#readme",
   "dependencies": {
     "debug": "^3.0.0",
     "env-paths": "^1.0.0",
@@ -29,7 +29,6 @@
     "nugget": "^2.0.1",
     "path-exists": "^3.0.0",
     "rc": "^1.2.1",
-    "semver": "^5.4.1",
     "sumchecker": "^2.0.2"
   },
   "devDependencies": {
