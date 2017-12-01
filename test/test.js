@@ -9,10 +9,12 @@ const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('Basic test', (t) => {
   download({
-    version: '0.25.1',
-    arch: 'ia32',
+    version: '1.8.0',
+    build: '151-1.b12',
+    arch: 'x64',
     platform: 'win32',
-    quiet: true
+    debuginfo: true,
+    quiet: false
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
     t.end()
@@ -20,19 +22,20 @@ test('Basic test', (t) => {
 })
 
 test('Force option', (t) => {
-  const cachePath = temp.mkdirSync('electron-download-')
+  const cachePath = temp.mkdirSync('jdk-download-')
 
-  fs.writeFileSync(path.join(cachePath, 'ffmpeg-v1.4.13-win32-ia32.zip'), '')
-  fs.writeFileSync(path.join(cachePath, 'SHASUMS256.txt-1.4.13'), '')
+  fs.writeFileSync(path.join(cachePath, 'java-1.8.0-openjdk-1.8.0.151-1.b12.ojdkbuild.windows.x86_64.debuginfo.zip'), '')
+  fs.writeFileSync(path.join(cachePath, 'java-1.8.0-openjdk-1.8.0.151-1.b12.ojdkbuild.windows.x86_64.debuginfo.zip.sha256'), '')
 
   download({
-    version: '1.4.13',
-    arch: 'ia32',
+    version: '1.8.0',
+    build: '151-1.b12',
+    arch: 'x64',
     platform: 'win32',
-    ffmpeg: true,
+    debuginfo: true,
     cache: cachePath,
     force: true,
-    quiet: true
+    quiet: false
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
     t.end()

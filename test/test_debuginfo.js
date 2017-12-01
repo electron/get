@@ -1,20 +1,20 @@
 'use strict'
 
 const download = require('../lib/index')
-const path = require('path')
 const test = require('tape')
 const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
-test('mksnapshot test', (t) => {
+test('debuginfo test', (t) => {
   download({
-    version: '1.4.0',
+    version: '1.8.0',
+    build: '151-1.b12',
     arch: 'x64',
-    platform: 'darwin',
-    mksnapshot: true,
-    quiet: true
+    platform: 'win32',
+    debuginfo: true,
+    quiet: false
   }, (err, zipPath) => {
     verifyDownloadedZip(t, err, zipPath)
-    t.ok(/^mksnapshot-v1\.4\.0-/.test(path.basename(zipPath)), 'Zip path should start with mksnapshot-v.1.4.0')
+    t.ok(/.debuginfo\.zip$/.test(zipPath), 'Zip path should end with .debuginfo.zip')
     t.end()
   })
 })

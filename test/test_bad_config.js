@@ -10,14 +10,17 @@ const verifyDownloadedZip = require('./helpers').verifyDownloadedZip
 
 test('bad config test', (t) => {
   const configPath = path.join(os.homedir(), '.config', 'npm', 'config')
+  console.log(configPath)
   ensureDir(path.dirname(configPath))
   fs.writeFileSync(configPath, '{')
 
   download({
-    version: '0.25.1',
-    arch: 'ia32',
+    version: '1.8.0',
+    arch: 'x64',
+    build: '151-1.b12',
+    debuginfo: true,
     platform: 'win32',
-    quiet: true
+    quiet: false
   }, (err, zipPath) => {
     fs.unlinkSync(configPath)
     verifyDownloadedZip(t, err, zipPath)

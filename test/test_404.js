@@ -6,14 +6,15 @@ const test = require('tape')
 
 test('404 test', (t) => {
   download({
-    version: '0.25.1',
-    arch: 'ia32',
-    platform: 'darwin',
-    quiet: true
+    version: '1.8.0',
+    build: '151-1.b99',
+    arch: 'x64',
+    platform: 'win32',
+    quiet: false
   }, (err, zipPath) => {
     if (!err) t.fail('Download should throw an error')
     t.equal(fs.existsSync(zipPath), false, 'Zip path should not exist')
-    t.equal(err.message, 'Failed to find Electron v0.25.1 for darwin-ia32 at https://github.com/electron/electron/releases/download/v0.25.1/electron-v0.25.1-darwin-ia32.zip', 'Error message should contain version and URL')
+    t.equal(err.message, 'Failed to find JDK 1.8.0 for windows-x86_64 at https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.151-1/java-1.8.0-openjdk-1.8.0.151-1.b99.ojdkbuild.windows.x86_64.zip', 'Error message should contain version and URL')
     t.end()
   })
 })
