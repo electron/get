@@ -1,6 +1,6 @@
 {
   "name": "jdk-download",
-  "version": "4.1.0",
+  "version": "1.0.0",
   "description": "download openjdk prebuilt binary zips from github releases",
   "main": "lib/index.js",
   "bin": {
