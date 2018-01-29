@@ -83,10 +83,10 @@ You can also set the same variables in your project's package.json:
 
 The order of precedence is:
 
-1. environment variables (`process.env.ELECTRON_*`)
-1. npm config or .npmrc (`process.env.npm_config_electron_*`)
-1. npm config or .npmrc, but uppercase (`process.env.NPM_PACKAGE_CONFIG_ELECTRON_*`)
+1. npm config or .npmrc, uppercase (`process.env.NPM_CONFIG_ELECTRON_*`)
+1. npm config or .npmrc, lowercase(`process.env.npm_config_electron_*`)
 1. package.json (`process.env.npm_package_config_electron_*`)
+1. environment variables (`process.env.ELECTRON_*`)
 1. the options given to `download`
 1. defaults
 
