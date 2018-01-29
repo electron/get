@@ -50,6 +50,9 @@
     "rules": {
       "strict": [
         "error"
+      ],
+      "prefer-const": [
+        "error"
       ]
     }
   },

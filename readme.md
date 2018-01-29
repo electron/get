@@ -96,3 +96,5 @@ The location of the cache depends on the operating system, the defaults are:
 - MacOS: `~/Library/Caches/electron/`
 - Windows: `$LOCALAPPDATA/electron/Cache` or `~/AppData/Local/electron/Cache/`
 
+You can set the `ELECTRON_CACHE` environment variable to set cache location explicitly.
+
