@@ -90,6 +90,12 @@ The order of precedence is:
 1. the options given to `download`
 1. defaults
 
+You can also disable checksum validation if you really want to (this is in
+general a bad idea).  Do this by setting `disableChecksumSafetyCheck` to `true`
+in the options object.  Use this only when testing local build of Electron,
+if you have internal builds of Electron you should generate the SHASUMS file
+yourself and let `electron-download` still perform its hash validations.
+
 ### Cache location
 The location of the cache depends on the operating system, the defaults are:
 - Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`

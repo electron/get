@@ -38,3 +38,24 @@ test('Force option', (t) => {
     t.end()
   })
 })
+
+test('Disable checksum option', (t) => {
+  const cachePath = temp.mkdirSync('electron-download-')
+
+  fs.writeFileSync(path.join(cachePath, 'electron-v1.4.13-win32-ia32.zip'), 'X')
+
+  download({
+    version: '1.4.13',
+    arch: 'ia32',
+    platform: 'win32',
+    cache: cachePath,
+    quiet: true,
+    disableChecksumSafetyCheck: true
+  }, (err, zipPath) => {
+    t.error(err, 'Error should be null')
+    if (!err) {
+      t.equal(fs.readFileSync(path.join(cachePath, 'electron-v1.4.13-win32-ia32.zip'), 'utf8'), 'X')
+    }
+    t.end()
+  })
+})
