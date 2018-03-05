@@ -11,7 +11,7 @@ test('404 test', (t) => {
     platform: 'darwin',
     quiet: true
   }, (err, zipPath) => {
-    if (!err) t.fail('Download should throw an error')
+    if (!err) return t.fail('Download should throw an error')
     t.equal(fs.existsSync(zipPath), false, 'Zip path should not exist')
     t.equal(err.message, 'Failed to find Electron v0.25.1 for darwin-ia32 at https://github.com/electron/electron/releases/download/v0.25.1/electron-v0.25.1-darwin-ia32.zip', 'Error message should contain version and URL')
     t.end()
