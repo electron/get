@@ -39,8 +39,8 @@ If you don't specify `arch` or `platform` args it will use the built-in `os` mod
 
 You can also use `electron-download` to download the `chromedriver`, `ffmpeg`,
 `mksnapshot`, and symbols assets for a specific Electron release. This can be
-configured by setting the `chromedriver`, `ffmpeg`, `mksnapshot`, or
-`symbols` property to `true` in the specified options object. Only one of
+configured by setting the `chromedriver`, `ffmpeg`, `mksnapshot`, `pdb`, `dsym`,
+or `symbols` property to `true` in the specified options object. Only one of
 these options may be specified per download call.
 
 You can force a re-download of the asset and the `SHASUM` file by setting the
