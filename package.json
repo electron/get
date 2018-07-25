@@ -26,8 +26,9 @@
     "env-paths": "^1.0.0",
     "fs-extra": "^4.0.1",
     "minimist": "^1.2.0",
+    "nodeify": "^1.0.1",
     "nugget": "^2.0.1",
-    "path-exists": "^3.0.0",
+    "pify": "^3.0.0",
     "rc": "^1.2.1",
     "semver": "^5.4.1",
     "sumchecker": "^2.0.2"
