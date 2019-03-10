@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Public API download() should accept a custom downloader 1`] = `"https://github.com/electron/electron/releases/download/v2.0.3/electron-v2.0.3-platform-arch.zip"`;

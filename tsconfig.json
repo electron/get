@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": [
+      "es2017"
+    ],
+    "sourceMap": true,
+    "strict": true,
+    "outDir": "dist/cjs",
+    "types": [
+      "node",
+      "jest"
+    ]
+  },
+  "include": [
+    "src",
+    "typings"
+  ]
+}
