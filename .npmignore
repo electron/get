@@ -1,5 +1,0 @@
-.npmignore
-.travis.yml
-appveyor.yml
-test
-npm-debug.log
