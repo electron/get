@@ -1,0 +1,44 @@
+{
+  "name": "@electron/download",
+  "version": "1.0.0",
+  "description": "Utility for downloading different versions of Electron",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "repository": "https://github.com/electron/download",
+  "author": "Samuel Attard",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "test": "jest --coverage"
+  },
+  "files": [
+    "dist/*",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=8.6"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.5",
+    "@types/got": "^9.4.1",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^10.12.21",
+    "jest": "^24.3.1",
+    "lint-staged": "^8.1.3",
+    "prettier": "^1.16.4",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.1"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write \"src/**/*.ts\"",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "env-paths": "^2.1.0",
+    "fs-extra": "^6.0.1",
+    "got": "^9.6.0",
+    "sumchecker": "^2.0.2"
+  }
+}

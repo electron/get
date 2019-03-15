@@ -1,0 +1,21 @@
+build: off
+
+environment:
+  matrix:
+  - nodejs_version: "8"
+  - nodejs_version: "10"
+
+skip_tags: true
+
+cache:
+  - node_modules
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - yarn
+
+test_script:
+  - node --version
+  - yarn --version
+  - yarn build
+  - yarn test
