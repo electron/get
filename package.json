@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
+    "prepare": "npm run build",
     "test": "jest --coverage"
   },
   "files": [
