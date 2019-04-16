@@ -5,7 +5,9 @@ import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifa
 import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
-import { withTempDirectory, normalizeVersion, getArch } from './utils';
+import { withTempDirectory, normalizeVersion, getHostArch } from './utils';
+
+export { getHostArch } from './utils';
 
 /**
  * Downloads a specific version of Electron and returns an absolute path to a
@@ -21,7 +23,7 @@ export function download(
     ...options,
     version,
     platform: process.platform,
-    arch: getArch(),
+    arch: getHostArch(),
     artifactName: 'electron',
   });
 }
