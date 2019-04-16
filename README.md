@@ -7,22 +7,22 @@
 ### Simple: Downloading an Electron Binary ZIP
 
 ```js
-import { downloadElectron } from '@electron/download';
+import { download } from '@electron/download';
 
-const zipFilePath = await downloadElectron('4.0.4');
+const zipFilePath = await download('4.0.4');
 ```
 
 ### Advanced: Downloading a macOS Electron Symbol File
 
 
 ```js
-import { downloadElectron } from '@electron/download';
+import { downloadArtifact } from '@electron/download';
 
-const zipFilePath = await downloadElectron({
+const zipFilePath = await downloadArtifact({
   version: '4.0.4',
   platform: 'darwin',
-  assetName: 'electron',
-  assetSuffix: 'symbols',
+  artifactName: 'electron',
+  artifactSuffix: 'symbols',
   arch: 'x64',
 });
 ```
