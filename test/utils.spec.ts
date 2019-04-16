@@ -16,11 +16,7 @@ describe('utils', () => {
   describe('uname()', () => {
     if (process.platform !== 'win32') {
       it('should return the correct arch for your system', () => {
-        if (process.platform === 'darwin') {
-          expect(uname()).toEqual('x86_64');
-        } else {
-          expect(uname()).toEqual('x64');
-        }
+        expect(uname()).toEqual('x86_64');
       });
     }
   });
