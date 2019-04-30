@@ -23,7 +23,7 @@
     "env-paths": "^2.1.0",
     "fs-extra": "^7.0.1",
     "got": "^9.6.0",
-    "sumchecker": "^2.0.2"
+    "sumchecker": "^3.0.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.5",
