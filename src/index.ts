@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as sumchecker from 'sumchecker';
+import sumchecker from 'sumchecker';
 
 import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifact-utils';
 import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
