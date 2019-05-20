@@ -29,6 +29,9 @@ export function normalizeVersion(version: string) {
   return version;
 }
 
+/**
+ * Runs the `uname` command and returns the trimmed output.
+ */
 export function uname() {
   return childProcess
     .execSync('uname -m')
@@ -36,9 +39,19 @@ export function uname() {
     .trim();
 }
 
-export function getArch() {
-  const arch = process.arch;
+/**
+ * Generates an architecture name that would be used in an Electron or Node.js
+ * download file name, from the `process` module information.
+ */
+export function getHostArch() {
+  return getNodeArch(process.arch);
+}
 
+/**
+ * Generates an architecture name that would be used in an Electron or Node.js
+ * download file name.
+ */
+export function getNodeArch(arch: string) {
   if (arch === 'arm') {
     switch ((process.config.variables as any).arm_version) {
       case '6':

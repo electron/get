@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 
-import { normalizeVersion, uname, withTempDirectory, getArch } from '../src/utils';
+import { normalizeVersion, uname, withTempDirectory, getHostArch } from '../src/utils';
 
 describe('utils', () => {
   describe('normalizeVersion()', () => {
@@ -16,11 +16,7 @@ describe('utils', () => {
   describe('uname()', () => {
     if (process.platform !== 'win32') {
       it('should return the correct arch for your system', () => {
-        if (process.platform === 'darwin') {
-          expect(uname()).toEqual('x86_64');
-        } else {
-          expect(uname()).toEqual('x64');
-        }
+        expect(uname()).toEqual('x86_64');
       });
     }
   });
@@ -59,7 +55,7 @@ describe('utils', () => {
     });
   });
 
-  describe('getArch()', () => {
+  describe('getHostArch()', () => {
     let savedArch: string;
     let savedVariables: any;
 
@@ -79,14 +75,14 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'x64',
       });
-      expect(getArch()).toEqual('x64');
+      expect(getHostArch()).toEqual('x64');
     });
 
     it('should return process.arch on ia32', () => {
       Object.defineProperty(process, 'arch', {
         value: 'ia32',
       });
-      expect(getArch()).toEqual('ia32');
+      expect(getHostArch()).toEqual('ia32');
     });
 
     it('should return process.arch on unknown arm', () => {
@@ -94,7 +90,7 @@ describe('utils', () => {
         value: 'arm',
       });
       process.config.variables = {} as any;
-      expect(getArch()).toEqual('arm');
+      expect(getHostArch()).toEqual('arm');
     });
 
     it('should return uname on arm 6', () => {
@@ -103,7 +99,7 @@ describe('utils', () => {
           value: 'arm',
         });
         process.config.variables = { arm_version: '6' } as any;
-        expect(getArch()).toEqual(uname());
+        expect(getHostArch()).toEqual(uname());
       }
     });
 
@@ -112,7 +108,7 @@ describe('utils', () => {
         value: 'arm',
       });
       process.config.variables = { arm_version: '7' } as any;
-      expect(getArch()).toEqual('armv7l');
+      expect(getHostArch()).toEqual('armv7l');
     });
   });
 });
