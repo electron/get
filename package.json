@@ -4,7 +4,7 @@
   "description": "Utility for downloading artifacts from different versions of Electron",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
-  "repository": "https://github.com/electron/download",
+  "repository": "https://github.com/electron/get",
   "author": "Samuel Attard",
   "license": "MIT",
   "scripts": {
