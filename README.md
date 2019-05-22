@@ -1,4 +1,4 @@
-# @electron/download
+# @electron/get
 
 > Download Electron release artifacts
 
@@ -7,7 +7,7 @@
 ### Simple: Downloading an Electron Binary ZIP
 
 ```js
-import { download } from '@electron/download';
+import { download } from '@electron/get';
 
 const zipFilePath = await download('4.0.4');
 ```
@@ -16,7 +16,7 @@ const zipFilePath = await download('4.0.4');
 
 
 ```js
-import { downloadArtifact } from '@electron/download';
+import { downloadArtifact } from '@electron/get';
 
 const zipFilePath = await downloadArtifact({
   version: '4.0.4',
