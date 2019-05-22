@@ -47,5 +47,13 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "keywords": [
+    "electron",
+    "download",
+    "prebuild",
+    "get",
+    "artifact",
+    "release"
+  ]
 }
