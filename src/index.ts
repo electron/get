@@ -1,5 +1,4 @@
 import * as path from 'path';
-import sumchecker from 'sumchecker';
 
 import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifact-utils';
 import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
@@ -8,6 +7,8 @@ import { getDownloaderForSystem } from './downloader-resolver';
 import { withTempDirectory, normalizeVersion, getHostArch } from './utils';
 
 export { getHostArch } from './utils';
+
+const sumchecker: typeof import('sumchecker').default = require('sumchecker');
 
 /**
  * Downloads a specific version of Electron and returns an absolute path to a
