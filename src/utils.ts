@@ -65,3 +65,9 @@ export function getNodeArch(arch: string) {
 
   return arch;
 }
+
+export function ensureIsTruthyString<T, K extends keyof T>(obj: T, key: K) {
+  if (!obj[key] || typeof obj[key] !== 'string') {
+    throw new Error(`Expected property "${key}" to be provided as a string but it was not`);
+  }
+}
