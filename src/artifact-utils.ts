@@ -1,4 +1,5 @@
 import { ElectronArtifactDetails, MirrorOptions } from './types';
+import { ensureIsTruthyString } from './utils';
 
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
@@ -12,6 +13,9 @@ export function getArtifactFileName(
   details: ElectronArtifactDetails,
   usage: FileNameUse = FileNameUse.LOCAL,
 ) {
+  ensureIsTruthyString(details, 'artifactName');
+  ensureIsTruthyString(details, 'version');
+
   if (details.isGeneric) {
     // When downloading we have to use the artifact name directly as that it was is stored in the release on GitHub
     if (usage === FileNameUse.REMOTE) {
@@ -21,6 +25,8 @@ export function getArtifactFileName(
     return `${details.version}-${details.artifactName}`;
   }
 
+  ensureIsTruthyString(details, 'platform');
+  ensureIsTruthyString(details, 'arch');
   return `${[details.artifactName, details.version, details.platform, details.arch].join('-')}.zip`;
 }
 

@@ -4,7 +4,7 @@ import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifa
 import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
-import { withTempDirectory, normalizeVersion, getHostArch } from './utils';
+import { withTempDirectory, normalizeVersion, getHostArch, ensureIsTruthyString } from './utils';
 
 export { getHostArch } from './utils';
 
@@ -36,9 +36,10 @@ export function download(
  * @param artifactDetails The information required to download the artifact
  */
 export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails): Promise<string> {
-  const artifactDetails = {
+  const artifactDetails: ElectronArtifactDetails = {
     ..._artifactDetails,
   };
+  ensureIsTruthyString(artifactDetails, 'version');
   artifactDetails.version = normalizeVersion(artifactDetails.version);
 
   const fileName = getArtifactFileName(artifactDetails);
