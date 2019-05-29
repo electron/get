@@ -14,7 +14,7 @@ const sumchecker: typeof import('sumchecker').default = require('sumchecker');
  * Downloads a specific version of Electron and returns an absolute path to a
  * ZIP file.
  *
- * @param version The version of Electron you want to download
+ * @param version - The version of Electron you want to download
  */
 export function download(
   version: string,
@@ -33,7 +33,7 @@ export function download(
  * Downloads an artifact from an Electron release and returns an absolute path
  * to the downloaded file.
  *
- * @param artifactDetails The information required to download the artifact
+ * @param artifactDetails - The information required to download the artifact
  */
 export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails): Promise<string> {
   const artifactDetails: ElectronArtifactDetails = {

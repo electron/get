@@ -5,6 +5,9 @@ import * as path from 'path';
 import { Downloader } from './Downloader';
 
 export class GotDownloader implements Downloader<any> {
+  /**
+   * @param options - see [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
+   */
   async download(url: string, targetFilePath: string, options?: any) {
     await fs.mkdirp(path.dirname(targetFilePath));
     const writeStream = fs.createWriteStream(targetFilePath);
