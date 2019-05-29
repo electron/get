@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "env-paths": "^2.1.0",
-    "fs-extra": "^8.0.1",
+    "fs-extra": "^7.0.1",
     "got": "^9.6.0",
     "sumchecker": "^3.0.0"
   },
