@@ -40,3 +40,7 @@ locations are:
 * Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
 * MacOS: `~/Library/Caches/electron/`
 * Windows: `%LOCALAPPDATA%/electron/Cache` or `~/AppData/Local/electron/Cache/`
+
+By default, the module uses [`got`](https://github.com/sindresorhus/got) as the
+downloader. As a result, you can use the same [options](https://github.com/sindresorhus/got#options)
+via `downloadOptions`.
