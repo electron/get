@@ -6,18 +6,22 @@
 
 ### Simple: Downloading an Electron Binary ZIP
 
-```js
+```typescript
 import { download } from '@electron/get';
 
+// NB: Use this syntax within an async function, Node does not have support for
+//     top-level await as of Node 12.
 const zipFilePath = await download('4.0.4');
 ```
 
 ### Advanced: Downloading a macOS Electron Symbol File
 
 
-```js
+```typescript
 import { downloadArtifact } from '@electron/get';
 
+// NB: Use this syntax within an async function, Node does not have support for
+//     top-level await as of Node 12.
 const zipFilePath = await downloadArtifact({
   version: '4.0.4',
   platform: 'darwin',
