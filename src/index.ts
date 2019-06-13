@@ -1,3 +1,4 @@
+import debug from 'debug';
 import * as path from 'path';
 
 import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifact-utils';
@@ -8,6 +9,7 @@ import { withTempDirectory, normalizeVersion, getHostArch, ensureIsTruthyString 
 
 export { getHostArch } from './utils';
 
+const d = debug('@electron/get:index');
 const sumchecker: typeof import('sumchecker').default = require('sumchecker');
 
 /**
@@ -47,9 +49,13 @@ export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails
 
   // Do not check if the file exists in the cache when force === true
   if (!artifactDetails.force) {
+    d(`Checking the cache for ${fileName}`);
     const cachedPath = await cache.getPathForFileInCache(fileName);
 
-    if (cachedPath !== null) {
+    if (cachedPath === null) {
+      d('Cache miss');
+    } else {
+      d('Cache hit');
       return cachedPath;
     }
   }
@@ -61,11 +67,13 @@ export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails
     );
 
     const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
-    await downloader.download(
-      getArtifactRemoteURL(artifactDetails),
-      tempDownloadPath,
-      artifactDetails.downloadOptions,
+    const url = getArtifactRemoteURL(artifactDetails);
+    d(
+      `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
+        artifactDetails.downloadOptions,
+      )}`,
     );
+    await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
 
     // Don't try to verify the hash of the hash file itself
     if (

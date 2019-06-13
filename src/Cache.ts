@@ -1,6 +1,9 @@
+import debug from 'debug';
 import envPaths from 'env-paths';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+
+const d = debug('@electron/get:cache');
 
 const defaultCacheRoot = envPaths('electron', {
   suffix: '',
@@ -24,7 +27,9 @@ export class Cache {
 
   public async putFileInCache(currentPath: string, fileName: string): Promise<string> {
     const cachePath = this.getCachePath(fileName);
+    d(`Moving ${currentPath} to ${cachePath}`);
     if (await fs.pathExists(cachePath)) {
+      d('* Replacing existing file');
       await fs.remove(cachePath);
     }
 

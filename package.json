@@ -21,6 +21,7 @@
     "node": ">=8.6"
   },
   "dependencies": {
+    "debug": "^4.1.1",
     "env-paths": "^2.2.0",
     "fs-extra": "^7.0.1",
     "got": "^9.6.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@continuous-auth/semantic-release-npm": "^1.0.3",
+    "@types/debug": "^4.1.4",
     "@types/fs-extra": "^7.0.0",
     "@types/got": "^9.4.4",
     "@types/jest": "^24.0.13",
