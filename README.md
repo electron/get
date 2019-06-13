@@ -2,6 +2,8 @@
 
 > Download Electron release artifacts
 
+[![CircleCI](https://circleci.com/gh/electron/get.svg?style=svg)](https://circleci.com/gh/electron/get)
+
 ## Usage
 
 ### Simple: Downloading an Electron Binary ZIP
