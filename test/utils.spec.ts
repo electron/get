@@ -1,6 +1,12 @@
 import * as fs from 'fs-extra';
 
-import { normalizeVersion, uname, withTempDirectory, getHostArch } from '../src/utils';
+import {
+  normalizeVersion,
+  uname,
+  withTempDirectory,
+  getHostArch,
+  ensureIsTruthyString,
+} from '../src/utils';
 
 describe('utils', () => {
   describe('normalizeVersion()', () => {
@@ -109,6 +115,16 @@ describe('utils', () => {
       });
       process.config.variables = { arm_version: '7' } as any;
       expect(getHostArch()).toEqual('armv7l');
+    });
+  });
+
+  describe('ensureIsTruthyString()', () => {
+    it('should not throw for a valid string', () => {
+      expect(() => ensureIsTruthyString({ a: 'string' }, 'a')).not.toThrow();
+    });
+
+    it('should throw for an invalid string', () => {
+      expect(() => ensureIsTruthyString({ a: 1234 }, 'a')).toThrow();
     });
   });
 });

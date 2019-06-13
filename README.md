@@ -2,22 +2,28 @@
 
 > Download Electron release artifacts
 
+[![CircleCI](https://circleci.com/gh/electron/get.svg?style=svg)](https://circleci.com/gh/electron/get)
+
 ## Usage
 
 ### Simple: Downloading an Electron Binary ZIP
 
-```js
+```typescript
 import { download } from '@electron/get';
 
+// NB: Use this syntax within an async function, Node does not have support for
+//     top-level await as of Node 12.
 const zipFilePath = await download('4.0.4');
 ```
 
 ### Advanced: Downloading a macOS Electron Symbol File
 
 
-```js
+```typescript
 import { downloadArtifact } from '@electron/get';
 
+// NB: Use this syntax within an async function, Node does not have support for
+//     top-level await as of Node 12.
 const zipFilePath = await downloadArtifact({
   version: '4.0.4',
   platform: 'darwin',
@@ -36,3 +42,7 @@ locations are:
 * Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
 * MacOS: `~/Library/Caches/electron/`
 * Windows: `%LOCALAPPDATA%/electron/Cache` or `~/AppData/Local/electron/Cache/`
+
+By default, the module uses [`got`](https://github.com/sindresorhus/got) as the
+downloader. As a result, you can use the same [options](https://github.com/sindresorhus/got#options)
+via `downloadOptions`.

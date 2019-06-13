@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
+    "build:docs": "typedoc --out docs",
     "prepublishOnly": "npm run build",
     "test": "prettier --check \"src/**/*.ts\" && jest --coverage"
   },
@@ -21,7 +22,7 @@
   },
   "dependencies": {
     "debug": "^4.1.1",
-    "env-paths": "^2.1.0",
+    "env-paths": "^2.2.0",
     "fs-extra": "^7.0.1",
     "got": "^9.6.0",
     "sumchecker": "^3.0.0"
@@ -39,6 +40,7 @@
     "prettier": "^1.17.1",
     "semantic-release": "^15.13.12",
     "ts-jest": "^24.0.0",
+    "typedoc": "^0.14.2",
     "typescript": "^3.4.5"
   },
   "lint-staged": {
