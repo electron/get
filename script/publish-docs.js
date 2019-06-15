@@ -8,7 +8,7 @@ const docsDir = path.resolve(__dirname, '..', 'docs');
 ghPages.publish(
   docsDir,
   {
-    repo: `https://${process.env.GITHUB_TOKEN}@github.com/electron/get.git`,
+    repo: `https://${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`,
     silent: true,
   },
   err => {
