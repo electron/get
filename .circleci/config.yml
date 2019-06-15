@@ -31,15 +31,6 @@ jobs:
       xcode: "10.2.0"
     <<: *steps-test
 
-  publish-docs:
-    docker:
-      - image: circleci/node:12
-    steps:
-      - checkout
-      - *step-restore-cache
-      - run: yarn
-      - run: yarn build:docs
-      - run: yarn publish:docs
   release:
     docker:
       - image: circleci/node:10.15
@@ -56,15 +47,6 @@ workflows:
       - test-linux-8
       - test-linux-10
       - test-mac
-      - publish-docs:
-          requires:
-            - test-linux-8
-            - test-linux-10
-            - test-mac
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
       - release:
           requires:
             - test-linux-8
