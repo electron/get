@@ -6,6 +6,7 @@ import {
   withTempDirectory,
   getHostArch,
   ensureIsTruthyString,
+  isOfficialLinuxIA32Download,
 } from '../src/utils';
 
 describe('utils', () => {
@@ -125,6 +126,27 @@ describe('utils', () => {
 
     it('should throw for an invalid string', () => {
       expect(() => ensureIsTruthyString({ a: 1234 }, 'a')).toThrow();
+    });
+  });
+
+  describe('isOfficialLinuxIA32Download()', () => {
+    it('should be true if an official linux/ia32 download with correct version specified', () => {
+      expect(isOfficialLinuxIA32Download('linux', 'ia32', 'v4.0.0')).toEqual(true);
+    });
+
+    it('should be false if mirrorOptions specified', () => {
+      expect(
+        isOfficialLinuxIA32Download('linux', 'ia32', 'v4.0.0', { mirror: 'mymirror' }),
+      ).toEqual(false);
+    });
+
+    it('should be false if too early version specified', () => {
+      expect(isOfficialLinuxIA32Download('linux', 'ia32', 'v3.0.0')).toEqual(false);
+    });
+
+    it('should be false if wrong platform/arch specified', () => {
+      expect(isOfficialLinuxIA32Download('win32', 'ia32', 'v4.0.0')).toEqual(false);
+      expect(isOfficialLinuxIA32Download('linux', 'x64', 'v4.0.0')).toEqual(false);
     });
   });
 });

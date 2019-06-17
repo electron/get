@@ -71,3 +71,17 @@ export function ensureIsTruthyString<T, K extends keyof T>(obj: T, key: K) {
     throw new Error(`Expected property "${key}" to be provided as a string but it was not`);
   }
 }
+
+export function isOfficialLinuxIA32Download(
+  platform: string,
+  arch: string,
+  version: string,
+  mirrorOptions?: object,
+) {
+  return (
+    platform === 'linux' &&
+    arch === 'ia32' &&
+    Number(version.slice(1).split('.')[0]) >= 4 &&
+    typeof mirrorOptions === 'undefined'
+  );
+}

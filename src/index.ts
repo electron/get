@@ -5,7 +5,13 @@ import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifa
 import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
-import { withTempDirectory, normalizeVersion, getHostArch, ensureIsTruthyString } from './utils';
+import {
+  withTempDirectory,
+  normalizeVersion,
+  getHostArch,
+  ensureIsTruthyString,
+  isOfficialLinuxIA32Download,
+} from './utils';
 
 export { getHostArch } from './utils';
 
@@ -58,6 +64,19 @@ export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails
       d('Cache hit');
       return cachedPath;
     }
+  }
+
+  if (
+    !artifactDetails.isGeneric &&
+    isOfficialLinuxIA32Download(
+      artifactDetails.platform,
+      artifactDetails.arch,
+      artifactDetails.version,
+      artifactDetails.mirrorOptions,
+    )
+  ) {
+    console.warn('Official Linux/ia32 support is deprecated.');
+    console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
   }
 
   return await withTempDirectory(async tempFolder => {
