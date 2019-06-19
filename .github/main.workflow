@@ -4,7 +4,6 @@ workflow "Build & deploy docs" {
 }
 
 action "Only Master" {
-  needs = "Test"
   uses = "actions/bin/filter@master"
   args = "branch master"
 }
