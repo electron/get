@@ -4,9 +4,9 @@ workflow "Build & deploy docs" {
 }
 
 action "Only Master" {
-  uses = "actions/npm@master"
-  runs = "node"
-  args = ["-e", "console.log(process.env.GITHUB_REF); process.exit(78)"]
+  needs = "Test"
+  uses = "actions/bin/filter@master"
+  args = "branch master"
 }
 
 action "Install Dependencies" {
