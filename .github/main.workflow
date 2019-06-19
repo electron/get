@@ -3,10 +3,16 @@ workflow "Build & deploy docs" {
   resolves = ["Publish Documentation"]
 }
 
+action "Publish Docs (master branch only)" {
+  uses = "actions/bin/filter@master"
+  args = "branch master"
+}
+
 action "Install Dependencies" {
   uses = "actions/npm@master"
   runs = "yarn"
   args = "install"
+  needs = ["Publish Docs (master branch only)"]
 }
 
 action "Build Documentation" {
