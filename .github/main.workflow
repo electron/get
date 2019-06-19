@@ -3,8 +3,15 @@ workflow "Build & deploy docs" {
   resolves = ["Publish Documentation"]
 }
 
+action "Only Master" {
+  uses = "actions/npm@master"
+  runs = "node"
+  args = "-e \"console.log(process.env.GITHUB_REF); process.exit(78)\""
+}
+
 action "Install Dependencies" {
   uses = "actions/npm@master"
+  needs = ["Only Master"]
   runs = "yarn"
   args = "install"
 }
