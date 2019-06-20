@@ -4,11 +4,12 @@ const ghPages = require('gh-pages');
 const path = require('path');
 
 const docsDir = path.resolve(__dirname, '..', 'docs');
+const repository = process.env.GITHUB_REPOSITORY || '@electron/get';
 
 ghPages.publish(
   docsDir,
   {
-    repo: `https://${process.env.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git`,
+    repo: `https://${process.env.GITHUB_TOKEN}@github.com/${repository}.git`,
     silent: true,
   },
   err => {
