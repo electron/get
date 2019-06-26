@@ -11,7 +11,7 @@
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "typedoc --plugin typedoc-plugin-nojekyll --out docs",
     "prepublishOnly": "npm run build",
-    "publish:docs": "node script/publish-docs.js",
+    "publish:docs": "gh-pages-clean && node script/publish-docs.js",
     "test": "prettier --check \"src/**/*.ts\" && jest --coverage"
   },
   "files": [
