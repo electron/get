@@ -107,6 +107,7 @@ export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails
         force: artifactDetails.force,
         downloadOptions: artifactDetails.downloadOptions,
         downloader: artifactDetails.downloader,
+        mirrorOptions: artifactDetails.mirrorOptions,
       });
 
       await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
