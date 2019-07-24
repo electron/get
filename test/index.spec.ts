@@ -120,6 +120,13 @@ describe('Public API', () => {
       expect(await fs.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
     });
 
+    it('should work default platform/arch', async () => {
+      await downloadArtifact({
+        version: '2.0.3',
+        artifactName: 'electron',
+      });
+    });
+
     it('should work for chromedriver', async () => {
       const driverPath = await downloadArtifact({
         cacheRoot,

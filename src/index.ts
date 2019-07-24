@@ -2,7 +2,11 @@ import debug from 'debug';
 import * as path from 'path';
 
 import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifact-utils';
-import { ElectronArtifactDetails, ElectronDownloadRequestOptions } from './types';
+import {
+  ElectronArtifactDetails,
+  ElectronDownloadRequestOptions,
+  ElectronPlatformArtifactDetailsWithDefaults,
+} from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
 import {
@@ -44,10 +48,18 @@ export function download(
  *
  * @param artifactDetails - The information required to download the artifact
  */
-export async function downloadArtifact(_artifactDetails: ElectronArtifactDetails): Promise<string> {
-  const artifactDetails: ElectronArtifactDetails = {
-    ..._artifactDetails,
-  };
+export async function downloadArtifact(
+  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
+): Promise<string> {
+  const artifactDetails: ElectronArtifactDetails = _artifactDetails.isGeneric
+    ? {
+        ..._artifactDetails,
+      }
+    : {
+        platform: process.platform,
+        arch: getHostArch(),
+        ..._artifactDetails,
+      };
   ensureIsTruthyString(artifactDetails, 'version');
   artifactDetails.version = normalizeVersion(artifactDetails.version);
 
