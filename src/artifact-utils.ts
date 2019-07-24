@@ -27,7 +27,13 @@ export function getArtifactFileName(
 
   ensureIsTruthyString(details, 'platform');
   ensureIsTruthyString(details, 'arch');
-  return `${[details.artifactName, details.version, details.platform, details.arch].join('-')}.zip`;
+  return `${[
+    details.artifactName,
+    details.version,
+    details.platform,
+    details.arch,
+    ...(details.artifactSuffix ? [details.artifactSuffix] : []),
+  ].join('-')}.zip`;
 }
 
 function mirrorVar(name: keyof MirrorOptions, options: MirrorOptions, defaultValue: string) {

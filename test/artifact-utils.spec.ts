@@ -36,5 +36,18 @@ describe('artifact-utils', () => {
         }),
       ).toMatchInlineSnapshot(`"chromedriver-v1.0.1-android-ia32.zip"`);
     });
+
+    it('should return the correct hypenated artifact names for artifacts with a suffix', () => {
+      expect(
+        getArtifactFileName({
+          isGeneric: false,
+          artifactName: 'electron',
+          version: 'v1.0.1',
+          platform: 'darwin',
+          arch: 'x64',
+          artifactSuffix: 'symbols',
+        }),
+      ).toMatchInlineSnapshot(`"electron-v1.0.1-darwin-x64-symbols.zip"`);
+    });
   });
 });
