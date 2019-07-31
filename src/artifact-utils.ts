@@ -4,29 +4,17 @@ import { ensureIsTruthyString } from './utils';
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
 
-export enum FileNameUse {
-  LOCAL,
-  REMOTE,
-}
-
-export function getArtifactFileName(
-  details: ElectronArtifactDetails,
-  usage: FileNameUse = FileNameUse.LOCAL,
-) {
+export function getArtifactFileName(details: ElectronArtifactDetails) {
   ensureIsTruthyString(details, 'artifactName');
-  ensureIsTruthyString(details, 'version');
 
   if (details.isGeneric) {
-    // When downloading we have to use the artifact name directly as that it was is stored in the release on GitHub
-    if (usage === FileNameUse.REMOTE) {
-      return details.artifactName;
-    }
-    // When caching / using on your local disk we want the generic artifact to be versioned
-    return `${details.version}-${details.artifactName}`;
+    return details.artifactName;
   }
 
-  ensureIsTruthyString(details, 'platform');
   ensureIsTruthyString(details, 'arch');
+  ensureIsTruthyString(details, 'platform');
+  ensureIsTruthyString(details, 'version');
+
   return `${[
     details.artifactName,
     details.version,
@@ -57,7 +45,7 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
     base = mirrorVar('nightly_mirror', opts, NIGHTLY_BASE_URL);
   }
   const path = mirrorVar('customDir', opts, details.version);
-  const file = mirrorVar('customFilename', opts, getArtifactFileName(details, FileNameUse.REMOTE));
+  const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
   return `${base}${path}/${file}`;
 }

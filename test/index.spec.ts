@@ -116,7 +116,7 @@ describe('Public API', () => {
         artifactName: 'electron.d.ts',
       });
       expect(await fs.pathExists(dtsPath)).toEqual(true);
-      expect(path.basename(dtsPath)).toEqual('v2.0.9-electron.d.ts');
+      expect(path.basename(dtsPath)).toEqual('electron.d.ts');
       expect(await fs.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
     });
 
