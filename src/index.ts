@@ -1,7 +1,7 @@
 import debug from 'debug';
 import * as path from 'path';
 
-import { getArtifactFileName, getArtifactRemoteURL, FileNameUse } from './artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
 import {
   ElectronArtifactDetails,
   ElectronDownloadRequestOptions,
@@ -64,12 +64,13 @@ export async function downloadArtifact(
   artifactDetails.version = normalizeVersion(artifactDetails.version);
 
   const fileName = getArtifactFileName(artifactDetails);
+  const url = getArtifactRemoteURL(artifactDetails);
   const cache = new Cache(artifactDetails.cacheRoot);
 
   // Do not check if the file exists in the cache when force === true
   if (!artifactDetails.force) {
-    d(`Checking the cache for ${fileName}`);
-    const cachedPath = await cache.getPathForFileInCache(fileName);
+    d(`Checking the cache for ${fileName} (${url})`);
+    const cachedPath = await cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
       d('Cache miss');
@@ -93,13 +94,9 @@ export async function downloadArtifact(
   }
 
   return await withTempDirectory(async tempFolder => {
-    const tempDownloadPath = path.resolve(
-      tempFolder,
-      getArtifactFileName(artifactDetails, FileNameUse.REMOTE),
-    );
+    const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
 
     const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
-    const url = getArtifactRemoteURL(artifactDetails);
     d(
       `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
         artifactDetails.downloadOptions,
@@ -127,6 +124,6 @@ export async function downloadArtifact(
       ]);
     }
 
-    return await cache.putFileInCache(tempDownloadPath, fileName);
+    return await cache.putFileInCache(url, tempDownloadPath, fileName);
   });
 }
