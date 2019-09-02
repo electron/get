@@ -1,4 +1,4 @@
-import { getArtifactFileName } from '../src/artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL } from '../src/artifact-utils';
 
 describe('artifact-utils', () => {
   describe('getArtifactFileName()', () => {
@@ -35,6 +35,84 @@ describe('artifact-utils', () => {
           artifactSuffix: 'symbols',
         }),
       ).toMatchInlineSnapshot(`"electron-v1.0.1-darwin-x64-symbols.zip"`);
+    });
+  });
+
+  describe('getArtifactRemoteURL', () => {
+    it('should generate a default URL correctly', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          platform: 'linux',
+          version: 'v6.0.0',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://github.com/electron/electron/releases/download/v6.0.0/electron-v6.0.0-linux-x64.zip"`,
+      );
+    });
+
+    it('should replace the base URL when mirrorOptions.mirror is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            mirror: 'https://mirror.example.com/',
+          },
+          platform: 'linux',
+          version: 'v6.0.0',
+        }),
+      ).toMatchInlineSnapshot(`"https://mirror.example.com/v6.0.0/electron-v6.0.0-linux-x64.zip"`);
+    });
+
+    it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            mirror: 'https://mirror.example.com/',
+            nightly_mirror: 'https://nightly.example.com/',
+          },
+          platform: 'linux',
+          version: 'v6.0.0-nightly',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://nightly.example.com/v6.0.0-nightly/electron-v6.0.0-nightly-linux-x64.zip"`,
+      );
+    });
+
+    it('should replace the version dir when mirrorOptions.customDir is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            customDir: 'all',
+          },
+          platform: 'linux',
+          version: 'v6.0.0',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://github.com/electron/electron/releases/download/all/electron-v6.0.0-linux-x64.zip"`,
+      );
+    });
+
+    it('should replace the filename when mirrorOptions.customFilename is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            customFilename: 'custom-built-electron.zip',
+          },
+          platform: 'linux',
+          version: 'v6.0.0',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://github.com/electron/electron/releases/download/v6.0.0/custom-built-electron.zip"`,
+      );
     });
   });
 });
