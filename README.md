@@ -33,6 +33,45 @@ const zipFilePath = await downloadArtifact({
 });
 ```
 
+### Specifying a mirror
+
+Anatomy of a download URL, in terms of `mirrorOptions`:
+
+```
+https://github.com/electron/electron/releases/download/v4.0.4/electron-v4.0.4-linux-x64.zip
+|                                                     |       |                           |
+-------------------------------------------------------       -----------------------------
+                        |                                                   |
+              mirror / nightly_mirror                  |    |         customFilename
+                                                       ------
+                                                         ||
+                                                      customDir
+```
+
+Example:
+
+```typescript
+import { download } from '@electron/get';
+
+const zipFilePath = await download('4.0.4', {
+  mirrorOptions: {
+    mirror: 'https://mirror.example.com/electron/',
+    customDir: 'custom',
+    customFilename: 'unofficial-electron-linux.zip'
+  }
+});
+// Will download from https://mirror.example.com/electron/custom/unofficial-electron-linux.zip
+
+const nightlyZipFilePath = await download('8.0.0-nightly.20190901', {
+  mirrorOptions: {
+    nightly_mirror: 'https://nightly.example.com/',
+    customDir: 'nightlies',
+    customFilename: 'nightly-linux.zip'
+  }
+});
+// Will download from https://nightly.example.com/nightlies/nightly-linux.zip
+```
+
 ## How It Works
 
 This module downloads Electron to a known place on your system and caches it
