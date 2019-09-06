@@ -9,6 +9,7 @@ import {
 } from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
+import { initializeProxy } from './proxy';
 import {
   withTempDirectory,
   normalizeVersion,
