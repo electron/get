@@ -18,6 +18,7 @@ import {
 } from './utils';
 
 export { getHostArch } from './utils';
+export { initializeProxy } from './proxy';
 export * from './types';
 
 const d = debug('@electron/get:index');
