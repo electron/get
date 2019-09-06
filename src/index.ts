@@ -24,6 +24,10 @@ export * from './types';
 const d = debug('@electron/get:index');
 const sumchecker: typeof import('sumchecker').default = require('sumchecker');
 
+if (process.env.ELECTRON_GET_USE_PROXY) {
+  initializeProxy();
+}
+
 /**
  * Downloads a specific version of Electron and returns an absolute path to a
  * ZIP file.
