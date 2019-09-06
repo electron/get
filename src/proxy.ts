@@ -1,6 +1,6 @@
 import * as debug from 'debug';
 
-const d = debug('@electron/got:proxy');
+const d = debug('@electron/get:proxy');
 
 /**
  * Initializes a third-party proxy module for HTTP(S) requests.
