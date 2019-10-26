@@ -85,3 +85,12 @@ locations are:
 By default, the module uses [`got`](https://github.com/sindresorhus/got) as the
 downloader. As a result, you can use the same [options](https://github.com/sindresorhus/got#options)
 via `downloadOptions`.
+
+### Proxies
+
+Downstream packages should utilize the `initializeProxy` function to add HTTP(S) proxy support. A
+different proxy module is used, depending on the version of Node in use, and as such, there are
+slightly different ways to set the proxy environment variables. For Node 10 and above,
+[`global-agent`](https://github.com/gajus/global-agent#environment-variables) is used. Otherwise,
+[`global-tunnel-ng`](https://github.com/np-maintain/global-tunnel#auto-config) is used. Refer to the
+appropriate linked module to determine how to configure proxy support.

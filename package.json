@@ -66,5 +66,9 @@
     "get",
     "artifact",
     "release"
-  ]
+  ],
+  "optionalDependencies": {
+    "global-agent": "^2.0.2",
+    "global-tunnel-ng": "^2.7.1"
+  }
 }

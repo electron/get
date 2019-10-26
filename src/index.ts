@@ -9,6 +9,7 @@ import {
 } from './types';
 import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
+import { initializeProxy } from './proxy';
 import {
   withTempDirectory,
   normalizeVersion,
@@ -18,10 +19,15 @@ import {
 } from './utils';
 
 export { getHostArch } from './utils';
+export { initializeProxy } from './proxy';
 export * from './types';
 
 const d = debug('@electron/get:index');
 const sumchecker: typeof import('sumchecker').default = require('sumchecker');
+
+if (process.env.ELECTRON_GET_USE_PROXY) {
+  initializeProxy();
+}
 
 /**
  * Downloads a specific version of Electron and returns an absolute path to a
