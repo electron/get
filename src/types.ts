@@ -60,6 +60,11 @@ export interface ElectronDownloadRequestOptions {
    * built-in [[GotDownloader]].
    */
   downloader?: Downloader<any>;
+  /**
+   * A temporary directory for downloads.
+   * It is used before artifacts are put into cache.
+   */
+  tempDirectory?: string;
 }
 
 export type ElectronPlatformArtifactDetails = {

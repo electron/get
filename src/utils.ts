@@ -3,23 +3,30 @@ import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 
-export async function withTempDirectory<T>(fn: (directory: string) => Promise<T>): Promise<T> {
-  const directory = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-'));
-
+async function useAndRemoveDirectory<T>(
+  directory: string,
+  fn: (directory: string) => Promise<T>,
+): Promise<T> {
   let result: T;
   try {
     result = await fn(directory);
-  } catch (err) {
+  } finally {
     await fs.remove(directory);
-    throw err;
-  }
-
-  try {
-    await fs.remove(directory);
-  } catch {
-    // Ignore error, it's just a temp dir
   }
   return result;
+}
+
+export async function withTempDirectoryIn<T>(
+  parentDirectory: string = os.tmpdir(),
+  fn: (directory: string) => Promise<T>,
+): Promise<T> {
+  const tempDirectoryPrefix = 'electron-download-';
+  const tempDirectory = await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
+  return useAndRemoveDirectory(tempDirectory, fn);
+}
+
+export async function withTempDirectory<T>(fn: (directory: string) => Promise<T>): Promise<T> {
+  return withTempDirectoryIn(undefined, fn);
 }
 
 export function normalizeVersion(version: string) {

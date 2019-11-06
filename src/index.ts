@@ -11,7 +11,7 @@ import { Cache } from './Cache';
 import { getDownloaderForSystem } from './downloader-resolver';
 import { initializeProxy } from './proxy';
 import {
-  withTempDirectory,
+  withTempDirectoryIn,
   normalizeVersion,
   getHostArch,
   ensureIsTruthyString,
@@ -99,7 +99,7 @@ export async function downloadArtifact(
     console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
   }
 
-  return await withTempDirectory(async tempFolder => {
+  return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
     const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
 
     const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
