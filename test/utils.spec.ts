@@ -97,7 +97,7 @@ describe('utils', () => {
         value: 'arm',
       });
       process.config.variables = {} as any;
-      expect(getHostArch()).toEqual('arm');
+      expect(getHostArch()).toEqual('armv7l');
     });
 
     it('should return uname on arm 6', () => {
