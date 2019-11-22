@@ -64,9 +64,8 @@ export function getNodeArch(arch: string) {
       case '6':
         return uname();
       case '7':
-        return 'armv7l';
       default:
-        break;
+        return 'armv7l';
     }
   }
 
