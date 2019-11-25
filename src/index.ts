@@ -1,5 +1,6 @@
 import debug from 'debug';
 import * as path from 'path';
+import * as sumchecker from 'sumchecker';
 
 import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
 import {
@@ -23,7 +24,6 @@ export { initializeProxy } from './proxy';
 export * from './types';
 
 const d = debug('@electron/get:index');
-const sumchecker: typeof import('sumchecker').default = require('sumchecker');
 
 if (process.env.ELECTRON_GET_USE_PROXY) {
   initializeProxy();
