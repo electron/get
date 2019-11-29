@@ -18,6 +18,24 @@ describe('utils', () => {
     it('should auto prefix a version with a v if it does not already start with a v', () => {
       expect(normalizeVersion('3.2.1')).toEqual('v3.2.1');
     });
+
+    describe('with ELECTRON_GET_NO_V_PREFIX set', () => {
+      beforeEach(() => {
+        process.env.ELECTRON_GET_NO_V_PREFIX = '1';
+      });
+
+      afterEach(() => {
+        delete process.env.ELECTRON_GET_NO_V_PREFIX;
+      });
+
+      it('should do nothing if the version does not start with a v', () => {
+        expect(normalizeVersion('3.2.1')).toEqual('3.2.1');
+      });
+
+      it('should remove the v prefix if the version starts with a v', () => {
+        expect(normalizeVersion('v1.2.3')).toEqual('1.2.3');
+      });
+    });
   });
 
   describe('uname()', () => {

@@ -72,6 +72,10 @@ const nightlyZipFilePath = await download('8.0.0-nightly.20190901', {
 // Will download from https://nightly.example.com/nightlies/nightly-linux.zip
 ```
 
+**Note:** If your mirror uses directories in the format `1.2.3` instead of `v.1.2.3` you
+should set `ELECTRON_GET_NO_V_PREFIX=1` or `npm config set electron_get_no_v_prefix 1`. Notably
+the `npm.taobao.org` mirror requires that you use this option.
+
 ## How It Works
 
 This module downloads Electron to a known place on your system and caches it

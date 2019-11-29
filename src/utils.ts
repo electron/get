@@ -30,9 +30,12 @@ export async function withTempDirectory<T>(fn: (directory: string) => Promise<T>
 }
 
 export function normalizeVersion(version: string) {
-  if (!version.startsWith('v')) {
-    return `v${version}`;
+  if (process.env.ELECTRON_GET_NO_V_PREFIX || process.env.npm_config_electron_get_no_v_prefix) {
+    if (version.startsWith('v')) return version.substr(1);
+    return version;
   }
+
+  if (!version.startsWith('v')) return `v${version}`;
   return version;
 }
 
