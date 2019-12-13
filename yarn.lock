@@ -146,19 +146,19 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@continuous-auth/client@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@continuous-auth/client/-/client-1.0.3.tgz#ebfe2ad4d90dddb707527f17bf9d7667949309c9"
-  integrity sha512-zDRkM+cpXq6VMsRAitUtTLuWMruDGwHHVr3J/46hBM51Bv9JzssziuUVD0lVa+t0D2TsJG4CYV3LqLeTi8Ezgw==
+"@continuous-auth/client@^1.1.0":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@continuous-auth/client/-/client-1.2.3.tgz#2c99879c1e40b3cc3421286b355303b3fef49e48"
+  integrity sha512-5Fgq6KOdTp9ZoMme/Xirk2GLEOgN5iOgFdVofA5eXgqcIG+JPz8lQceH7r6BBxkppvxwQfnIuEqKEtJqysQUog==
   dependencies:
     axios "^0.18.0"
 
-"@continuous-auth/semantic-release-npm@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@continuous-auth/semantic-release-npm/-/semantic-release-npm-1.0.3.tgz#8939e7c7c52aac90d191ca467a484f9040b3e077"
-  integrity sha512-Xq2Ycnu4XgSD6ezeA65meRiYQuJGIpJsR8Aoauga7S+vkLcKWn/P43FadykXIba5w8siZRgCutu1IAwFF+n2+Q==
+"@continuous-auth/semantic-release-npm@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@continuous-auth/semantic-release-npm/-/semantic-release-npm-2.0.0.tgz#3813b9bdf6f4b86df2ea018ae10c8a518f8b6ae9"
+  integrity sha512-NEFIgTcNZf3myZva8swBiNs71cQrEsXd+BJhExW3jIrxYVhSoQWxP0IYzEB7qC5CL1zJ7FtHeNiwwjI9a3beAA==
   dependencies:
-    "@continuous-auth/client" "^1.0.3"
+    "@continuous-auth/client" "^1.1.0"
     "@semantic-release/error" "^2.2.0"
     aggregate-error "^2.0.0"
     execa "^1.0.0"
