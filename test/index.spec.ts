@@ -127,6 +127,22 @@ describe('Public API', () => {
       });
     });
 
+    it('should work for falsy platform/arch', async () => {
+      const path1 = await downloadArtifact({
+        version: '2.0.3',
+        artifactName: 'electron',
+      });
+
+      const path2 = await downloadArtifact({
+        version: '2.0.3',
+        artifactName: 'electron',
+        platform: undefined,
+        arch: undefined,
+      });
+
+      expect(path1).toEqual(path2);
+    });
+
     it('should work for chromedriver', async () => {
       const driverPath = await downloadArtifact({
         cacheRoot,

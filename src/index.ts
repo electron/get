@@ -62,9 +62,9 @@ export async function downloadArtifact(
         ..._artifactDetails,
       }
     : {
-        platform: process.platform,
-        arch: getHostArch(),
         ..._artifactDetails,
+        platform: _artifactDetails.platform || process.platform,
+        arch: _artifactDetails.arch || getHostArch(),
       };
   ensureIsTruthyString(artifactDetails, 'version');
   artifactDetails.version = normalizeVersion(artifactDetails.version);
