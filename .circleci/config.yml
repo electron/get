@@ -6,6 +6,7 @@ step-restore-cache: &step-restore-cache
 
 steps-test: &steps-test
   steps:
+    - run: git config --global core.autocrlf input
     - checkout
     - *step-restore-cache
     - run: yarn
