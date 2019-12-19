@@ -3,10 +3,11 @@ import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
 
+import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
 
 describe('Public API', () => {
-  jest.setTimeout(120000);
+  const downloader = new FixtureDownloader();
 
   let cacheRoot: string;
   beforeEach(async () => {
@@ -21,6 +22,7 @@ describe('Public API', () => {
     it('should return a valid path to a downloaded zip file', async () => {
       const zipPath = await download('2.0.10', {
         cacheRoot,
+        downloader,
       });
       expect(typeof zipPath).toEqual('string');
       expect(await fs.pathExists(zipPath)).toEqual(true);
@@ -30,6 +32,7 @@ describe('Public API', () => {
     it('should return a valid path to a downloaded zip file for nightly releases', async () => {
       const zipPath = await download('6.0.0-nightly.20190213', {
         cacheRoot,
+        downloader,
       });
       expect(typeof zipPath).toEqual('string');
       expect(await fs.pathExists(zipPath)).toEqual(true);
@@ -39,11 +42,13 @@ describe('Public API', () => {
     it('should not redownload when force=false', async () => {
       const zipPath = await download('2.0.9', {
         cacheRoot,
+        downloader,
         force: false,
       });
       await fs.writeFile(zipPath, 'bad content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
+        downloader,
         force: false,
       });
       expect(zipPath).toEqual(zipPath2);
@@ -53,6 +58,7 @@ describe('Public API', () => {
     it('should redownload when force=true', async () => {
       const zipPath = await download('2.0.9', {
         cacheRoot,
+        downloader,
         force: true,
       });
       const hash = crypto
@@ -62,6 +68,7 @@ describe('Public API', () => {
       await fs.writeFile(zipPath, 'bad content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
+        downloader,
         force: true,
       });
       expect(zipPath).toEqual(zipPath2);
@@ -77,7 +84,7 @@ describe('Public API', () => {
         cacheRoot,
         unsafelyDisableChecksums: true,
         downloader: {
-          async download(url, targetPath) {
+          async download(url: string, targetPath: string) {
             expect(
               url.replace(process.platform, 'platform').replace(process.arch, 'arch'),
             ).toMatchSnapshot();
@@ -97,7 +104,7 @@ describe('Public API', () => {
         cacheRoot,
         unsafelyDisableChecksums: true,
         downloader: {
-          async download(url, targetPath, opts) {
+          async download(url: string, targetPath: string, opts?: any) {
             expect(opts).toStrictEqual(downloadOpts);
             await fs.writeFile(targetPath, 'file');
           },
@@ -111,6 +118,7 @@ describe('Public API', () => {
     it('should work for electron.d.ts', async () => {
       const dtsPath = await downloadArtifact({
         cacheRoot,
+        downloader,
         isGeneric: true,
         version: '2.0.9',
         artifactName: 'electron.d.ts',
@@ -122,6 +130,7 @@ describe('Public API', () => {
 
     it('should work default platform/arch', async () => {
       await downloadArtifact({
+        downloader,
         version: '2.0.3',
         artifactName: 'electron',
       });
@@ -130,6 +139,7 @@ describe('Public API', () => {
     it('should work for chromedriver', async () => {
       const driverPath = await downloadArtifact({
         cacheRoot,
+        downloader,
         version: '2.0.9',
         artifactName: 'chromedriver',
         platform: 'darwin',

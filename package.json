@@ -10,8 +10,11 @@
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "typedoc --out docs",
+    "jest": "jest --coverage",
+    "lint": "prettier --check \"src/**/*.ts\"",
     "prepublishOnly": "npm run build",
-    "test": "prettier --check \"src/**/*.ts\" && jest --coverage"
+    "test": "npm run lint && npm run jest",
+    "test:nonetwork": "npm run lint && npm run jest -- --testPathIgnorePatterns network.spec"
   },
   "files": [
     "dist/*",
