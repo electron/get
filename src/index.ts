@@ -75,7 +75,7 @@ export async function downloadArtifact(
 
   // Do not check if the file exists in the cache when force === true
   if (!artifactDetails.force) {
-    d(`Checking the cache for ${fileName} (${url})`);
+    d(`Checking the cache (${artifactDetails.cacheRoot}) for ${fileName} (${url})`);
     const cachedPath = await cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
@@ -121,6 +121,7 @@ export async function downloadArtifact(
         artifactName: 'SHASUMS256.txt',
         force: artifactDetails.force,
         downloadOptions: artifactDetails.downloadOptions,
+        cacheRoot: artifactDetails.cacheRoot,
         downloader: artifactDetails.downloader,
         mirrorOptions: artifactDetails.mirrorOptions,
       });
