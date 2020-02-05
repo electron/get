@@ -15,6 +15,7 @@ import {
   withTempDirectoryIn,
   normalizeVersion,
   getHostArch,
+  getNodeArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
 } from './utils';
@@ -43,7 +44,7 @@ export function download(
     ...options,
     version,
     platform: process.platform,
-    arch: getHostArch(),
+    arch: process.arch,
     artifactName: 'electron',
   });
 }
@@ -63,11 +64,14 @@ export async function downloadArtifact(
       }
     : {
         platform: process.platform,
-        arch: getHostArch(),
+        arch: process.arch,
         ..._artifactDetails,
       };
   ensureIsTruthyString(artifactDetails, 'version');
   artifactDetails.version = normalizeVersion(artifactDetails.version);
+  if (artifactDetails.hasOwnProperty('arch')) {
+    (artifactDetails as any).arch = getNodeArch((artifactDetails as any).arch);
+  }
 
   const fileName = getArtifactFileName(artifactDetails);
   const url = getArtifactRemoteURL(artifactDetails);

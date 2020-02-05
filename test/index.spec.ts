@@ -128,12 +128,24 @@ describe('Public API', () => {
       expect(await fs.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
     });
 
-    it('should work default platform/arch', async () => {
+    it('should work with the default platform/arch', async () => {
       await downloadArtifact({
         downloader,
         version: '2.0.3',
         artifactName: 'electron',
       });
+    });
+
+    it('should download linux/armv7l when linux/arm is passed as platform/arch', async () => {
+      const zipPath = await downloadArtifact({
+        cacheRoot,
+        downloader,
+        artifactName: 'electron',
+        version: '2.0.9',
+        platform: 'linux',
+        arch: 'arm',
+      });
+      expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.9-linux-armv7l.zip"`);
     });
 
     it('should work for chromedriver', async () => {
