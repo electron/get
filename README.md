@@ -72,6 +72,21 @@ const nightlyZipFilePath = await download('8.0.0-nightly.20190901', {
 // Will download from https://nightly.example.com/nightlies/nightly-linux.zip
 ```
 
+`customDir` can have the placeholder `{{ version }}`, which will be replaced by the version
+specified (without the leading `v`). For example:
+
+```javascript
+const zipFilePath = await download('4.0.4', {
+  mirrorOptions: {
+    mirror: 'https://mirror.example.com/electron/',
+    customDir: 'version-{{ version }}',
+    platform: 'linux',
+    arch: 'x64'
+  }
+});
+// Will download from https://mirror.example.com/electron/version-4.0.4/electron-v4.0.4-linux-x64.zip
+```
+
 ## How It Works
 
 This module downloads Electron to a known place on your system and caches it
