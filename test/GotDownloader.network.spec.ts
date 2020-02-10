@@ -25,12 +25,10 @@ describe('GotDownloader', () => {
       const downloader = new GotDownloader();
       await withTempDirectory(async dir => {
         const testFile = path.resolve(dir, 'test.txt');
-        await expect(
-          downloader.download(
-            'https://github.com/electron/electron/releases/download/v2.0.18/bad.file',
-            testFile,
-          ),
-        ).rejects.toMatchInlineSnapshot(`[HTTPError: Response code 404 (Not Found)]`);
+        const url = 'https://github.com/electron/electron/releases/download/v2.0.18/bad.file';
+        await expect(downloader.download(url, testFile)).rejects.toMatchInlineSnapshot(
+          `[HTTPError: Response code 404 (Not Found) for ${url}]`,
+        );
       });
     });
 

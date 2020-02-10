@@ -16,6 +16,9 @@ export class GotDownloader implements Downloader<any> {
       downloadStream.pipe(writeStream);
 
       downloadStream.on('error', error => {
+        if (error.name === 'HTTPError' && error.statusCode === 404) {
+          error.message += ` for ${error.url}`;
+        }
         if (writeStream.destroy) {
           writeStream.destroy(error);
         }
