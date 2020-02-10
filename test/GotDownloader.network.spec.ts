@@ -22,9 +22,6 @@ describe('GotDownloader', () => {
     });
 
     it('should throw an error if the file does not exist', async function() {
-      if (process.platform === 'win32') {
-        return;
-      }
       const downloader = new GotDownloader();
       await withTempDirectory(async dir => {
         const testFile = path.resolve(dir, 'test.txt');

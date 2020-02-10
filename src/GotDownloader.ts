@@ -15,7 +15,13 @@ export class GotDownloader implements Downloader<any> {
       const downloadStream = got.stream(url, options);
       downloadStream.pipe(writeStream);
 
-      downloadStream.on('error', error => reject(error));
+      downloadStream.on('error', error => {
+        if (writeStream.destroy) {
+          writeStream.destroy(error);
+        }
+
+        reject(error);
+      });
       writeStream.on('error', error => reject(error));
       writeStream.on('close', () => resolve());
     });
