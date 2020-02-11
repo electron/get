@@ -136,6 +136,22 @@ describe('Public API', () => {
       });
     });
 
+    it('should download the same artifact for falsy platform/arch as default platform/arch', async () => {
+      const defaultPath = await downloadArtifact({
+        version: '2.0.3',
+        artifactName: 'electron',
+      });
+
+      const undefinedPath = await downloadArtifact({
+        version: '2.0.3',
+        artifactName: 'electron',
+        platform: undefined,
+        arch: undefined,
+      });
+
+      expect(defaultPath).toEqual(undefinedPath);
+    });
+
     it('should download linux/armv7l when linux/arm is passed as platform/arch', async () => {
       const zipPath = await downloadArtifact({
         cacheRoot,
