@@ -5,16 +5,23 @@ import * as ProgressBar from 'progress';
 
 import { Downloader } from './Downloader';
 
-export class GotDownloader implements Downloader<any> {
+/**
+ * See [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
+ */
+export type GotDownloaderOptions = got.GotOptions<string | null> & {
   /**
-   * @param options - see [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
-   * Additional options:
-   * * `quiet`: if `true`, disables the console progress bar (the `ELECTRON_GET_NO_PROGRESS`
-   *   environment variable also does this)
-   * * `getProgressCallback`: if defined, triggers every time `got`'s `downloadProgress` event
-   *   callback is triggered.
+   * if defined, triggers every time `got`'s `downloadProgress` event callback is triggered.
    */
-  async download(url: string, targetFilePath: string, options?: any) {
+  getProgressCallback?: (progress: got.Progress) => Promise<void>;
+  /**
+   * if `true`, disables the console progress bar (setting the `ELECTRON_GET_NO_PROGRESS`
+   * environment variable to a non-empty value also does this).
+   */
+  quiet?: boolean;
+};
+
+export class GotDownloader implements Downloader<GotDownloaderOptions> {
+  async download(url: string, targetFilePath: string, options?: GotDownloaderOptions) {
     if (!options) {
       options = {};
     }

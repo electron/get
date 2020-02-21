@@ -20,6 +20,7 @@ describe('GotDownloader', () => {
           {
             getProgressCallback: (progress: Progress) => {
               progressCallbackCalled = true;
+              return Promise.resolve();
             },
           },
         );
