@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra';
 import * as got from 'got';
 import * as path from 'path';
+import * as ProgressBar from 'progress';
 
 import { Downloader } from './Downloader';
 
@@ -9,12 +10,25 @@ export class GotDownloader implements Downloader<any> {
    * @param options - see [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
    */
   async download(url: string, targetFilePath: string, options?: any) {
+    let bar: ProgressBar | undefined;
     await fs.mkdirp(path.dirname(targetFilePath));
     const writeStream = fs.createWriteStream(targetFilePath);
+
+    if (!process.env.ELECTRON_GET_NO_PROGRESS) {
+      bar = new ProgressBar(
+        `Downloading ${path.basename(url)}: [:bar] :percent ETA: :eta seconds`,
+        {
+          total: 100,
+        },
+      );
+    }
     await new Promise((resolve, reject) => {
       const downloadStream = got.stream(url, options);
-      downloadStream.pipe(writeStream);
-
+      downloadStream.on('downloadProgress', progress => {
+        if (bar) {
+          bar.update(progress.percent);
+        }
+      });
       downloadStream.on('error', error => {
         if (error.name === 'HTTPError' && error.statusCode === 404) {
           error.message += ` for ${error.url}`;
@@ -27,6 +41,8 @@ export class GotDownloader implements Downloader<any> {
       });
       writeStream.on('error', error => reject(error));
       writeStream.on('close', () => resolve());
+
+      downloadStream.pipe(writeStream);
     });
   }
 }
