@@ -6,6 +6,7 @@ import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
 import {
   ElectronArtifactDetails,
   ElectronDownloadRequestOptions,
+  ElectronPlatformArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
 } from './types';
 import { Cache } from './Cache';
@@ -58,20 +59,24 @@ export function download(
 export async function downloadArtifact(
   _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
 ): Promise<string> {
-  const artifactDetails: ElectronArtifactDetails = _artifactDetails.isGeneric
-    ? {
-        ..._artifactDetails,
-      }
-    : {
-        platform: process.platform,
-        arch: process.arch,
-        ..._artifactDetails,
-      };
+  const artifactDetails: ElectronArtifactDetails = {
+    ...(_artifactDetails as ElectronArtifactDetails),
+  };
+  if (!_artifactDetails.isGeneric) {
+    const platformArtifactDetails = artifactDetails as ElectronPlatformArtifactDetails;
+    if (!platformArtifactDetails.platform) {
+      d('No platform found, defaulting to the host platform');
+      platformArtifactDetails.platform = process.platform;
+    }
+    if (platformArtifactDetails.arch) {
+      platformArtifactDetails.arch = getNodeArch(platformArtifactDetails.arch);
+    } else {
+      d('No arch found, defaulting to the host arch');
+      platformArtifactDetails.arch = getHostArch();
+    }
+  }
   ensureIsTruthyString(artifactDetails, 'version');
   artifactDetails.version = normalizeVersion(artifactDetails.version);
-  if (artifactDetails.hasOwnProperty('arch')) {
-    (artifactDetails as any).arch = getNodeArch((artifactDetails as any).arch);
-  }
 
   const fileName = getArtifactFileName(artifactDetails);
   const url = getArtifactRemoteURL(artifactDetails);
