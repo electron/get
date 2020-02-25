@@ -44,7 +44,10 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
   if (details.version.includes('nightly')) {
     base = mirrorVar('nightly_mirror', opts, NIGHTLY_BASE_URL);
   }
-  const path = mirrorVar('customDir', opts, details.version);
+  const path = mirrorVar('customDir', opts, details.version).replace(
+    '{{ version }}',
+    details.version.replace(/^v/, ''),
+  );
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
   return `${base}${path}/${file}`;

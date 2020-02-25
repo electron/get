@@ -99,6 +99,22 @@ describe('artifact-utils', () => {
       );
     });
 
+    it('should replace {{ version }} when mirrorOptions.customDir is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            customDir: 'foo{{ version }}bar',
+          },
+          platform: 'linux',
+          version: 'v1.2.3',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://github.com/electron/electron/releases/download/foo1.2.3bar/electron-v1.2.3-linux-x64.zip"`,
+      );
+    });
+
     it('should replace the filename when mirrorOptions.customFilename is set', () => {
       expect(
         getArtifactRemoteURL({
