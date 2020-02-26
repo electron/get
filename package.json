@@ -41,7 +41,7 @@
     "@types/node": "^13.7.6",
     "@types/progress": "^2.0.3",
     "@types/sanitize-filename": "^1.1.28",
-    "husky": "^2.3.0",
+    "husky": "^4.2.3",
     "jest": "^24.8.0",
     "lint-staged": "^8.1.7",
     "prettier": "^1.17.1",
