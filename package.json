@@ -27,7 +27,7 @@
     "debug": "^4.1.1",
     "env-paths": "^2.2.0",
     "fs-extra": "^8.1.0",
-    "got": "^9.6.0",
+    "got": "^10.6.0",
     "progress": "^2.0.3",
     "sanitize-filename": "^1.6.2",
     "sumchecker": "^3.0.1"
@@ -36,7 +36,6 @@
     "@continuous-auth/semantic-release-npm": "^2.0.0",
     "@types/debug": "^4.1.4",
     "@types/fs-extra": "^8.0.0",
-    "@types/got": "^9.4.4",
     "@types/jest": "^24.0.13",
     "@types/node": "^12.0.2",
     "@types/progress": "^2.0.3",

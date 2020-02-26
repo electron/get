@@ -1,20 +1,26 @@
 import * as fs from 'fs-extra';
-import * as got from 'got';
+import got from 'got';
+import { HTTPError } from 'got/dist/source/errors';
+import { Options as GotOptions, Progress } from 'got/dist/source/types';
 import * as path from 'path';
 import * as ProgressBar from 'progress';
+import { promisify } from 'util';
+import * as stream from 'stream';
 
 import { Downloader } from './Downloader';
 
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 
+const pipeline = promisify(stream.pipeline);
+
 /**
  * See [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
  */
-export type GotDownloaderOptions = got.GotOptions<string | null> & {
+export type GotDownloaderOptions = GotOptions & {
   /**
    * if defined, triggers every time `got`'s `downloadProgress` event callback is triggered.
    */
-  getProgressCallback?: (progress: got.Progress) => Promise<void>;
+  getProgressCallback?: (progress: Progress) => Promise<void>;
   /**
    * if `true`, disables the console progress bar (setting the `ELECTRON_GET_NO_PROGRESS`
    * environment variable to a non-empty value also does this).
@@ -51,32 +57,25 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
-    await new Promise((resolve, reject) => {
-      const downloadStream = got.stream(url, gotOptions);
-      downloadStream.on('downloadProgress', async progress => {
-        progressPercent = progress.percent;
-        if (bar) {
-          bar.update(progress.percent);
-        }
-        if (getProgressCallback) {
-          await getProgressCallback(progress);
-        }
-      });
-      downloadStream.on('error', error => {
-        if (error.name === 'HTTPError' && error.statusCode === 404) {
-          error.message += ` for ${error.url}`;
-        }
-        if (writeStream.destroy) {
-          writeStream.destroy(error);
-        }
-
-        reject(error);
-      });
-      writeStream.on('error', error => reject(error));
-      writeStream.on('close', () => resolve());
-
-      downloadStream.pipe(writeStream);
+    const downloadStream = got.stream(url, gotOptions);
+    downloadStream.on('downloadProgress', async progress => {
+      progressPercent = progress.percent;
+      if (bar) {
+        bar.update(progress.percent);
+      }
+      if (getProgressCallback) {
+        await getProgressCallback(progress);
+      }
     });
+    try {
+      await pipeline(downloadStream, writeStream);
+    } catch (error) {
+      if (error instanceof HTTPError && error.response.statusCode === 404) {
+        error.message += ` for ${error.response.url}`;
+      }
+
+      throw error;
+    }
 
     downloadCompleted = true;
     if (timeout) {
