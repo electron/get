@@ -7,17 +7,8 @@ const d = debug('@electron/get:proxy');
  */
 export function initializeProxy() {
   try {
-    // Code originally from https://github.com/yeoman/yo/blob/b2eea87e/lib/cli.js#L19-L28
-    const MAJOR_NODEJS_VERSION = parseInt(process.version.slice(1).split('.')[0], 10);
-
-    if (MAJOR_NODEJS_VERSION >= 10) {
-      // `global-agent` works with Node.js v10 and above.
-      require('global-agent').bootstrap();
-    } else {
-      // `global-tunnel-ng` works with Node.js v10 and below.
-      require('global-tunnel-ng').initialize();
-    }
+    require('global-agent').bootstrap();
   } catch (e) {
-    d('Could not load either proxy modules, built-in proxy support not available:', e);
+    d('Could not load proxy module, built-in proxy support not available:', e);
   }
 }

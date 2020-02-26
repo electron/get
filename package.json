@@ -21,12 +21,13 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=8.6"
+    "node": ">=10.13"
   },
   "dependencies": {
     "debug": "^4.1.1",
     "env-paths": "^2.2.0",
     "fs-extra": "^8.1.0",
+    "global-agent": "^2.0.2",
     "got": "^10.6.0",
     "progress": "^2.0.3",
     "sanitize-filename": "^1.6.2",
@@ -67,9 +68,5 @@
     "get",
     "artifact",
     "release"
-  ],
-  "optionalDependencies": {
-    "global-agent": "^2.0.2",
-    "global-tunnel-ng": "^2.7.1"
-  }
+  ]
 }
