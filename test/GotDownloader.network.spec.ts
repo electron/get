@@ -46,14 +46,14 @@ describe('GotDownloader', () => {
       const spy = jest.spyOn(fs, 'createWriteStream');
       spy.mockImplementationOnce(() => {
         const emitter = new EventEmitter();
-        setTimeout(() => emitter.emit('error', 'bad write error thing'), 10);
+        setTimeout(() => emitter.emit('error', 'bad write error thing'), 5);
         return emitter as any;
       });
       await withTempDirectory(async dir => {
         const testFile = path.resolve(dir, 'test.txt');
         await expect(
           downloader.download(
-            'https://github.com/electron/electron/releases/download/v2.0.18/bad.file',
+            'https://github.com/electron/electron/releases/download/v2.0.18/SHASUMS256.txt',
             testFile,
           ),
         ).rejects.toMatchInlineSnapshot(`"bad write error thing"`);
