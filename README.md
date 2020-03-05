@@ -103,11 +103,11 @@ via `downloadOptions`.
 
 ### Progress Bar
 
-By default, a progress bar is shown when downloading artifacts. To disable, set the
-`ELECTRON_GET_NO_PROGRESS` environment variable to any non-empty value or set `quiet` to `true` in
-`downloadOptions`. If you need to monitor progress yourself via the API, set `getProgressCallback`
-in `downloadOptions`, which has the same function signature as `got`'s [`downloadProgress` event
-callback](https://github.com/sindresorhus/got#ondownloadprogress-progress)
+By default, a progress bar is shown when downloading an artifact for more than 30 seconds. To
+disable, set the `ELECTRON_GET_NO_PROGRESS` environment variable to any non-empty value, or set
+`quiet` to `true` in `downloadOptions`. If you need to monitor progress yourself via the API, set
+`getProgressCallback` in `downloadOptions`, which has the same function signature as `got`'s
+[`downloadProgress` event callback](https://github.com/sindresorhus/got#ondownloadprogress-progress).
 
 ### Proxies
 
