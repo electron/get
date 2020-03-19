@@ -1,0 +1,29 @@
+{
+    "name": "@types/istanbul-lib-coverage",
+    "version": "2.0.0",
+    "description": "TypeScript definitions for istanbul-lib-coverage",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Jason Cheatham",
+            "url": "https://github.com/jason0x43",
+            "githubUsername": "jason0x43"
+        },
+        {
+            "name": "Lorenzo Rapetti",
+            "url": "https://github.com/loryman",
+            "githubUsername": "loryman"
+        }
+    ],
+    "main": "",
+    "types": "index",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/istanbul-lib-coverage"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "08a570d6de8b28ae4979fc831b2d4f0e3754a8514f7e261b7f7071ca3677c2db",
+    "typeScriptVersion": "2.4"
+}
