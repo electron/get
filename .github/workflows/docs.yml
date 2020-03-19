@@ -1,0 +1,27 @@
+name: Publish documentation
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+*
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all git branches
+        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: yarn
+      - run: yarn build:docs
+      - uses: docker://malept/gha-gh-pages:1.0.2
+        with:
+          showUnderscoreFiles: true
+          versionDocs: true
+        env:
+          GH_PAGES_SSH_DEPLOY_KEY: ${{ secrets.GH_PAGES_SSH_DEPLOY_KEY }}
