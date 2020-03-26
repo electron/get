@@ -47,7 +47,7 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
   const path = mirrorVar('customDir', opts, details.version).replace(
     '{{ version }}',
     details.version.replace(/^v/, ''),
-  );
+  ).replace(/^v/, '');
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
   return `${base}${path}/${file}`;
