@@ -87,6 +87,18 @@ const zipFilePath = await download('4.0.4', {
 // Will download from https://mirror.example.com/electron/version-4.0.4/electron-v4.0.4-linux-x64.zip
 ```
 
+#### Using environment variables for mirror options
+Mirror options can also be specified via the following environment variables:
+* `ELECTRON_CUSTOM_DIR` - Specifies the custom directory to download from.
+* `ELECTRON_CUSTOM_FILENAME` - Specifies the custom file name to download.
+* `ELECTRON_MIRROR` - Specifies the URL of the server to download from if the version is not a nightly version.
+* `ELECTRON_NIGHTLY_MIRROR` - Specifies the URL of the server to download from if the version is a nightly version.
+
+### Overriding the version downloaded
+
+The version downloaded can be overriden by setting the `ELECTRON_CUSTOM_VERSION` environment variable.
+Setting this environment variable will override the version passed in to `download` or `downloadArtifact`.
+
 ## How It Works
 
 This module downloads Electron to a known place on your system and caches it

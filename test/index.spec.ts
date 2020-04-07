@@ -112,6 +112,19 @@ describe('Public API', () => {
         downloadOptions: downloadOpts,
       });
     });
+
+    it('should download a custom version of a zip file', async () => {
+      process.env.ELECTRON_CUSTOM_VERSION = '2.0.10';
+      const zipPath = await download('2.0.3', {
+        cacheRoot,
+        downloader,
+      });
+      expect(typeof zipPath).toEqual('string');
+      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(path.basename(zipPath)).toMatch(/v2.0.10/);
+      expect(path.extname(zipPath)).toEqual('.zip');
+      process.env.ELECTRON_CUSTOM_VERSION = '';
+    });
   });
 
   describe('downloadArtifact()', () => {
@@ -178,6 +191,23 @@ describe('Public API', () => {
         `"chromedriver-v2.0.9-darwin-x64.zip"`,
       );
       expect(path.extname(driverPath)).toEqual('.zip');
+    });
+
+    it('should download a custom version of a zip file', async () => {
+      process.env.ELECTRON_CUSTOM_VERSION = '2.0.10';
+      const zipPath = await downloadArtifact({
+        artifactName: 'electron',
+        cacheRoot,
+        downloader,
+        platform: process.env.npm_config_platform || process.platform,
+        arch: process.env.npm_config_arch || process.arch,
+        version: '2.0.3',
+      });
+      expect(typeof zipPath).toEqual('string');
+      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
+      expect(path.extname(zipPath)).toEqual('.zip');
+      process.env.ELECTRON_CUSTOM_VERSION = '';
     });
   });
 });
