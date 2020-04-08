@@ -76,8 +76,10 @@ export async function downloadArtifact(
     }
   }
   ensureIsTruthyString(artifactDetails, 'version');
-  artifactDetails.version = normalizeVersion(artifactDetails.version);
 
+  artifactDetails.version = normalizeVersion(
+    process.env.ELECTRON_CUSTOM_VERSION || artifactDetails.version,
+  );
   const fileName = getArtifactFileName(artifactDetails);
   const url = getArtifactRemoteURL(artifactDetails);
   const cache = new Cache(artifactDetails.cacheRoot);
@@ -134,7 +136,6 @@ export async function downloadArtifact(
         downloader: artifactDetails.downloader,
         mirrorOptions: artifactDetails.mirrorOptions,
       });
-
       await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
         path.basename(tempDownloadPath),
       ]);
