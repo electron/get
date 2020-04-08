@@ -128,6 +128,17 @@
   }
 });
 <span class="hljs-comment">// Will download from https://mirror.example.com/electron/version-4.0.4/electron-v4.0.4-linux-x64.zip</span></code></pre>
+				<h4 id="using-environment-variables-for-mirror-options">Using environment variables for mirror options</h4>
+				<p>Mirror options can also be specified via the following environment variables:</p>
+				<ul>
+					<li><code>ELECTRON_CUSTOM_DIR</code> - Specifies the custom directory to download from.</li>
+					<li><code>ELECTRON_CUSTOM_FILENAME</code> - Specifies the custom file name to download.</li>
+					<li><code>ELECTRON_MIRROR</code> - Specifies the URL of the server to download from if the version is not a nightly version.</li>
+					<li><code>ELECTRON_NIGHTLY_MIRROR</code> - Specifies the URL of the server to download from if the version is a nightly version.</li>
+				</ul>
+				<h3 id="overriding-the-version-downloaded">Overriding the version downloaded</h3>
+				<p>The version downloaded can be overriden by setting the <code>ELECTRON_CUSTOM_VERSION</code> environment variable.
+				Setting this environment variable will override the version passed in to <code>download</code> or <code>downloadArtifact</code>.</p>
 				<h2 id="how-it-works">How It Works</h2>
 				<p>This module downloads Electron to a known place on your system and caches it
 					so that future requests for that asset can be returned instantly.  The cache
