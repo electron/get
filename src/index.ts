@@ -82,7 +82,6 @@ export async function downloadArtifact(
   );
   const fileName = getArtifactFileName(artifactDetails);
   const url = getArtifactRemoteURL(artifactDetails);
-  console.log(`Downloading version: ${artifactDetails.version} for ${fileName} from ${url}.`);
   const cache = new Cache(artifactDetails.cacheRoot);
 
   // Do not check if the file exists in the cache when force === true
@@ -137,7 +136,6 @@ export async function downloadArtifact(
         downloader: artifactDetails.downloader,
         mirrorOptions: artifactDetails.mirrorOptions,
       });
-      console.log(`Checking ${shasumPath} for ${tempDownloadPath}`);
       await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
         path.basename(tempDownloadPath),
       ]);

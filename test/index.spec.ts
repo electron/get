@@ -199,8 +199,8 @@ describe('Public API', () => {
         artifactName: 'electron',
         cacheRoot,
         downloader,
-        platform: process.env.npm_config_platform || process.platform,
-        arch: process.env.npm_config_arch || process.arch,
+        platform: 'darwin',
+        arch: 'x64',
         version: '2.0.3',
       });
       expect(typeof zipPath).toEqual('string');
