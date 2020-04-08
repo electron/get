@@ -1,0 +1,278 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@electron/get</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@electron/get</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @electron/get</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="-electron-get">@electron/get</h1>
+				<blockquote>
+					<p>Download Electron release artifacts</p>
+				</blockquote>
+				<p><a href="https://circleci.com/gh/electron/get"><img src="https://circleci.com/gh/electron/get.svg?style=svg" alt="CircleCI"></a></p>
+				<h2 id="usage">Usage</h2>
+				<h3 id="simple-downloading-an-electron-binary-zip">Simple: Downloading an Electron Binary ZIP</h3>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+
+<span class="hljs-comment">// NB: Use this syntax within an async function, Node does not have support for</span>
+<span class="hljs-comment">//     top-level await as of Node 12.</span>
+<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>);</code></pre>
+				<h3 id="advanced-downloading-a-macos-electron-symbol-file">Advanced: Downloading a macOS Electron Symbol File</h3>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { downloadArtifact } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+
+<span class="hljs-comment">// NB: Use this syntax within an async function, Node does not have support for</span>
+<span class="hljs-comment">//     top-level await as of Node 12.</span>
+<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> downloadArtifact({
+  version: <span class="hljs-string">'4.0.4'</span>,
+  platform: <span class="hljs-string">'darwin'</span>,
+  artifactName: <span class="hljs-string">'electron'</span>,
+  artifactSuffix: <span class="hljs-string">'symbols'</span>,
+  arch: <span class="hljs-string">'x64'</span>,
+});</code></pre>
+				<h3 id="specifying-a-mirror">Specifying a mirror</h3>
+				<p>Anatomy of a download URL, in terms of <code>mirrorOptions</code>:</p>
+				<pre><code>https://github.com/electron/electron/releases/download/v4.0.4/electron-v4.0.4-linux-x64.zip
+|<span class="hljs-string">                                                     </span>|<span class="hljs-string">       </span>|<span class="hljs-string">                           </span>|
+-------------------------------------------------------       -----------------------------
+                        |<span class="hljs-string">                                                   </span>|
+              mirror / nightly_mirror                  |<span class="hljs-string">    </span>|<span class="hljs-string">         customFilename
+                                                       ------
+                                                         </span>||
+                                                      customDir</code></pre><p>Example:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+
+<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>, {
+  mirrorOptions: {
+    mirror: <span class="hljs-string">'https://mirror.example.com/electron/'</span>,
+    customDir: <span class="hljs-string">'custom'</span>,
+    customFilename: <span class="hljs-string">'unofficial-electron-linux.zip'</span>
+  }
+});
+<span class="hljs-comment">// Will download from https://mirror.example.com/electron/custom/unofficial-electron-linux.zip</span>
+
+<span class="hljs-keyword">const</span> nightlyZipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'8.0.0-nightly.20190901'</span>, {
+  mirrorOptions: {
+    nightly_mirror: <span class="hljs-string">'https://nightly.example.com/'</span>,
+    customDir: <span class="hljs-string">'nightlies'</span>,
+    customFilename: <span class="hljs-string">'nightly-linux.zip'</span>
+  }
+});
+<span class="hljs-comment">// Will download from https://nightly.example.com/nightlies/nightly-linux.zip</span></code></pre>
+				<p><code>customDir</code> can have the placeholder <code>{{ version }}</code>, which will be replaced by the version
+				specified (without the leading <code>v</code>). For example:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>, {
+  <span class="hljs-attr">mirrorOptions</span>: {
+    <span class="hljs-attr">mirror</span>: <span class="hljs-string">'https://mirror.example.com/electron/'</span>,
+    <span class="hljs-attr">customDir</span>: <span class="hljs-string">'version-{{ version }}'</span>,
+    <span class="hljs-attr">platform</span>: <span class="hljs-string">'linux'</span>,
+    <span class="hljs-attr">arch</span>: <span class="hljs-string">'x64'</span>
+  }
+});
+<span class="hljs-comment">// Will download from https://mirror.example.com/electron/version-4.0.4/electron-v4.0.4-linux-x64.zip</span></code></pre>
+				<h4 id="using-environment-variables-for-mirror-options">Using environment variables for mirror options</h4>
+				<p>Mirror options can also be specified via the following environment variables:</p>
+				<ul>
+					<li><code>ELECTRON_CUSTOM_DIR</code> - Specifies the custom directory to download from.</li>
+					<li><code>ELECTRON_CUSTOM_FILENAME</code> - Specifies the custom file name to download.</li>
+					<li><code>ELECTRON_MIRROR</code> - Specifies the URL of the server to download from if the version is not a nightly version.</li>
+					<li><code>ELECTRON_NIGHTLY_MIRROR</code> - Specifies the URL of the server to download from if the version is a nightly version.</li>
+				</ul>
+				<h3 id="overriding-the-version-downloaded">Overriding the version downloaded</h3>
+				<p>The version downloaded can be overriden by setting the <code>ELECTRON_CUSTOM_VERSION</code> environment variable.
+				Setting this environment variable will override the version passed in to <code>download</code> or <code>downloadArtifact</code>.</p>
+				<h2 id="how-it-works">How It Works</h2>
+				<p>This module downloads Electron to a known place on your system and caches it
+					so that future requests for that asset can be returned instantly.  The cache
+				locations are:</p>
+				<ul>
+					<li>Linux: <code>$XDG_CACHE_HOME</code> or <code>~/.cache/electron/</code></li>
+					<li>MacOS: <code>~/Library/Caches/electron/</code></li>
+					<li>Windows: <code>%LOCALAPPDATA%/electron/Cache</code> or <code>~/AppData/Local/electron/Cache/</code></li>
+				</ul>
+				<p>By default, the module uses <a href="https://github.com/sindresorhus/got"><code>got</code></a> as the
+					downloader. As a result, you can use the same <a href="https://github.com/sindresorhus/got#options">options</a>
+				via <code>downloadOptions</code>.</p>
+				<h3 id="progress-bar">Progress Bar</h3>
+				<p>By default, a progress bar is shown when downloading an artifact for more than 30 seconds. To
+					disable, set the <code>ELECTRON_GET_NO_PROGRESS</code> environment variable to any non-empty value, or set
+					<code>quiet</code> to <code>true</code> in <code>downloadOptions</code>. If you need to monitor progress yourself via the API, set
+					<code>getProgressCallback</code> in <code>downloadOptions</code>, which has the same function signature as <code>got</code>&#39;s
+				<a href="https://github.com/sindresorhus/got#ondownloadprogress-progress"><code>downloadProgress</code> event callback</a>.</p>
+				<h3 id="proxies">Proxies</h3>
+				<p>Downstream packages should utilize the <code>initializeProxy</code> function to add HTTP(S) proxy support. If
+					the environment variable <code>ELECTRON_GET_USE_PROXY</code> is set, it is called automatically. A different
+					proxy module is used, depending on the version of Node in use, and as such, there are slightly
+					different ways to set the proxy environment variables. For Node 10 and above,
+					<a href="https://github.com/gajus/global-agent#environment-variables"><code>global-agent</code></a> is used. Otherwise,
+					<a href="https://github.com/np-maintain/global-tunnel#auto-config"><code>global-tunnel-ng</code></a> is used. Refer to the
+				appropriate linked module to determine how to configure proxy support.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_cache_.html">"<wbr>Cache"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_downloader_.html">"<wbr>Downloader"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_gotdownloader_.html">"<wbr>Got<wbr>Downloader"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_artifact_utils_.html">"artifact-<wbr>utils"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_downloader_resolver_.html">"downloader-<wbr>resolver"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_.html">"index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_proxy_.html">"proxy"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_types_.html">"types"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_.html">"utils"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
