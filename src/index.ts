@@ -2,7 +2,7 @@ import debug from 'debug';
 import * as path from 'path';
 import * as sumchecker from 'sumchecker';
 
-import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL, getApiToken } from './artifact-utils';
 import {
   ElectronArtifactDetails,
   ElectronDownloadRequestOptions,
@@ -113,13 +113,20 @@ export async function downloadArtifact(
   return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
     const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
 
+    let downloadOptions = artifactDetails.downloadOptions;
+    const token = getApiToken(artifactDetails.mirrorOptions);
+    if (token) {
+      const headers = { authorization: `token ${token}` };
+      downloadOptions = { headers, ...artifactDetails.downloadOptions };
+    }
+
     const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
     d(
       `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
         artifactDetails.downloadOptions,
       )}`,
     );
-    await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
+    await downloader.download(url, tempDownloadPath, downloadOptions);
 
     // Don't try to verify the hash of the hash file itself
     if (

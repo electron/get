@@ -3,6 +3,7 @@ import { ensureIsTruthyString } from './utils';
 
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
+const GITHUB_API_PATTERN = /https:\/\/api.github.com\/repos/;
 
 export function getArtifactFileName(details: ElectronArtifactDetails) {
   ensureIsTruthyString(details, 'artifactName');
@@ -24,7 +25,11 @@ export function getArtifactFileName(details: ElectronArtifactDetails) {
   ].join('-')}.zip`;
 }
 
-function mirrorVar(name: keyof MirrorOptions, options: MirrorOptions, defaultValue: string) {
+function mirrorVar(
+  name: keyof MirrorOptions,
+  options: MirrorOptions,
+  defaultValue: string,
+): string {
   // Convert camelCase to camel_case for env var reading
   const lowerName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
 
@@ -36,6 +41,17 @@ function mirrorVar(name: keyof MirrorOptions, options: MirrorOptions, defaultVal
     options[name] ||
     defaultValue
   );
+}
+
+export function getApiToken(mirrorOptions: MirrorOptions = {}): string | null {
+  const base = mirrorVar('mirror', mirrorOptions, BASE_URL);
+
+  let apiToken = null;
+  if (GITHUB_API_PATTERN.test(base)) {
+    apiToken = mirrorVar('token', mirrorOptions, '');
+  }
+
+  return apiToken;
 }
 
 export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
