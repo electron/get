@@ -81,7 +81,7 @@ export async function downloadArtifact(
     process.env.ELECTRON_CUSTOM_VERSION || artifactDetails.version,
   );
   const fileName = getArtifactFileName(artifactDetails);
-  const url = getArtifactRemoteURL(artifactDetails);
+  const url = await getArtifactRemoteURL(artifactDetails);
   const cache = new Cache(artifactDetails.cacheRoot);
 
   // Do not check if the file exists in the cache when force === true

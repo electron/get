@@ -43,7 +43,7 @@ available:
   * `nightly_mirror` String (optional) - The Electron nightly-specific mirror URL.
   * `customDir` String (optional) - The name of the directory to download from, often scoped by version number.
   * `customFilename` String (optional) - The name of the asset to download.
-  * `baseOnly` Boolean (optional) - Whether to download from the base URL only.
+  * `resolveAssetURL` Function (optional) - A function allowing customization of the url used to download the asset.
 
 Anatomy of a download URL, in terms of `mirrorOptions`:
 

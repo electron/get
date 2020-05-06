@@ -39,9 +39,9 @@ describe('artifact-utils', () => {
   });
 
   describe('getArtifactRemoteURL', () => {
-    it('should generate a default URL correctly', () => {
+    it('should generate a default URL correctly', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           platform: 'linux',
@@ -52,9 +52,9 @@ describe('artifact-utils', () => {
       );
     });
 
-    it('should replace the base URL when mirrorOptions.mirror is set', () => {
+    it('should replace the base URL when mirrorOptions.mirror is set', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
@@ -66,16 +66,18 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com/v6.0.0/electron-v6.0.0-linux-x64.zip"`);
     });
 
-    it('should allow for setting only a base url when mirrorOptions.baseOnly is set', () => {
+    it('should allow for custom URL resolution with mirrorOptions.resolveAssetURL', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com',
             customDir: 'v1.2.3',
             customFilename: 'custom-built-electron.zip',
-            baseOnly: true,
+            resolveAssetURL: opts => {
+              return opts.mirrorOptions.mirror || '';
+            },
           },
           platform: 'linux',
           version: 'v6.0.0',
@@ -83,9 +85,9 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com"`);
     });
 
-    it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', () => {
+    it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
@@ -100,9 +102,9 @@ describe('artifact-utils', () => {
       );
     });
 
-    it('should replace the version dir when mirrorOptions.customDir is set', () => {
+    it('should replace the version dir when mirrorOptions.customDir is set', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
@@ -116,9 +118,9 @@ describe('artifact-utils', () => {
       );
     });
 
-    it('should replace {{ version }} when mirrorOptions.customDir is set', () => {
+    it('should replace {{ version }} when mirrorOptions.customDir is set', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
@@ -132,9 +134,9 @@ describe('artifact-utils', () => {
       );
     });
 
-    it('should replace the filename when mirrorOptions.customFilename is set', () => {
+    it('should replace the filename when mirrorOptions.customFilename is set', async () => {
       expect(
-        getArtifactRemoteURL({
+        await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {

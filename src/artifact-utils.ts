@@ -25,7 +25,7 @@ export function getArtifactFileName(details: ElectronArtifactDetails) {
 }
 
 function mirrorVar(
-  name: keyof Omit<MirrorOptions, 'baseOnly'>,
+  name: keyof Omit<MirrorOptions, 'resolveAssetURL'>,
   options: MirrorOptions,
   defaultValue: string,
 ) {
@@ -42,7 +42,7 @@ function mirrorVar(
   );
 }
 
-export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
+export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Promise<string> {
   const opts: MirrorOptions = details.mirrorOptions || {};
   let base = mirrorVar('mirror', opts, BASE_URL);
   if (details.version.includes('nightly')) {
@@ -54,5 +54,11 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
   );
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
-  return opts.baseOnly ? `${base}` : `${base}${path}/${file}`;
+  // Allow customized download URL resolution.
+  if (opts.resolveAssetURL) {
+    const url = await opts.resolveAssetURL(details);
+    return url;
+  }
+
+  return `${base}${path}/${file}`;
 }

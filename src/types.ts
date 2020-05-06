@@ -21,10 +21,10 @@ export interface MirrorOptions {
    */
   customFilename?: string;
   /**
-   * Whether to download from the base URL only,
-   * ignoring customDir and customFilename
+   * A function allowing customization of the url returned
+   * from getArtifactRemoteURL().
    */
-  baseOnly?: boolean;
+  resolveAssetURL?: (opts: DownloadOptions) => Promise<string>;
 }
 
 export interface ElectronDownloadRequest {
