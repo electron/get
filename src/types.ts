@@ -21,7 +21,7 @@ export interface MirrorOptions {
    */
   customFilename?: string;
   /**
-   * Whether or not to download from the base URL only,
+   * Whether to download from the base URL only,
    * ignoring customDir and customFilename
    */
   baseOnly?: boolean;
