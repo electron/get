@@ -73,6 +73,8 @@ describe('artifact-utils', () => {
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com',
+            customDir: 'v1.2.3',
+            customFilename: 'custom-built-electron.zip',
             baseOnly: true,
           },
           platform: 'linux',
