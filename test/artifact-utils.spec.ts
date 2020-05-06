@@ -85,14 +85,14 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com"`);
     });
 
-    it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', async () => {
+    it('should replace the nightly base URL when mirrorOptions.nightlyMirror is set', async () => {
       expect(
         await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com/',
-            nightly_mirror: 'https://nightly.example.com/',
+            nightlyMirror: 'https://nightly.example.com/',
           },
           platform: 'linux',
           version: 'v6.0.0-nightly',
