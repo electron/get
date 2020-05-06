@@ -24,7 +24,7 @@ export interface MirrorOptions {
    * A function allowing customization of the url returned
    * from getArtifactRemoteURL().
    */
-  resolveAssetURL?: (opts: Omit<MirrorOptions, 'resolveAssetURL'>) => Promise<string>;
+  resolveAssetURL?: (opts: DownloadOptions) => Promise<string>;
 }
 
 export interface ElectronDownloadRequest {

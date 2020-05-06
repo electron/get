@@ -76,7 +76,7 @@ describe('artifact-utils', () => {
             customDir: 'v1.2.3',
             customFilename: 'custom-built-electron.zip',
             resolveAssetURL: opts => {
-              return opts.mirror || '';
+              return opts.mirrorOptions.mirror || '';
             },
           },
           platform: 'linux',

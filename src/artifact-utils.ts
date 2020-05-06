@@ -56,7 +56,7 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
 
   // Allow customized download URL resolution.
   if (opts.resolveAssetURL) {
-    const url = await opts.resolveAssetURL(opts);
+    const url = await opts.resolveAssetURL(details);
     return url;
   }
 
