@@ -24,7 +24,11 @@ export function getArtifactFileName(details: ElectronArtifactDetails) {
   ].join('-')}.zip`;
 }
 
-function mirrorVar(name: keyof MirrorOptions, options: MirrorOptions, defaultValue: string) {
+function mirrorVar(
+  name: keyof Omit<MirrorOptions, 'baseOnly'>,
+  options: MirrorOptions,
+  defaultValue: string,
+) {
   // Convert camelCase to camel_case for env var reading
   const lowerName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
 
@@ -50,5 +54,5 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
   );
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
-  return `${base}${path}/${file}`;
+  return opts.baseOnly ? `${base}` : `${base}${path}/${file}`;
 }

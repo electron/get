@@ -8,6 +8,7 @@ export interface MirrorOptions {
   mirror?: string;
   customDir?: string;
   customFilename?: string;
+  baseOnly?: boolean;
 }
 
 export interface ElectronDownloadRequest {
