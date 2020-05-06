@@ -66,7 +66,7 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com/v6.0.0/electron-v6.0.0-linux-x64.zip"`);
     });
 
-    it('should allow for setting only a base url when mirrorOptions.baseOnly is set', () => {
+    it('should allow for custom URL resolution with mirrorOptions.resolveAssetURL', () => {
       expect(
         getArtifactRemoteURL({
           arch: 'x64',
@@ -75,7 +75,9 @@ describe('artifact-utils', () => {
             mirror: 'https://mirror.example.com',
             customDir: 'v1.2.3',
             customFilename: 'custom-built-electron.zip',
-            baseOnly: true,
+            resolveAssetURL: opts => {
+              return opts.mirror || '';
+            },
           },
           platform: 'linux',
           version: 'v6.0.0',
