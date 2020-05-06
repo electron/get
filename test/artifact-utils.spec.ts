@@ -102,6 +102,23 @@ describe('artifact-utils', () => {
       );
     });
 
+    it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', async () => {
+      expect(
+        await getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            mirror: 'https://mirror.example.com/',
+            nightly_mirror: 'https://nightly.example.com/',
+          },
+          platform: 'linux',
+          version: 'v6.0.0-nightly',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://nightly.example.com/v6.0.0-nightly/electron-v6.0.0-nightly-linux-x64.zip"`,
+      );
+    });
+
     it('should replace the version dir when mirrorOptions.customDir is set', async () => {
       expect(
         await getArtifactRemoteURL({
