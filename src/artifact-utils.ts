@@ -42,7 +42,7 @@ function mirrorVar(
   );
 }
 
-export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
+export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Promise<string> {
   const opts: MirrorOptions = details.mirrorOptions || {};
   let base = mirrorVar('mirror', opts, BASE_URL);
   if (details.version.includes('nightly')) {
@@ -56,7 +56,8 @@ export function getArtifactRemoteURL(details: ElectronArtifactDetails): string {
 
   // Allow customized download URL resolution.
   if (opts.resolveAssetURL) {
-    return opts.resolveAssetURL(opts);
+    const url = await opts.resolveAssetURL(opts);
+    return url;
   }
 
   return `${base}${path}/${file}`;
