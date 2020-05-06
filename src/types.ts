@@ -5,9 +5,26 @@ export interface MirrorOptions {
    * The Electron nightly-specific mirror URL.
    */
   nightly_mirror?: string;
+  /**
+   * The base URL of the mirror to download from,
+   * e.g https://github.com/electron/electron/releases/download
+   */
   mirror?: string;
+  /**
+   * The name of the directory to download from,
+   * often scoped by version number e.g 'v4.0.4'
+   */
   customDir?: string;
+  /**
+   * The name of the asset to download,
+   * e.g 'electron-v4.0.4-linux-x64.zip'
+   */
   customFilename?: string;
+  /**
+   * Whether to download from the base URL only,
+   * ignoring customDir and customFilename
+   */
+  baseOnly?: boolean;
 }
 
 export interface ElectronDownloadRequest {

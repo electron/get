@@ -66,6 +66,23 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com/v6.0.0/electron-v6.0.0-linux-x64.zip"`);
     });
 
+    it('should allow for setting only a base url when mirrorOptions.baseOnly is set', () => {
+      expect(
+        getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            mirror: 'https://mirror.example.com',
+            customDir: 'v1.2.3',
+            customFilename: 'custom-built-electron.zip',
+            baseOnly: true,
+          },
+          platform: 'linux',
+          version: 'v6.0.0',
+        }),
+      ).toMatchInlineSnapshot(`"https://mirror.example.com"`);
+    });
+
     it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', () => {
       expect(
         getArtifactRemoteURL({
