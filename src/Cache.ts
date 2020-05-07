@@ -2,6 +2,7 @@ import debug from 'debug';
 import envPaths from 'env-paths';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as url from 'url';
 import * as sanitize from 'sanitize-filename';
 
 const d = debug('@electron/get:cache');
@@ -13,8 +14,11 @@ const defaultCacheRoot = envPaths('electron', {
 export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
-  private getCachePath(url: string, fileName: string): string {
-    const sanitizedUrl = sanitize(url);
+  private getCachePath(downloadUrl: string, fileName: string): string {
+    const { search, hash, ...rest } = url.parse(downloadUrl);
+    const strippedUrl = url.format(rest);
+
+    const sanitizedUrl = sanitize(strippedUrl);
     return path.resolve(this.cacheRoot, sanitizedUrl, fileName);
   }
 
