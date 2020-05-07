@@ -14,7 +14,7 @@ const defaultCacheRoot = envPaths('electron', {
 export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
-  private getCachePath(downloadUrl: string, fileName: string): string {
+  public getCachePath(downloadUrl: string, fileName: string): string {
     const { search, hash, ...rest } = url.parse(downloadUrl);
     const strippedUrl = url.format(rest);
 

@@ -19,6 +19,18 @@ describe('Cache', () => {
 
   afterEach(() => fs.remove(cacheDir));
 
+  describe('getCachePath()', () => {
+    it('should strip the hash and query params off the url', async () => {
+      const firstUrl = 'https://example.com?foo=1';
+      const secondUrl = 'https://example.com?foo=2';
+      const assetName = 'electron-v7.2.4-darwin-x64.zip-v7.2.4-darwin-x64.zip';
+
+      expect(await cache.getCachePath(firstUrl, assetName)).toEqual(
+        await cache.getCachePath(secondUrl, assetName),
+      );
+    });
+  });
+
   describe('getPathForFileInCache()', () => {
     it('should return null for a file not in the cache', async () => {
       expect(await cache.getPathForFileInCache(dummyUrl, 'test.txt')).toBeNull();
