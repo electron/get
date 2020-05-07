@@ -85,6 +85,23 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(`"https://mirror.example.com"`);
     });
 
+    it('should replace the nightly base URL when mirrorOptions.nightlyMirror is set', async () => {
+      expect(
+        await getArtifactRemoteURL({
+          arch: 'x64',
+          artifactName: 'electron',
+          mirrorOptions: {
+            mirror: 'https://mirror.example.com/',
+            nightlyMirror: 'https://nightly.example.com/',
+          },
+          platform: 'linux',
+          version: 'v6.0.0-nightly',
+        }),
+      ).toMatchInlineSnapshot(
+        `"https://nightly.example.com/v6.0.0-nightly/electron-v6.0.0-nightly-linux-x64.zip"`,
+      );
+    });
+
     it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', async () => {
       expect(
         await getArtifactRemoteURL({

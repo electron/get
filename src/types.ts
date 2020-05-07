@@ -2,9 +2,13 @@ import { Downloader } from './Downloader';
 
 export interface MirrorOptions {
   /**
-   * The Electron nightly-specific mirror URL.
+   * DEPRECATED - see nightlyMirror.
    */
   nightly_mirror?: string;
+  /**
+   * The Electron nightly-specific mirror URL.
+   */
+  nightlyMirror?: string;
   /**
    * The base URL of the mirror to download from,
    * e.g https://github.com/electron/electron/releases/download

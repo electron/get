@@ -40,7 +40,7 @@ available:
 
 * `mirrorOptions` Object
   * `mirror` String (optional) - The base URL of the mirror to download from.
-  * `nightly_mirror` String (optional) - The Electron nightly-specific mirror URL.
+  * `nightlyMirror` String (optional) - The Electron nightly-specific mirror URL.
   * `customDir` String (optional) - The name of the directory to download from, often scoped by version number.
   * `customFilename` String (optional) - The name of the asset to download.
   * `resolveAssetURL` Function (optional) - A function allowing customization of the url used to download the asset.
@@ -52,7 +52,7 @@ https://github.com/electron/electron/releases/download/v4.0.4/electron-v4.0.4-li
 |                                                     |       |                           |
 -------------------------------------------------------       -----------------------------
                         |                                                   |
-              mirror / nightly_mirror                  |    |         customFilename
+              mirror / nightlyMirror                  |    |         customFilename
                                                        ------
                                                          ||
                                                       customDir
@@ -74,7 +74,7 @@ const zipFilePath = await download('4.0.4', {
 
 const nightlyZipFilePath = await download('8.0.0-nightly.20190901', {
   mirrorOptions: {
-    nightly_mirror: 'https://nightly.example.com/',
+    nightlyMirror: 'https://nightly.example.com/',
     customDir: 'nightlies',
     customFilename: 'nightly-linux.zip'
   }
