@@ -1,7 +1,6 @@
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
-import * as sanitize from 'sanitize-filename';
 
 import { Cache } from '../src/Cache';
 
@@ -10,7 +9,7 @@ describe('Cache', () => {
   let cache: Cache;
 
   const dummyUrl = 'dummy://';
-  const sanitizedDummyUrl = sanitize(dummyUrl);
+  const sanitizedDummyUrl = 'dummy';
 
   beforeEach(async () => {
     cacheDir = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));

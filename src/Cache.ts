@@ -1,9 +1,9 @@
 import debug from 'debug';
 import envPaths from 'env-paths';
+import * as filenamify from 'filenamify';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
-import * as sanitize from 'sanitize-filename';
 
 const d = debug('@electron/get:cache');
 
@@ -18,7 +18,7 @@ export class Cache {
     const { search, hash, ...rest } = url.parse(downloadUrl);
     const strippedUrl = url.format(rest);
 
-    const sanitizedUrl = sanitize(strippedUrl);
+    const sanitizedUrl = filenamify(strippedUrl, { maxLength: 255, replacement: '' });
     return path.resolve(this.cacheRoot, sanitizedUrl, fileName);
   }
 
