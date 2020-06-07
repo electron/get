@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>MirrorOptions | @electron/get</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for @electron/get">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -87,7 +87,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#customdir" class="tsd-kind-icon">custom<wbr>Dir</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#customfilename" class="tsd-kind-icon">custom<wbr>Filename</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#mirror" class="tsd-kind-icon">mirror</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#nightlymirror" class="tsd-kind-icon">nightly<wbr>Mirror</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#nightly_mirror" class="tsd-kind-icon">nightly_<wbr>mirror</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_types_.mirroroptions.html#resolveasseturl" class="tsd-kind-icon">resolve<wbr>AssetURL</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,9 +103,15 @@
 					<div class="tsd-signature tsd-kind-icon">custom<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/electron/get/blob/e847d27c/src/types.ts#L9">types.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L21">types.ts:21</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the directory to download from,
+							often scoped by version number e.g &#39;v4.0.4&#39;</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="customfilename" class="tsd-anchor"></a>
@@ -111,9 +119,15 @@
 					<div class="tsd-signature tsd-kind-icon">custom<wbr>Filename<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/electron/get/blob/e847d27c/src/types.ts#L10">types.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L26">types.ts:26</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the asset to download,
+							e.g &#39;electron-v4.0.4-linux-x64.zip&#39;</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="mirror" class="tsd-anchor"></a>
@@ -121,9 +135,30 @@
 					<div class="tsd-signature tsd-kind-icon">mirror<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/electron/get/blob/e847d27c/src/types.ts#L8">types.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L16">types.ts:16</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The base URL of the mirror to download from,
+							e.g <a href="https://github.com/electron/electron/releases/download">https://github.com/electron/electron/releases/download</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="nightlymirror" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> nightly<wbr>Mirror</h3>
+					<div class="tsd-signature tsd-kind-icon">nightly<wbr>Mirror<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L11">types.ts:11</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The Electron nightly-specific mirror URL.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="nightly_mirror" class="tsd-anchor"></a>
@@ -131,12 +166,28 @@
 					<div class="tsd-signature tsd-kind-icon">nightly_<wbr>mirror<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/electron/get/blob/e847d27c/src/types.ts#L7">types.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L7">types.ts:7</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The Electron nightly-specific mirror URL.</p>
+							<p>DEPRECATED - see nightlyMirror.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="resolveasseturl" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> resolve<wbr>AssetURL</h3>
+					<div class="tsd-signature tsd-kind-icon">resolve<wbr>AssetURL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../modules/_types_.html#downloadoptions" class="tsd-signature-type">DownloadOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/electron/get/blob/8e287c27/src/types.ts#L31">types.ts:31</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A function allowing customization of the url returned
+							from getArtifactRemoteURL().</p>
 						</div>
 					</div>
 				</section>
@@ -148,46 +199,46 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_cache_.html">"<wbr>Cache"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_cache_.html">&quot;<wbr>Cache&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_downloader_.html">"<wbr>Downloader"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_downloader_.html">&quot;<wbr>Downloader&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_gotdownloader_.html">"<wbr>Got<wbr>Downloader"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_gotdownloader_.html">&quot;<wbr>Got<wbr>Downloader&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_artifact_utils_.html">"artifact-<wbr>utils"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_artifact_utils_.html">&quot;artifact-<wbr>utils&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_downloader_resolver_.html">"downloader-<wbr>resolver"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_downloader_resolver_.html">&quot;downloader-<wbr>resolver&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_index_.html">"index"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_index_.html">&quot;index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_proxy_.html">"proxy"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_proxy_.html">&quot;proxy&quot;</a>
 					</li>
-					<li class="current tsd-kind-external-module">
-						<a href="../modules/_types_.html">"types"</a>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_types_.html">&quot;types&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_.html">"utils"</a>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_utils_.html">&quot;utils&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_types_.electrondownloadrequest.html" class="tsd-kind-icon">Electron<wbr>Download<wbr>Request</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_types_.electrondownloadrequestoptions.html" class="tsd-kind-icon">Electron<wbr>Download<wbr>Request<wbr>Options</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_types_.mirroroptions.html" class="tsd-kind-icon">Mirror<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -200,28 +251,34 @@
 								<a href="_types_.mirroroptions.html#mirror" class="tsd-kind-icon">mirror</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_types_.mirroroptions.html#nightlymirror" class="tsd-kind-icon">nightly<wbr>Mirror</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_types_.mirroroptions.html#nightly_mirror" class="tsd-kind-icon">nightly_<wbr>mirror</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_types_.mirroroptions.html#resolveasseturl" class="tsd-kind-icon">resolve<wbr>AssetURL</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/_types_.html#downloadoptions" class="tsd-kind-icon">Download<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/_types_.html#electronartifactdetails" class="tsd-kind-icon">Electron<wbr>Artifact<wbr>Details</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/_types_.html#electrongenericartifactdetails" class="tsd-kind-icon">Electron<wbr>Generic<wbr>Artifact<wbr>Details</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/_types_.html#electronplatformartifactdetails" class="tsd-kind-icon">Electron<wbr>Platform<wbr>Artifact<wbr>Details</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/_types_.html#electronplatformartifactdetailswithdefaults" class="tsd-kind-icon">Electron<wbr>Platform<wbr>Artifact<wbr>Details<wbr>With<wbr>Defaults</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="../modules/_types_.html#omit" class="tsd-kind-icon">Omit</a>
 					</li>
 				</ul>
@@ -234,62 +291,25 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
