@@ -77,24 +77,24 @@
 				<a href="#simple-downloading-an-electron-binary-zip" id="simple-downloading-an-electron-binary-zip" style="color: inherit; text-decoration: none;">
 					<h3>Simple: Downloading an Electron Binary ZIP</h3>
 				</a>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@electron/get&#x27;</span>;
 
 <span class="hljs-comment">// NB: Use this syntax within an async function, Node does not have support for</span>
 <span class="hljs-comment">//     top-level await as of Node 12.</span>
-<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>);</code></pre>
+<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">&#x27;4.0.4&#x27;</span>);</code></pre>
 				<a href="#advanced-downloading-a-macos-electron-symbol-file" id="advanced-downloading-a-macos-electron-symbol-file" style="color: inherit; text-decoration: none;">
 					<h3>Advanced: Downloading a macOS Electron Symbol File</h3>
 				</a>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { downloadArtifact } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { downloadArtifact } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@electron/get&#x27;</span>;
 
 <span class="hljs-comment">// NB: Use this syntax within an async function, Node does not have support for</span>
 <span class="hljs-comment">//     top-level await as of Node 12.</span>
 <span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> downloadArtifact({
-  version: <span class="hljs-string">'4.0.4'</span>,
-  platform: <span class="hljs-string">'darwin'</span>,
-  artifactName: <span class="hljs-string">'electron'</span>,
-  artifactSuffix: <span class="hljs-string">'symbols'</span>,
-  arch: <span class="hljs-string">'x64'</span>,
+  <span class="hljs-attr">version</span>: <span class="hljs-string">&#x27;4.0.4&#x27;</span>,
+  <span class="hljs-attr">platform</span>: <span class="hljs-string">&#x27;darwin&#x27;</span>,
+  <span class="hljs-attr">artifactName</span>: <span class="hljs-string">&#x27;electron&#x27;</span>,
+  <span class="hljs-attr">artifactSuffix</span>: <span class="hljs-string">&#x27;symbols&#x27;</span>,
+  <span class="hljs-attr">arch</span>: <span class="hljs-string">&#x27;x64&#x27;</span>,
 });</code></pre>
 				<a href="#specifying-a-mirror" id="specifying-a-mirror" style="color: inherit; text-decoration: none;">
 					<h3>Specifying a mirror</h3>
@@ -120,33 +120,33 @@
                                                        ------
                                                          </span>||
                                                       customDir</code></pre><p>Example:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">'@electron/get'</span>;
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { download } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@electron/get&#x27;</span>;
 
-<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>, {
-  mirrorOptions: {
-    mirror: <span class="hljs-string">'https://mirror.example.com/electron/'</span>,
-    customDir: <span class="hljs-string">'custom'</span>,
-    customFilename: <span class="hljs-string">'unofficial-electron-linux.zip'</span>
+<span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">&#x27;4.0.4&#x27;</span>, {
+  <span class="hljs-attr">mirrorOptions</span>: {
+    <span class="hljs-attr">mirror</span>: <span class="hljs-string">&#x27;https://mirror.example.com/electron/&#x27;</span>,
+    <span class="hljs-attr">customDir</span>: <span class="hljs-string">&#x27;custom&#x27;</span>,
+    <span class="hljs-attr">customFilename</span>: <span class="hljs-string">&#x27;unofficial-electron-linux.zip&#x27;</span>
   }
 });
 <span class="hljs-comment">// Will download from https://mirror.example.com/electron/custom/unofficial-electron-linux.zip</span>
 
-<span class="hljs-keyword">const</span> nightlyZipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'8.0.0-nightly.20190901'</span>, {
-  mirrorOptions: {
-    nightlyMirror: <span class="hljs-string">'https://nightly.example.com/'</span>,
-    customDir: <span class="hljs-string">'nightlies'</span>,
-    customFilename: <span class="hljs-string">'nightly-linux.zip'</span>
+<span class="hljs-keyword">const</span> nightlyZipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">&#x27;8.0.0-nightly.20190901&#x27;</span>, {
+  <span class="hljs-attr">mirrorOptions</span>: {
+    <span class="hljs-attr">nightlyMirror</span>: <span class="hljs-string">&#x27;https://nightly.example.com/&#x27;</span>,
+    <span class="hljs-attr">customDir</span>: <span class="hljs-string">&#x27;nightlies&#x27;</span>,
+    <span class="hljs-attr">customFilename</span>: <span class="hljs-string">&#x27;nightly-linux.zip&#x27;</span>
   }
 });
 <span class="hljs-comment">// Will download from https://nightly.example.com/nightlies/nightly-linux.zip</span></code></pre>
 				<p><code>customDir</code> can have the placeholder <code>{{ version }}</code>, which will be replaced by the version
 				specified (without the leading <code>v</code>). For example:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">'4.0.4'</span>, {
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> zipFilePath = <span class="hljs-keyword">await</span> download(<span class="hljs-string">&#x27;4.0.4&#x27;</span>, {
   <span class="hljs-attr">mirrorOptions</span>: {
-    <span class="hljs-attr">mirror</span>: <span class="hljs-string">'https://mirror.example.com/electron/'</span>,
-    <span class="hljs-attr">customDir</span>: <span class="hljs-string">'version-{{ version }}'</span>,
-    <span class="hljs-attr">platform</span>: <span class="hljs-string">'linux'</span>,
-    <span class="hljs-attr">arch</span>: <span class="hljs-string">'x64'</span>
+    <span class="hljs-attr">mirror</span>: <span class="hljs-string">&#x27;https://mirror.example.com/electron/&#x27;</span>,
+    <span class="hljs-attr">customDir</span>: <span class="hljs-string">&#x27;version-{{ version }}&#x27;</span>,
+    <span class="hljs-attr">platform</span>: <span class="hljs-string">&#x27;linux&#x27;</span>,
+    <span class="hljs-attr">arch</span>: <span class="hljs-string">&#x27;x64&#x27;</span>
   }
 });
 <span class="hljs-comment">// Will download from https://mirror.example.com/electron/version-4.0.4/electron-v4.0.4-linux-x64.zip</span></code></pre>
