@@ -54,12 +54,10 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
       base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
     }
   }
-
   const path = mirrorVar('customDir', opts, details.version).replace(
     '{{ version }}',
     details.version.replace(/^v/, ''),
   );
-  console.log('path', path, 'details.version', details.version);
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
   // Allow customized download URL resolution.
@@ -68,6 +66,5 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
     return url;
   }
 
-  console.log('path', path, `${base}${path}/${file}`);
   return `${base}${path}/${file}`;
 }
