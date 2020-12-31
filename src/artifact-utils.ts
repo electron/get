@@ -1,8 +1,8 @@
 import { ElectronArtifactDetails, MirrorOptions } from './types';
-import { ensureIsTruthyString } from './utils';
+import { ensureIsTruthyString, normalizeVersion } from './utils';
 
-const BASE_URL = 'https://github.com/electron/electron/releases/download/';
-const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
+const BASE_URL = 'https://github.com/electron/electron/releases/download/v';
+const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/v';
 
 export function getArtifactFileName(details: ElectronArtifactDetails) {
   ensureIsTruthyString(details, 'artifactName');
@@ -17,7 +17,7 @@ export function getArtifactFileName(details: ElectronArtifactDetails) {
 
   return `${[
     details.artifactName,
-    details.version,
+    normalizeVersion(details.version),
     details.platform,
     details.arch,
     ...(details.artifactSuffix ? [details.artifactSuffix] : []),
@@ -31,15 +31,15 @@ function mirrorVar(
 ) {
   // Convert camelCase to camel_case for env var reading
   const lowerName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
-
-  return (
+  const value =
     process.env[`NPM_CONFIG_ELECTRON_${lowerName.toUpperCase()}`] ||
     process.env[`npm_config_electron_${lowerName}`] ||
     process.env[`npm_package_config_electron_${lowerName}`] ||
     process.env[`ELECTRON_${lowerName.toUpperCase()}`] ||
     options[name] ||
-    defaultValue
-  );
+    defaultValue;
+
+  return value;
 }
 
 export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Promise<string> {
@@ -54,10 +54,12 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
       base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
     }
   }
+
   const path = mirrorVar('customDir', opts, details.version).replace(
     '{{ version }}',
     details.version.replace(/^v/, ''),
   );
+  console.log('path', path, 'details.version', details.version);
   const file = mirrorVar('customFilename', opts, getArtifactFileName(details));
 
   // Allow customized download URL resolution.
@@ -66,5 +68,6 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
     return url;
   }
 
+  console.log('path', path, `${base}${path}/${file}`);
   return `${base}${path}/${file}`;
 }

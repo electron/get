@@ -14,7 +14,6 @@ import { getDownloaderForSystem } from './downloader-resolver';
 import { initializeProxy } from './proxy';
 import {
   withTempDirectoryIn,
-  normalizeVersion,
   getHostArch,
   getNodeArch,
   ensureIsTruthyString,
@@ -77,9 +76,7 @@ export async function downloadArtifact(
   }
   ensureIsTruthyString(artifactDetails, 'version');
 
-  artifactDetails.version = normalizeVersion(
-    process.env.ELECTRON_CUSTOM_VERSION || artifactDetails.version,
-  );
+  artifactDetails.version = process.env.ELECTRON_CUSTOM_VERSION || artifactDetails.version;
   const fileName = getArtifactFileName(artifactDetails);
   const url = await getArtifactRemoteURL(artifactDetails);
   const cache = new Cache(artifactDetails.cacheRoot);
