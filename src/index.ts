@@ -1,5 +1,6 @@
 import debug from 'debug';
 import * as path from 'path';
+import * as semver from 'semver';
 import * as sumchecker from 'sumchecker';
 
 import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
@@ -122,9 +123,11 @@ export async function downloadArtifact(
     await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
 
     // Don't try to verify the hash of the hash file itself
+    // and for older versions that don't have a SHASUMS256.txt
     if (
       !artifactDetails.artifactName.startsWith('SHASUMS256') &&
-      !artifactDetails.unsafelyDisableChecksums
+      !artifactDetails.unsafelyDisableChecksums &&
+      semver.gte(artifactDetails.version, '1.3.2')
     ) {
       const shasumPath = await downloadArtifact({
         isGeneric: true,
@@ -136,9 +139,19 @@ export async function downloadArtifact(
         downloader: artifactDetails.downloader,
         mirrorOptions: artifactDetails.mirrorOptions,
       });
-      await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
-        path.basename(tempDownloadPath),
-      ]);
+
+      // For versions 1.3.2 - 1.3.4, need to overwrite the `defaultTextEncoding` option:
+      // https://github.com/electron/electron/pull/6676#discussion_r75332120
+      if (semver.satisfies(artifactDetails.version, '1.3.2 - 1.3.4')) {
+        const validatorOptions: sumchecker.ChecksumOptions = {};
+        validatorOptions.defaultTextEncoding = 'binary';
+        const checker = new sumchecker.ChecksumValidator('sha256', shasumPath, validatorOptions);
+        await checker.validate(path.dirname(tempDownloadPath), path.basename(tempDownloadPath));
+      } else {
+        await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
+          path.basename(tempDownloadPath),
+        ]);
+      }
     }
 
     return await cache.putFileInCache(url, tempDownloadPath, fileName);
