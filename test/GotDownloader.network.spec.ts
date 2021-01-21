@@ -1,6 +1,5 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Progress } from 'got';
 
 import { GotDownloader } from '../src/GotDownloader';
 import { withTempDirectory } from '../src/utils';
@@ -18,7 +17,7 @@ describe('GotDownloader', () => {
           'https://github.com/electron/electron/releases/download/v2.0.18/SHASUMS256.txt',
           testFile,
           {
-            getProgressCallback: (progress: Progress) => {
+            getProgressCallback: (/* progress: Progress */) => {
               progressCallbackCalled = true;
               return Promise.resolve();
             },
@@ -47,7 +46,7 @@ describe('GotDownloader', () => {
       spy.mockImplementationOnce(() => {
         const emitter = new EventEmitter();
         setTimeout(() => emitter.emit('error', 'bad write error thing'), 10);
-        return emitter as any;
+        return emitter as fs.WriteStream;
       });
       await withTempDirectory(async dir => {
         const testFile = path.resolve(dir, 'test.txt');

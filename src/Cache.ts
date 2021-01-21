@@ -15,6 +15,7 @@ export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
   public getCachePath(downloadUrl: string, fileName: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { search, hash, ...rest } = url.parse(downloadUrl);
     const strippedUrl = url.format(rest);
 

@@ -75,7 +75,7 @@ describe('artifact-utils', () => {
             mirror: 'https://mirror.example.com',
             customDir: 'v1.2.3',
             customFilename: 'custom-built-electron.zip',
-            resolveAssetURL: opts => {
+            resolveAssetURL: (opts): Promise<string> => {
               return opts.mirrorOptions.mirror || '';
             },
           },
@@ -109,6 +109,7 @@ describe('artifact-utils', () => {
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com/',
+            // eslint-disable-next-line @typescript-eslint/camelcase
             nightly_mirror: 'https://nightly.example.com/',
           },
           platform: 'linux',

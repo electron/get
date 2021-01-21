@@ -41,29 +41,32 @@ describe('utils', () => {
     });
 
     it('should delete the directory when the function terminates', async () => {
-      let mDir: string;
+      let mDir: string | undefined = undefined;
       await withTempDirectory(async dir => {
         mDir = dir;
       });
-      expect(mDir!).not.toBeUndefined();
+      expect(mDir).not.toBeUndefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(await fs.pathExists(mDir!)).toEqual(false);
     });
 
     it('should delete the directory and reject correctly even if the function throws', async () => {
-      let mDir: string;
+      let mDir: string | undefined;
       await expect(
         withTempDirectory(async dir => {
           mDir = dir;
           throw 'my error';
         }),
       ).rejects.toEqual('my error');
-      expect(mDir!).not.toBeUndefined();
+      expect(mDir).not.toBeUndefined();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(await fs.pathExists(mDir!)).toEqual(false);
     });
   });
 
   describe('getHostArch()', () => {
     let savedArch: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let savedVariables: any;
 
     beforeEach(() => {
@@ -96,6 +99,7 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'arm',
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       process.config.variables = {} as any;
       expect(getHostArch()).toEqual('armv7l');
     });
@@ -105,6 +109,7 @@ describe('utils', () => {
         Object.defineProperty(process, 'arch', {
           value: 'arm',
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
         process.config.variables = { arm_version: '6' } as any;
         expect(getHostArch()).toEqual(uname());
       }
@@ -114,6 +119,7 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'arm',
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
       process.config.variables = { arm_version: '7' } as any;
       expect(getHostArch()).toEqual('armv7l');
     });

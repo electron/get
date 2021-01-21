@@ -10,8 +10,10 @@
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "typedoc --out docs",
+    "eslint": "eslint --ext .ts src test",
     "jest": "jest --coverage",
-    "lint": "prettier --check \"src/**/*.ts\"",
+    "lint": "npm run prettier && npm run eslint",
+    "prettier": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "test": "npm run lint && npm run jest",
     "test:nonetwork": "npm run lint && npm run jest -- --testPathIgnorePatterns network.spec"
@@ -42,6 +44,9 @@
     "@types/node": "^12.0.2",
     "@types/progress": "^2.0.3",
     "@types/semver": "^6.2.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "eslint": "^6.8.0",
     "husky": "^2.3.0",
     "jest": "^24.8.0",
     "lint-staged": "^8.1.7",
@@ -51,16 +56,25 @@
     "typedoc": "^0.17.2",
     "typescript": "^3.8.0"
   },
-  "lint-staged": {
-    "*.ts": [
-      "prettier --write",
-      "git add"
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
     ]
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   },
   "keywords": [
     "electron",
