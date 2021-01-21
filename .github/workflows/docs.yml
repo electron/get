@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: yarn build:docs
       - uses: docker://malept/gha-gh-pages:1.3.0
         with:

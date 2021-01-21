@@ -9,7 +9,7 @@ steps-test: &steps-test
     - run: git config --global core.autocrlf input
     - checkout
     - *step-restore-cache
-    - run: yarn
+    - run: yarn --frozen-lockfile
     - save_cache:
         paths:
           - node_modules
