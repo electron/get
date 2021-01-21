@@ -96,5 +96,8 @@
   "optionalDependencies": {
     "global-agent": "^2.0.2",
     "global-tunnel-ng": "^2.7.1"
+  },
+  "resolutions": {
+    "*/@typescript-eslint/typescript-estree/semver": "^6.3.0"
   }
 }
