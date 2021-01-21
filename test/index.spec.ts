@@ -146,11 +146,12 @@ describe('Public API', () => {
     });
 
     it('should work with the default platform/arch', async () => {
-      await downloadArtifact({
+      const artifactPath = await downloadArtifact({
         downloader,
         version: '2.0.3',
         artifactName: 'electron',
       });
+      expect(artifactPath).toContain('electron-v2.0.3-linux-x64.zip');
     });
 
     it('should download the same artifact for falsy platform/arch as default platform/arch', async () => {

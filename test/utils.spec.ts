@@ -104,16 +104,16 @@ describe('utils', () => {
       expect(getHostArch()).toEqual('armv7l');
     });
 
-    it('should return uname on arm 6', () => {
-      if (process.platform !== 'win32') {
+    if (process.platform !== 'win32') {
+      it('should return uname on arm 6', () => {
         Object.defineProperty(process, 'arch', {
           value: 'arm',
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
         process.config.variables = { arm_version: '6' } as any;
         expect(getHostArch()).toEqual(uname());
-      }
-    });
+      });
+    }
 
     it('should return armv7l on arm 7', () => {
       Object.defineProperty(process, 'arch', {
