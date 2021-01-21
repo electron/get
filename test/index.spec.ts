@@ -5,6 +5,9 @@ import * as path from 'path';
 
 import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
+import * as sumchecker from 'sumchecker';
+
+jest.mock('sumchecker');
 
 describe('Public API', () => {
   const downloader = new FixtureDownloader();
@@ -208,6 +211,54 @@ describe('Public API', () => {
       expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
       expect(path.extname(zipPath)).toEqual('.zip');
       process.env.ELECTRON_CUSTOM_VERSION = '';
+    });
+
+    describe('sumchecker', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should use the default constructor for versions from v1.3.5 onward', async () => {
+        await downloadArtifact({
+          artifactName: 'electron',
+          downloader,
+          force: true,
+          version: 'v1.3.5',
+        });
+        await downloadArtifact({
+          artifactName: 'electron',
+          downloader,
+          force: true,
+          version: 'v2.0.3',
+        });
+
+        expect(sumchecker).toHaveBeenCalledTimes(2);
+        expect(sumchecker.ChecksumValidator).not.toHaveBeenCalled();
+      });
+
+      it('should use ChecksumValidator for v1.3.2 - v.1.3.4', async () => {
+        await downloadArtifact({
+          artifactName: 'electron',
+          downloader,
+          force: true,
+          version: 'v1.3.3',
+        });
+
+        expect(sumchecker).not.toHaveBeenCalled();
+        expect(sumchecker.ChecksumValidator).toHaveBeenCalledTimes(1);
+      });
+
+      it('should not be called for versions prior to v1.3.2', async () => {
+        await downloadArtifact({
+          artifactName: 'electron',
+          downloader,
+          force: true,
+          version: 'v1.0.0',
+        });
+
+        expect(sumchecker).not.toHaveBeenCalled();
+        expect(sumchecker.ChecksumValidator).not.toHaveBeenCalled();
+      });
     });
   });
 });
