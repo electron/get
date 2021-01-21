@@ -151,7 +151,7 @@ describe('Public API', () => {
         version: '2.0.3',
         artifactName: 'electron',
       });
-      expect(artifactPath).toContain('electron-v2.0.3-linux-x64.zip');
+      expect(artifactPath).toContain(`electron-v2.0.3-${process.platform}-${process.arch}.zip`);
     });
 
     it('should download the same artifact for falsy platform/arch as default platform/arch', async () => {
