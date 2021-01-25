@@ -1,9 +1,9 @@
 import debug from 'debug';
 import envPaths from 'env-paths';
-import * as filenamify from 'filenamify';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
+import * as crypto from 'crypto';
 
 const d = debug('@electron/get:cache');
 
@@ -15,11 +15,15 @@ export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
   public getCachePath(downloadUrl: string, fileName: string): string {
-    const { search, hash, ...rest } = url.parse(downloadUrl);
+    const parsedDownloadUrl = url.parse(downloadUrl);
+    const { search, hash, ...rest } = parsedDownloadUrl;
     const strippedUrl = url.format(rest);
+    const checksum = crypto
+      .createHash('sha256')
+      .update(strippedUrl)
+      .digest('hex');
 
-    const sanitizedUrl = filenamify(strippedUrl, { maxLength: 255, replacement: '' });
-    return path.resolve(this.cacheRoot, sanitizedUrl, fileName);
+    return path.resolve(this.cacheRoot, checksum, fileName);
   }
 
   public async getPathForFileInCache(url: string, fileName: string): Promise<string | null> {
