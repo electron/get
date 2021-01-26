@@ -1,5 +1,8 @@
 import { Downloader } from './Downloader';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DownloadOptions = any;
+
 export interface MirrorOptions {
   /**
    * DEPRECATED - see nightlyMirror.
@@ -80,7 +83,7 @@ export interface ElectronDownloadRequestOptions {
    * The custom [[Downloader]] class used to download artifacts. Defaults to the
    * built-in [[GotDownloader]].
    */
-  downloader?: Downloader<any>;
+  downloader?: Downloader<DownloadOptions>;
   /**
    * A temporary directory for downloads.
    * It is used before artifacts are put into cache.
@@ -125,5 +128,3 @@ export type ElectronPlatformArtifactDetailsWithDefaults =
       arch?: string;
     })
   | ElectronGenericArtifactDetails;
-
-export type DownloadOptions = any;

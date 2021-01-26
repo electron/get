@@ -5,7 +5,7 @@ const d = debug('@electron/get:proxy');
 /**
  * Initializes a third-party proxy module for HTTP(S) requests.
  */
-export function initializeProxy() {
+export function initializeProxy(): void {
   try {
     // Code originally from https://github.com/yeoman/yo/blob/b2eea87e/lib/cli.js#L19-L28
     const MAJOR_NODEJS_VERSION = parseInt(process.version.slice(1).split('.')[0], 10);

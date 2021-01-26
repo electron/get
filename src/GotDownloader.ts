@@ -23,7 +23,11 @@ export type GotDownloaderOptions = got.GotOptions<string | null> & {
 };
 
 export class GotDownloader implements Downloader<GotDownloaderOptions> {
-  async download(url: string, targetFilePath: string, options?: GotDownloaderOptions) {
+  async download(
+    url: string,
+    targetFilePath: string,
+    options?: GotDownloaderOptions,
+  ): Promise<void> {
     if (!options) {
       options = {};
     }
@@ -47,6 +51,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
             },
           );
           // https://github.com/visionmedia/node-progress/issues/159
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (bar as any).start = start;
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);

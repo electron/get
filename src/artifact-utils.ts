@@ -4,7 +4,7 @@ import { ensureIsTruthyString } from './utils';
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
 
-export function getArtifactFileName(details: ElectronArtifactDetails) {
+export function getArtifactFileName(details: ElectronArtifactDetails): string {
   ensureIsTruthyString(details, 'artifactName');
 
   if (details.isGeneric) {
@@ -28,7 +28,7 @@ function mirrorVar(
   name: keyof Omit<MirrorOptions, 'resolveAssetURL'>,
   options: MirrorOptions,
   defaultValue: string,
-) {
+): string {
   // Convert camelCase to camel_case for env var reading
   const lowerName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
 
