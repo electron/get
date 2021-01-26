@@ -1,19 +1,14 @@
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
-import * as crypto from 'crypto';
-
 import { Cache } from '../src/Cache';
 
 describe('Cache', () => {
   let cacheDir: string;
   let cache: Cache;
 
-  const dummyUrl = 'dummy://';
-  const sanitizedDummyUrl = crypto
-    .createHash('sha256')
-    .update(dummyUrl)
-    .digest('hex');
+  const dummyUrl = 'dummy://dummypath';
+  const sanitizedDummyUrl = Cache.getCacheDirectory(dummyUrl);
 
   beforeEach(async () => {
     cacheDir = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
