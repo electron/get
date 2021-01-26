@@ -33,25 +33,6 @@ if (process.env.ELECTRON_GET_USE_PROXY) {
 }
 
 /**
- * Downloads a specific version of Electron and returns an absolute path to a
- * ZIP file.
- *
- * @param version - The version of Electron you want to download
- */
-export function download(
-  version: string,
-  options?: ElectronDownloadRequestOptions,
-): Promise<string> {
-  return downloadArtifact({
-    ...options,
-    version,
-    platform: process.platform,
-    arch: process.arch,
-    artifactName: 'electron',
-  });
-}
-
-/**
  * Downloads an artifact from an Electron release and returns an absolute path
  * to the downloaded file.
  *
@@ -155,5 +136,24 @@ export async function downloadArtifact(
     }
 
     return await cache.putFileInCache(url, tempDownloadPath, fileName);
+  });
+}
+
+/**
+ * Downloads a specific version of Electron and returns an absolute path to a
+ * ZIP file.
+ *
+ * @param version - The version of Electron you want to download
+ */
+export function download(
+  version: string,
+  options?: ElectronDownloadRequestOptions,
+): Promise<string> {
+  return downloadArtifact({
+    ...options,
+    version,
+    platform: process.platform,
+    arch: process.arch,
+    artifactName: 'electron',
   });
 }

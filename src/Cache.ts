@@ -16,6 +16,7 @@ export class Cache {
 
   public getCachePath(downloadUrl: string, fileName: string): string {
     const parsedDownloadUrl = url.parse(downloadUrl);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { search, hash, ...rest } = parsedDownloadUrl;
     const strippedUrl = url.format(rest);
     const checksum = crypto

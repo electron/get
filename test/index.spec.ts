@@ -5,6 +5,7 @@ import * as path from 'path';
 
 import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
+import { DownloadOptions } from '../src/types';
 import * as sumchecker from 'sumchecker';
 
 jest.mock('sumchecker');
@@ -87,7 +88,7 @@ describe('Public API', () => {
         cacheRoot,
         unsafelyDisableChecksums: true,
         downloader: {
-          async download(url: string, targetPath: string) {
+          async download(url: string, targetPath: string): Promise<void> {
             expect(
               url.replace(process.platform, 'platform').replace(process.arch, 'arch'),
             ).toMatchSnapshot();
@@ -107,7 +108,7 @@ describe('Public API', () => {
         cacheRoot,
         unsafelyDisableChecksums: true,
         downloader: {
-          async download(url: string, targetPath: string, opts?: any) {
+          async download(url: string, targetPath: string, opts?: DownloadOptions): Promise<void> {
             expect(opts).toStrictEqual(downloadOpts);
             await fs.writeFile(targetPath, 'file');
           },
@@ -145,11 +146,12 @@ describe('Public API', () => {
     });
 
     it('should work with the default platform/arch', async () => {
-      await downloadArtifact({
+      const artifactPath = await downloadArtifact({
         downloader,
         version: '2.0.3',
         artifactName: 'electron',
       });
+      expect(artifactPath).toContain(`electron-v2.0.3-${process.platform}-${process.arch}.zip`);
     });
 
     it('should download the same artifact for falsy platform/arch as default platform/arch', async () => {
