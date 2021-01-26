@@ -23,7 +23,8 @@ export class Cache {
     return crypto
       .createHash('sha256')
       .update(strippedUrl)
-      .digest('hex');
+      .digest('hex')
+      .substr(0, 10);
   }
 
   public getCachePath(downloadUrl: string, fileName: string): string {
