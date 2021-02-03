@@ -8,7 +8,7 @@ describe('Cache', () => {
   let cache: Cache;
 
   const dummyUrl = 'dummy://dummypath';
-  const sanitizedDummyUrl = '0c57d948bd';
+  const sanitizedDummyUrl = '0c57d948bd4829db99d75c3b4a5d6836c37bc335f38012981baf5d1193b5a612';
 
   beforeEach(async () => {
     cacheDir = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
