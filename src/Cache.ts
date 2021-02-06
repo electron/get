@@ -1,9 +1,9 @@
 import debug from 'debug';
 import envPaths from 'env-paths';
-import * as filenamify from 'filenamify';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as url from 'url';
+import * as crypto from 'crypto';
 
 const d = debug('@electron/get:cache');
 
@@ -14,13 +14,20 @@ const defaultCacheRoot = envPaths('electron', {
 export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
-  public getCachePath(downloadUrl: string, fileName: string): string {
+  public static getCacheDirectory(downloadUrl: string): string {
+    const parsedDownloadUrl = url.parse(downloadUrl);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { search, hash, ...rest } = url.parse(downloadUrl);
-    const strippedUrl = url.format(rest);
+    const { search, hash, pathname, ...rest } = parsedDownloadUrl;
+    const strippedUrl = url.format({ ...rest, pathname: path.dirname(pathname || 'electron') });
 
-    const sanitizedUrl = filenamify(strippedUrl, { maxLength: 255, replacement: '' });
-    return path.resolve(this.cacheRoot, sanitizedUrl, fileName);
+    return crypto
+      .createHash('sha256')
+      .update(strippedUrl)
+      .digest('hex');
+  }
+
+  public getCachePath(downloadUrl: string, fileName: string): string {
+    return path.resolve(this.cacheRoot, Cache.getCacheDirectory(downloadUrl), fileName);
   }
 
   public async getPathForFileInCache(url: string, fileName: string): Promise<string | null> {
