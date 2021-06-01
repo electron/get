@@ -30,7 +30,7 @@ describe('utils', () => {
 
   describe('withTempDirectory()', () => {
     it('should generate a new and empty directory', async () => {
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         expect(await fs.pathExists(dir)).toEqual(true);
         expect(await fs.readdir(dir)).toEqual([]);
       });
@@ -42,7 +42,7 @@ describe('utils', () => {
 
     it('should delete the directory when the function terminates', async () => {
       let mDir: string | undefined = undefined;
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         mDir = dir;
       });
       expect(mDir).not.toBeUndefined();
@@ -53,7 +53,7 @@ describe('utils', () => {
     it('should delete the directory and reject correctly even if the function throws', async () => {
       let mDir: string | undefined;
       await expect(
-        withTempDirectory(async dir => {
+        withTempDirectory(async (dir) => {
           mDir = dir;
           throw 'my error';
         }),
@@ -109,7 +109,7 @@ describe('utils', () => {
         Object.defineProperty(process, 'arch', {
           value: 'arm',
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         process.config.variables = { arm_version: '6' } as any;
         expect(getHostArch()).toEqual(uname());
       });
@@ -119,7 +119,7 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'arm',
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       process.config.variables = { arm_version: '7' } as any;
       expect(getHostArch()).toEqual('armv7l');
     });

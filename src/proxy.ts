@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as debug from 'debug';
 
 const d = debug('@electron/get:proxy');

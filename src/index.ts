@@ -92,7 +92,7 @@ export async function downloadArtifact(
     console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
   }
 
-  return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
+  return await withTempDirectoryIn(artifactDetails.tempDirectory, async (tempFolder) => {
     const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
 
     const downloader = artifactDetails.downloader || (await getDownloaderForSystem());

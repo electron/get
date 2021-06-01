@@ -46,7 +46,7 @@ describe('Cache', () => {
       const fakePath = path.resolve(__dirname, 'fake.file');
       await expect(cache.putFileInCache(dummyUrl, fakePath, 'fake.file')).rejects.toHaveProperty(
         'message',
-        `ENOENT: no such file or directory, stat '${fakePath}'`,
+        `ENOENT: no such file or directory, lstat '${fakePath}'`,
       );
     });
 

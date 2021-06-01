@@ -2,6 +2,7 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
+import { MirrorOptions } from './types';
 
 async function useAndRemoveDirectory<T>(
   directory: string,
@@ -40,10 +41,7 @@ export function normalizeVersion(version: string): string {
  * Runs the `uname` command and returns the trimmed output.
  */
 export function uname(): string {
-  return childProcess
-    .execSync('uname -m')
-    .toString()
-    .trim();
+  return childProcess.execSync('uname -m').toString().trim();
 }
 
 /**
@@ -83,7 +81,7 @@ export function isOfficialLinuxIA32Download(
   platform: string,
   arch: string,
   version: string,
-  mirrorOptions?: object,
+  mirrorOptions?: MirrorOptions,
 ): boolean {
   return (
     platform === 'linux' &&

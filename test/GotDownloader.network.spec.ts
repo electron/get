@@ -10,7 +10,7 @@ describe('GotDownloader', () => {
     it('should download a remote file to the given file path', async () => {
       const downloader = new GotDownloader();
       let progressCallbackCalled = false;
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
         expect(await fs.pathExists(testFile)).toEqual(false);
         await downloader.download(
@@ -29,9 +29,9 @@ describe('GotDownloader', () => {
       });
     });
 
-    it('should throw an error if the file does not exist', async function() {
+    it('should throw an error if the file does not exist', async function () {
       const downloader = new GotDownloader();
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
         const url = 'https://github.com/electron/electron/releases/download/v2.0.18/bad.file';
         const snapshot = `[HTTPError: Response code 404 (Not Found) for ${url}]`;
@@ -47,7 +47,7 @@ describe('GotDownloader', () => {
         setTimeout(() => emitter.emit('error', 'bad write error thing'), 10);
         return emitter as fs.WriteStream;
       });
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
         await expect(
           downloader.download(
@@ -60,7 +60,7 @@ describe('GotDownloader', () => {
 
     it('should download to a deep uncreated path', async () => {
       const downloader = new GotDownloader();
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'f', 'b', 'test.txt');
         expect(await fs.pathExists(testFile)).toEqual(false);
         await expect(

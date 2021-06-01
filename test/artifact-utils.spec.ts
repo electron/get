@@ -1,6 +1,10 @@
 import { getArtifactFileName, getArtifactRemoteURL } from '../src/artifact-utils';
 
 describe('artifact-utils', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('getArtifactFileName()', () => {
     it('should return just the artifact name for generic artifacts', () => {
       expect(
@@ -103,13 +107,13 @@ describe('artifact-utils', () => {
     });
 
     it('should replace the nightly base URL when mirrorOptions.nightly_mirror is set', async () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
       expect(
         await getArtifactRemoteURL({
           arch: 'x64',
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com/',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             nightly_mirror: 'https://nightly.example.com/',
           },
           platform: 'linux',
@@ -118,6 +122,7 @@ describe('artifact-utils', () => {
       ).toMatchInlineSnapshot(
         `"https://nightly.example.com/v6.0.0-nightly/electron-v6.0.0-nightly-linux-x64.zip"`,
       );
+      expect(warnSpy).toBeCalledWith('nightly_mirror is deprecated, please use nightlyMirror');
     });
 
     it('should replace the version dir when mirrorOptions.customDir is set', async () => {

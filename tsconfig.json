@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
-    "lib": [
-      "es2017"
-    ],
+    "target": "es2019",
+    "lib": ["es2019", "es2020.bigint", "es2020.string", "es2020.symbol.wellknown"],
     "sourceMap": true,
     "strict": true,
-    "outDir": "dist/cjs",
+    "outDir": "dist",
     "types": [
       "node",
       "jest"
