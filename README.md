@@ -115,6 +115,7 @@ This module downloads Electron to a known place on your system and caches it
 so that future requests for that asset can be returned instantly.  The cache
 locations are:
 
+* If the environment variable `ELECTRON_GET_CACHE_DIR` is set, that path is used.
 * Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
 * MacOS: `~/Library/Caches/electron/`
 * Windows: `%LOCALAPPDATA%/electron/Cache` or `~/AppData/Local/electron/Cache/`

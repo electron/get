@@ -7,9 +7,11 @@ import * as crypto from 'crypto';
 
 const d = debug('@electron/get:cache');
 
-const defaultCacheRoot = envPaths('electron', {
-  suffix: '',
-}).cache;
+const defaultCacheRoot =
+  process.env.ELECTRON_GET_CACHE_DIR ||
+  envPaths('electron', {
+    suffix: '',
+  }).cache;
 
 export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
