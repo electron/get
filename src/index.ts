@@ -1,4 +1,5 @@
 import debug from 'debug';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as semver from 'semver';
 import * as sumchecker from 'sumchecker';
@@ -20,6 +21,7 @@ import {
   getNodeArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
+  withTempDirectory,
 } from './utils';
 
 export { getHostArch } from './utils';
@@ -110,29 +112,41 @@ export async function downloadArtifact(
       !artifactDetails.unsafelyDisableChecksums &&
       semver.gte(artifactDetails.version, '1.3.2')
     ) {
-      const shasumPath = await downloadArtifact({
-        isGeneric: true,
-        version: artifactDetails.version,
-        artifactName: 'SHASUMS256.txt',
-        force: artifactDetails.force,
-        downloadOptions: artifactDetails.downloadOptions,
-        cacheRoot: artifactDetails.cacheRoot,
-        downloader: artifactDetails.downloader,
-        mirrorOptions: artifactDetails.mirrorOptions,
-      });
+      await withTempDirectory(async tmpDir => {
+        let shasumPath: string;
+        const checksums = artifactDetails.checksums;
+        if (checksums) {
+          shasumPath = path.resolve(tmpDir, 'SHASUMS256.txt');
+          const generatedChecksums = Object.keys(checksums)
+            .map((fileName: string) => `${checksums[fileName]} *${fileName}`)
+            .join('\n');
+          await fs.writeFile(shasumPath, generatedChecksums);
+        } else {
+          shasumPath = await downloadArtifact({
+            isGeneric: true,
+            version: artifactDetails.version,
+            artifactName: 'SHASUMS256.txt',
+            force: artifactDetails.force,
+            downloadOptions: artifactDetails.downloadOptions,
+            cacheRoot: artifactDetails.cacheRoot,
+            downloader: artifactDetails.downloader,
+            mirrorOptions: artifactDetails.mirrorOptions,
+          });
+        }
 
-      // For versions 1.3.2 - 1.3.4, need to overwrite the `defaultTextEncoding` option:
-      // https://github.com/electron/electron/pull/6676#discussion_r75332120
-      if (semver.satisfies(artifactDetails.version, '1.3.2 - 1.3.4')) {
-        const validatorOptions: sumchecker.ChecksumOptions = {};
-        validatorOptions.defaultTextEncoding = 'binary';
-        const checker = new sumchecker.ChecksumValidator('sha256', shasumPath, validatorOptions);
-        await checker.validate(path.dirname(tempDownloadPath), path.basename(tempDownloadPath));
-      } else {
-        await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
-          path.basename(tempDownloadPath),
-        ]);
-      }
+        // For versions 1.3.2 - 1.3.4, need to overwrite the `defaultTextEncoding` option:
+        // https://github.com/electron/electron/pull/6676#discussion_r75332120
+        if (semver.satisfies(artifactDetails.version, '1.3.2 - 1.3.4')) {
+          const validatorOptions: sumchecker.ChecksumOptions = {};
+          validatorOptions.defaultTextEncoding = 'binary';
+          const checker = new sumchecker.ChecksumValidator('sha256', shasumPath, validatorOptions);
+          await checker.validate(path.dirname(tempDownloadPath), path.basename(tempDownloadPath));
+        } else {
+          await sumchecker('sha256', shasumPath, path.dirname(tempDownloadPath), [
+            path.basename(tempDownloadPath),
+          ]);
+        }
+      });
     }
 
     return await cache.putFileInCache(url, tempDownloadPath, fileName);

@@ -62,6 +62,16 @@ export interface ElectronDownloadRequestOptions {
    */
   unsafelyDisableChecksums?: boolean;
   /**
+   * Provides checksums for the artifact as strings.
+   * Can be used if you already know the checksums of the Electron artifact
+   * you are downloading and want to skip the checksum file download for
+   * without skipping the checksum validation.
+   *
+   * This should be an object whose keys are the file names of the artifacts and
+   * the values are their respective SHA256 checksums.
+   */
+  checksums?: Record<string, string>;
+  /**
    * The directory that caches Electron artifact downloads.
    *
    * The default value is dependent upon the host platform:
