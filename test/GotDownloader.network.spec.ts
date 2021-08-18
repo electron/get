@@ -51,7 +51,7 @@ describe('GotDownloader', () => {
         const testFile = path.resolve(dir, 'test.txt');
         await expect(
           downloader.download(
-            'https://github.com/electron/electron/releases/download/v2.0.18/bad.file',
+            'https://github.com/electron/electron/releases/download/v2.0.18/SHASUMS256.txt',
             testFile,
           ),
         ).rejects.toMatchInlineSnapshot(`"bad write error thing"`);
