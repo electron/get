@@ -117,8 +117,14 @@ export async function downloadArtifact(
         const checksums = artifactDetails.checksums;
         if (checksums) {
           shasumPath = path.resolve(tmpDir, 'SHASUMS256.txt');
-          const generatedChecksums = Object.keys(checksums)
-            .map((fileName: string) => `${checksums[fileName]} *${fileName}`)
+          const fileNames: string[] = Object.keys(checksums);
+          if (fileNames.length === 0) {
+            throw new Error(
+              'Provided "checksums" object is empty, cannot generate a valid SHASUMS256.txt',
+            );
+          }
+          const generatedChecksums = fileNames
+            .map(fileName => `${checksums[fileName]} *${fileName}`)
             .join('\n');
           await fs.writeFile(shasumPath, generatedChecksums);
         } else {
