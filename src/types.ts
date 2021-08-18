@@ -64,7 +64,7 @@ export interface ElectronDownloadRequestOptions {
   /**
    * Provides checksums for the artifact as strings.
    * Can be used if you already know the checksums of the Electron artifact
-   * you are downloading and want to skip the checksum file download for
+   * you are downloading and want to skip the checksum file download
    * without skipping the checksum validation.
    *
    * This should be an object whose keys are the file names of the artifacts and
