@@ -12,7 +12,9 @@ export function initializeProxy(): void {
 
     if (MAJOR_NODEJS_VERSION >= 10) {
       // `global-agent` works with Node.js v10 and above.
-      require('global-agent').bootstrap();
+      require('global-agent').bootstrap({
+        environmentVariableNamespace: '',
+      });
     } else {
       // `global-tunnel-ng` works with Node.js v10 and below.
       require('global-tunnel-ng').initialize();
