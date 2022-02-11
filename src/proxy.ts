@@ -3,6 +3,25 @@ import * as debug from 'debug';
 const d = debug('@electron/get:proxy');
 
 /**
+ * get process.env variable
+ * ignore case and compatible `GLOBAL_AGENT_` namespace
+ */
+function getProxyEnv(name: string): string | undefined {
+  const namespace = 'GLOBAL_AGENT_';
+  const namespaceProxyName = `${namespace}${name}`;
+
+  for (const envName in process.env) {
+    if (namespaceProxyName.toLowerCase() === envName.toLowerCase()) {
+      return process.env[envName];
+    }
+
+    if (name.toLowerCase() === envName.toLowerCase()) {
+      return process.env[envName];
+    }
+  }
+}
+
+/**
  * Initializes a third-party proxy module for HTTP(S) requests.
  */
 export function initializeProxy(): void {
@@ -11,10 +30,13 @@ export function initializeProxy(): void {
     const MAJOR_NODEJS_VERSION = parseInt(process.version.slice(1).split('.')[0], 10);
 
     if (MAJOR_NODEJS_VERSION >= 10) {
+      // See: https://github.com/electron/get/pull/214
+      process.env.GLOBAL_AGENT_HTTP_PROXY = getProxyEnv('HTTP_PROXY');
+      process.env.GLOBAL_AGENT_HTTPS_PROXY = getProxyEnv('HTTPS_PROXY');
+      process.env.GLOBAL_AGENT_NO_PROXY = getProxyEnv('NO_PROXY');
+
       // `global-agent` works with Node.js v10 and above.
-      require('global-agent').bootstrap({
-        environmentVariableNamespace: '',
-      });
+      require('global-agent').bootstrap();
     } else {
       // `global-tunnel-ng` works with Node.js v10 and below.
       require('global-tunnel-ng').initialize();
