@@ -12,7 +12,7 @@ export function initializeProxy(): void {
     const MAJOR_NODEJS_VERSION = parseInt(process.version.slice(1).split('.')[0], 10);
 
     if (MAJOR_NODEJS_VERSION >= 10) {
-      // See: https://github.com/electron/get/pull/214
+      // See: https://github.com/electron/get/pull/214#discussion_r798845713
       const env = getEnv('GLOBAL_AGENT_');
       process.env.GLOBAL_AGENT_HTTP_PROXY = env('HTTP_PROXY');
       process.env.GLOBAL_AGENT_HTTPS_PROXY = env('HTTPS_PROXY');

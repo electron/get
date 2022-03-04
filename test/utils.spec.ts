@@ -172,7 +172,7 @@ describe('utils', () => {
       delete process.env[envName];
     });
 
-    it('should return has prefix environment variable if has prefix', () => {
+    it('should return prefixed environment variable if prefixed variable found', () => {
       const env = getEnv(prefix);
 
       expect(env(envName)).toEqual(hasPrefixValue);
@@ -180,7 +180,7 @@ describe('utils', () => {
       expect(env(envName.toUpperCase())).toEqual(hasPrefixValue);
     });
 
-    it('should return non-prefix environment variable if no has prefix', () => {
+    it('should return non-prefixed environment variable if no prefixed variable found', () => {
       expect(getEnv()(envName)).toEqual(noPrefixValue);
       expect(getEnv()(envName.toLowerCase())).toEqual(noPrefixValue);
       expect(getEnv()(envName.toUpperCase())).toEqual(noPrefixValue);
