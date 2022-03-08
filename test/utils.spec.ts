@@ -174,7 +174,6 @@ describe('utils', () => {
 
     it('should return prefixed environment variable if prefixed variable found', () => {
       const env = getEnv(prefix);
-
       expect(env(envName)).toEqual(hasPrefixValue);
       expect(env(envName.toLowerCase())).toEqual(hasPrefixValue);
       expect(env(envName.toUpperCase())).toEqual(hasPrefixValue);
