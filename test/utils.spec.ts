@@ -7,6 +7,7 @@ import {
   getHostArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
+  getEnv,
 } from '../src/utils';
 
 describe('utils', () => {
@@ -153,6 +154,42 @@ describe('utils', () => {
     it('should be false if wrong platform/arch specified', () => {
       expect(isOfficialLinuxIA32Download('win32', 'ia32', 'v4.0.0')).toEqual(false);
       expect(isOfficialLinuxIA32Download('linux', 'x64', 'v4.0.0')).toEqual(false);
+    });
+  });
+
+  describe('getEnv()', () => {
+    const [prefix, envName] = ['TeSt_EnV_vAr_', 'eNv_Key'];
+    const prefixEnvName = `${prefix}${envName}`;
+    const [hasPrefixValue, noPrefixValue] = ['yes_prefix', 'no_prefix'];
+
+    beforeAll(() => {
+      process.env[prefixEnvName] = hasPrefixValue;
+      process.env[envName] = noPrefixValue;
+    });
+
+    afterAll(() => {
+      delete process.env[prefixEnvName];
+      delete process.env[envName];
+    });
+
+    it('should return prefixed environment variable if prefixed variable found', () => {
+      const env = getEnv(prefix);
+      expect(env(envName)).toEqual(hasPrefixValue);
+      expect(env(envName.toLowerCase())).toEqual(hasPrefixValue);
+      expect(env(envName.toUpperCase())).toEqual(hasPrefixValue);
+    });
+
+    it('should return non-prefixed environment variable if no prefixed variable found', () => {
+      expect(getEnv()(envName)).toEqual(noPrefixValue);
+      expect(getEnv()(envName.toLowerCase())).toEqual(noPrefixValue);
+      expect(getEnv()(envName.toUpperCase())).toEqual(noPrefixValue);
+    });
+
+    it('should return undefined if no match', () => {
+      const randomStr = 'AAAAA_electron_';
+      expect(getEnv()(randomStr)).toEqual(undefined);
+      expect(getEnv()(randomStr.toLowerCase())).toEqual(undefined);
+      expect(getEnv()(randomStr.toUpperCase())).toEqual(undefined);
     });
   });
 });

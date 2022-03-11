@@ -92,3 +92,23 @@ export function isOfficialLinuxIA32Download(
     typeof mirrorOptions === 'undefined'
   );
 }
+
+/**
+ * Find the value of a environment variable which may or may not have the
+ * prefix, in a case-insensitive manner.
+ */
+export function getEnv(prefix = ''): (name: string) => string | undefined {
+  const envsLowerCase: NodeJS.ProcessEnv = {};
+
+  for (const envKey in process.env) {
+    envsLowerCase[envKey.toLowerCase()] = process.env[envKey];
+  }
+
+  return (name: string) => {
+    return (
+      envsLowerCase[`${prefix}${name}`.toLowerCase()] ||
+      envsLowerCase[name.toLowerCase()] ||
+      undefined
+    );
+  };
+}
