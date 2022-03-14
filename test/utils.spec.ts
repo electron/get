@@ -199,12 +199,20 @@ describe('setEnv()', () => {
   it("doesn't set the environment variable if the value is undefined", () => {
     const [key, value] = ['Set_AAA_electron', undefined];
     setEnv(key, value);
-    expect(process.env[key]).toEqual(undefined);
+    expect(process.env[key]).toEqual(void 0);
   });
 
   it('successfully sets the environment variable when the value is defined', () => {
     const [key, value] = ['Set_BBB_electron', 'Test'];
     setEnv(key, value);
     expect(process.env[key]).toEqual(value);
+  });
+
+  it('successfully sets the environment variable when the value is falsey', () => {
+    const [key, value] = ['Set_AAA_electron', false];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    setEnv(key, value);
+    expect(process.env[key]).toEqual('false');
   });
 });

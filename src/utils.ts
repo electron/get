@@ -114,7 +114,7 @@ export function getEnv(prefix = ''): (name: string) => string | undefined {
 }
 
 export function setEnv(key: string, value: string | undefined): void {
-  if (value) {
+  if (value !== void 0) {
     process.env[key] = value;
   }
 }
