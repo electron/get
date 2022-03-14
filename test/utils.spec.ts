@@ -196,13 +196,13 @@ describe('utils', () => {
 });
 
 describe('setEnv()', () => {
-  it("don't set env", () => {
+  it("doesn't set the environment variable if the value is undefined", () => {
     const [key, value] = ['Set_AAA_electron', undefined];
     setEnv(key, value);
     expect(process.env[key]).toEqual(undefined);
   });
 
-  it('success set env', () => {
+  it('successfully sets the environment variable when the value is defined', () => {
     const [key, value] = ['Set_BBB_electron', 'Test'];
     setEnv(key, value);
     expect(process.env[key]).toEqual(value);
