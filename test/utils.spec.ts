@@ -8,6 +8,7 @@ import {
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
   getEnv,
+  setEnv,
 } from '../src/utils';
 
 describe('utils', () => {
@@ -191,5 +192,19 @@ describe('utils', () => {
       expect(getEnv()(randomStr.toLowerCase())).toEqual(undefined);
       expect(getEnv()(randomStr.toUpperCase())).toEqual(undefined);
     });
+  });
+});
+
+describe('setEnv()', () => {
+  it("don't set env", () => {
+    const [key, value] = ['Set_AAA_electron', undefined];
+    setEnv(key, value);
+    expect(process.env[key]).toEqual(undefined);
+  });
+
+  it('success set env', () => {
+    const [key, value] = ['Set_BBB_electron', 'Test'];
+    setEnv(key, value);
+    expect(process.env[key]).toEqual(value);
   });
 });

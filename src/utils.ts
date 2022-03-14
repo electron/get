@@ -104,11 +104,17 @@ export function getEnv(prefix = ''): (name: string) => string | undefined {
     envsLowerCase[envKey.toLowerCase()] = process.env[envKey];
   }
 
-  return (name: string) => {
+  return (name: string): string | undefined => {
     return (
       envsLowerCase[`${prefix}${name}`.toLowerCase()] ||
       envsLowerCase[name.toLowerCase()] ||
       undefined
     );
   };
+}
+
+export function setEnv(key: string, value: string | undefined): void {
+  if (value) {
+    process.env[key] = value;
+  }
 }
