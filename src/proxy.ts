@@ -1,5 +1,5 @@
 import * as debug from 'debug';
-import { getEnv } from './utils';
+import { getEnv, setEnv } from './utils';
 
 const d = debug('@electron/get:proxy');
 
@@ -14,9 +14,10 @@ export function initializeProxy(): void {
     if (MAJOR_NODEJS_VERSION >= 10) {
       // See: https://github.com/electron/get/pull/214#discussion_r798845713
       const env = getEnv('GLOBAL_AGENT_');
-      process.env.GLOBAL_AGENT_HTTP_PROXY = env('HTTP_PROXY');
-      process.env.GLOBAL_AGENT_HTTPS_PROXY = env('HTTPS_PROXY');
-      process.env.GLOBAL_AGENT_NO_PROXY = env('NO_PROXY');
+
+      setEnv('GLOBAL_AGENT_HTTP_PROXY', env('HTTP_PROXY'));
+      setEnv('GLOBAL_AGENT_HTTPS_PROXY', env('HTTPS_PROXY'));
+      setEnv('GLOBAL_AGENT_NO_PROXY', env('NO_PROXY'));
 
       // `global-agent` works with Node.js v10 and above.
       require('global-agent').bootstrap();
