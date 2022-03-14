@@ -114,6 +114,8 @@ export function getEnv(prefix = ''): (name: string) => string | undefined {
 }
 
 export function setEnv(key: string, value: string | undefined): void {
+  // The `void` operator always returns `undefined`.
+  // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/void
   if (value !== void 0) {
     process.env[key] = value;
   }
