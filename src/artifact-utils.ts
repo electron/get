@@ -1,5 +1,5 @@
 import { ElectronArtifactDetails, MirrorOptions } from './types';
-import { ensureIsTruthyString } from './utils';
+import { ensureIsTruthyString, normalizeVersion } from './utils';
 
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
@@ -30,13 +30,15 @@ function mirrorVar(
   defaultValue: string,
 ): string {
   // Convert camelCase to camel_case for env var reading
-  const lowerName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
+  const snakeName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
 
   return (
-    process.env[`NPM_CONFIG_ELECTRON_${lowerName.toUpperCase()}`] ||
-    process.env[`npm_config_electron_${lowerName}`] ||
-    process.env[`npm_package_config_electron_${lowerName}`] ||
-    process.env[`ELECTRON_${lowerName.toUpperCase()}`] ||
+    // configs coming from .npmrc are always lowercase regardless how it was defined
+    process.env[`npm_config_electron_${name.toLowerCase()}`] ||
+    process.env[`NPM_CONFIG_ELECTRON_${snakeName.toUpperCase()}`] ||
+    process.env[`npm_config_electron_${snakeName}`] ||
+    process.env[`npm_package_config_electron_${name}`] ||
+    process.env[`ELECTRON_${snakeName.toUpperCase()}`] ||
     options[name] ||
     defaultValue
   );
@@ -67,4 +69,8 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
   }
 
   return `${base}${path}/${file}`;
+}
+
+export function getArtifactVersion(details: ElectronArtifactDetails) {
+  return normalizeVersion(mirrorVar('customVersion', details.mirrorOptions || {}, details.version));
 }
