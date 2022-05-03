@@ -28,6 +28,11 @@ export interface MirrorOptions {
    */
   customFilename?: string;
   /**
+   * The version of the asset to download,
+   * e.g '4.0.4'
+   */
+  customVersion?: string;
+  /**
    * A function allowing customization of the url returned
    * from getArtifactRemoteURL().
    */

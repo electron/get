@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as semver from 'semver';
 import * as sumchecker from 'sumchecker';
 
-import { getArtifactFileName, getArtifactRemoteURL } from './artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils';
 import {
   ElectronArtifactDetails,
   ElectronDownloadRequestOptions,
@@ -16,7 +16,6 @@ import { getDownloaderForSystem } from './downloader-resolver';
 import { initializeProxy } from './proxy';
 import {
   withTempDirectoryIn,
-  normalizeVersion,
   getHostArch,
   getNodeArch,
   ensureIsTruthyString,
@@ -61,9 +60,7 @@ export async function downloadArtifact(
   }
   ensureIsTruthyString(artifactDetails, 'version');
 
-  artifactDetails.version = normalizeVersion(
-    process.env.ELECTRON_CUSTOM_VERSION || artifactDetails.version,
-  );
+  artifactDetails.version = getArtifactVersion(artifactDetails);
   const fileName = getArtifactFileName(artifactDetails);
   const url = await getArtifactRemoteURL(artifactDetails);
   const cache = new Cache(artifactDetails.cacheRoot);
