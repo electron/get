@@ -33,11 +33,14 @@ function mirrorVar(
   const snakeName = name.replace(/([a-z])([A-Z])/g, (_, a, b) => `${a}_${b}`).toLowerCase();
 
   return (
-    // configs coming from .npmrc are always lowercase regardless how it was defined
+    // .npmrc
     process.env[`npm_config_electron_${name.toLowerCase()}`] ||
     process.env[`NPM_CONFIG_ELECTRON_${snakeName.toUpperCase()}`] ||
     process.env[`npm_config_electron_${snakeName}`] ||
+    // package.json
     process.env[`npm_package_config_electron_${name}`] ||
+    process.env[`npm_package_config_electron_${snakeName.toLowerCase()}`] ||
+    // env
     process.env[`ELECTRON_${snakeName.toUpperCase()}`] ||
     options[name] ||
     defaultValue
@@ -71,6 +74,6 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
   return `${base}${path}/${file}`;
 }
 
-export function getArtifactVersion(details: ElectronArtifactDetails) {
+export function getArtifactVersion(details: ElectronArtifactDetails): string {
   return normalizeVersion(mirrorVar('customVersion', details.mirrorOptions || {}, details.version));
 }
