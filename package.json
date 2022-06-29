@@ -23,7 +23,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=8.6"
+    "node": ">=10.19.0"
   },
   "dependencies": {
     "debug": "^4.1.1",
