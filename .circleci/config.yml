@@ -21,13 +21,13 @@ version: 2.1
 orbs:
   win: circleci/windows@1.0.0
 jobs:
-  test-linux-8:
-    docker:
-      - image: circleci/node:8
-    <<: *steps-test
   test-linux-10:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10.19
+    <<: *steps-test
+  test-linux-12:
+    docker:
+      - image: circleci/node:12
     <<: *steps-test
   test-mac:
     macos:
@@ -52,14 +52,14 @@ workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      - test-linux-8
       - test-linux-10
+      - test-linux-12
       - test-mac
       - test-windows
       - release:
           requires:
-            - test-linux-8
             - test-linux-10
+            - test-linux-12
             - test-mac
             - test-windows
           filters:
