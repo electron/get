@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import got, { Options, Progress, RequestError } from 'got';
+import got, { Options, Progress, HTTPError } from 'got';
 import * as path from 'path';
 import * as ProgressBar from 'progress';
 
@@ -61,24 +61,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
     await new Promise<void>((resolve, reject) => {
-      const downloadStream = got.stream(url, {
-        hooks: {
-          beforeError: [
-            (error): RequestError => {
-              const { response } = error;
-
-              if (response) {
-                if (error.name === 'HTTPError' && response.statusCode === 404) {
-                  error.message += ` for ${response.url}`;
-                }
-              }
-
-              return error;
-            },
-          ],
-        },
-        ...gotOptions,
-      });
+      const downloadStream = got.stream(url, gotOptions);
       downloadStream.on('downloadProgress', async progress => {
         progressPercent = progress.percent;
         if (bar) {
@@ -89,6 +72,10 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       });
       downloadStream.on('error', error => {
+        if (error instanceof HTTPError && error.response.statusCode === 404) {
+          error.message += ` for ${error.response.url}`;
+        }
+
         if (writeStream.destroy) {
           writeStream.destroy(error);
         }

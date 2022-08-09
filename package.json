@@ -38,7 +38,6 @@
     "@continuous-auth/semantic-release-npm": "^2.0.0",
     "@types/debug": "^4.1.4",
     "@types/fs-extra": "^8.0.0",
-    "@types/got": "^9.4.4",
     "@types/jest": "^24.0.13",
     "@types/node": "^18.6.4",
     "@types/progress": "^2.0.3",
