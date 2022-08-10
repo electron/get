@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import * as got from 'got';
+import got, { HTTPError, Progress as GotProgress, Options as GotOptions } from 'got';
 import * as path from 'path';
 import * as ProgressBar from 'progress';
 
@@ -10,11 +10,11 @@ const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 /**
  * See [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
  */
-export type GotDownloaderOptions = got.GotOptions<string | null> & {
+export type GotDownloaderOptions = (GotOptions & { isStream?: true }) & {
   /**
    * if defined, triggers every time `got`'s `downloadProgress` event callback is triggered.
    */
-  getProgressCallback?: (progress: got.Progress) => Promise<void>;
+  getProgressCallback?: (progress: GotProgress) => Promise<void>;
   /**
    * if `true`, disables the console progress bar (setting the `ELECTRON_GET_NO_PROGRESS`
    * environment variable to a non-empty value also does this).
@@ -56,7 +56,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
       downloadStream.on('downloadProgress', async progress => {
         progressPercent = progress.percent;
@@ -68,8 +68,8 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       });
       downloadStream.on('error', error => {
-        if (error.name === 'HTTPError' && error.statusCode === 404) {
-          error.message += ` for ${error.url}`;
+        if (error instanceof HTTPError && error.response.statusCode === 404) {
+          error.message += ` for ${error.response.url}`;
         }
         if (writeStream.destroy) {
           writeStream.destroy(error);
