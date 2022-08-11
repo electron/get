@@ -91,8 +91,7 @@
     "release"
   ],
   "optionalDependencies": {
-    "global-agent": "^3.0.0",
-    "global-tunnel-ng": "^2.7.1"
+    "global-agent": "^3.0.0"
   },
   "resolutions": {
     "eslint/inquirer": "< 7.3.0",
