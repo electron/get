@@ -81,6 +81,16 @@ export async function downloadArtifact(
     }
   }
 
+  if (process.env.GITHUB_TOKEN) {
+    artifactDetails.downloadOptions = {
+      ...artifactDetails.downloadOptions,
+      headers: {
+        ...artifactDetails.downloadOptions.headers,
+        authorization: `token ${process.env.GITHUB_TOKEN}`,
+      },
+    };
+  }
+
   if (
     !artifactDetails.isGeneric &&
     isOfficialLinuxIA32Download(
