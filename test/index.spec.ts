@@ -215,6 +215,22 @@ describe('Public API', () => {
       process.env.ELECTRON_CUSTOM_VERSION = '';
     });
 
+    it('should download a custom version specified via mirror options', async () => {
+      const zipPath = await downloadArtifact({
+        artifactName: 'electron',
+        cacheRoot,
+        downloader,
+        platform: 'darwin',
+        arch: 'x64',
+        version: '2.0.3',
+        mirrorOptions: {
+          customVersion: '2.0.10',
+        },
+      });
+      expect(typeof zipPath).toEqual('string');
+      expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
+    });
+
     describe('sumchecker', () => {
       beforeEach(() => {
         jest.clearAllMocks();
