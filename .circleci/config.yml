@@ -52,7 +52,8 @@ workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      - test-linux-12
+      - test-linux-12:
+          context: oidc
       - test-linux-14
       - test-mac
       - test-windows
