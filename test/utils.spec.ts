@@ -80,7 +80,9 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: savedArch,
       });
-      process.config.variables = savedVariables;
+      Object.defineProperty(process.config, 'variables', {
+        value: savedVariables,
+      });
     });
 
     it('should return process.arch on x64', () => {
@@ -101,8 +103,9 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'arm',
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      process.config.variables = {} as any;
+      Object.defineProperty(process.config, 'variables', {
+        value: {},
+      });
       expect(getHostArch()).toEqual('armv7l');
     });
 
@@ -111,8 +114,12 @@ describe('utils', () => {
         Object.defineProperty(process, 'arch', {
           value: 'arm',
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
-        process.config.variables = { arm_version: '6' } as any;
+        Object.defineProperty(process.config, 'variables', {
+          value: {
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            arm_version: '6',
+          },
+        });
         expect(getHostArch()).toEqual(uname());
       });
     }
@@ -121,8 +128,12 @@ describe('utils', () => {
       Object.defineProperty(process, 'arch', {
         value: 'arm',
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase
-      process.config.variables = { arm_version: '7' } as any;
+      Object.defineProperty(process.config, 'variables', {
+        value: {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          arm_version: '7',
+        },
+      });
       expect(getHostArch()).toEqual('armv7l');
     });
   });
