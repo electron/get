@@ -75,7 +75,7 @@ export function getHostArch(): string {
 
 export function ensureIsTruthyString<T, K extends keyof T>(obj: T, key: K): void {
   if (!obj[key] || typeof obj[key] !== 'string') {
-    throw new Error(`Expected property "${key}" to be provided as a string but it was not`);
+    throw new Error(`Expected property "${String(key)}" to be provided as a string but it was not`);
   }
 }
 

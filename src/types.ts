@@ -1,5 +1,7 @@
 import { Downloader } from './Downloader';
 
+export { Downloader };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DownloadOptions = any;
 
