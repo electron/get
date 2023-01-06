@@ -22,10 +22,6 @@ orbs:
   win: circleci/windows@5.0.0
   cfa: continuousauth/npm@1.0.2
 jobs:
-  test-linux-12:
-    docker:
-      - image: cimg/node:12.13
-    <<: *steps-test
   test-linux-14:
     docker:
       - image: cimg/node:14.17
@@ -44,13 +40,11 @@ workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      - test-linux-12
       - test-linux-14
       - test-mac
       - test-windows
       - cfa/release:
           requires:
-            - test-linux-12
             - test-linux-14
             - test-mac
             - test-windows
