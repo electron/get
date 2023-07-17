@@ -2,7 +2,8 @@
 
 > Download Electron release artifacts
 
-[![CircleCI](https://circleci.com/gh/electron/get.svg?style=svg)](https://circleci.com/gh/electron/get)
+[![CircleCI](https://circleci.com/gh/electron/get.svg?style=shield)](https://circleci.com/gh/electron/get)
+[![NPM package](https://img.shields.io/npm/v/@electron/get)](https://npm.im/@electron/get)
 
 ## Usage
 
