@@ -1,53 +1,35 @@
-step-restore-cache: &step-restore-cache
-  restore_cache:
-    keys:
-      - v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
-      - v1-dependencies-{{ arch }}
-
-steps-test: &steps-test
-  steps:
-    - run: git config --global core.autocrlf input
-    - checkout
-    - *step-restore-cache
-    - run: yarn --frozen-lockfile
-    - save_cache:
-        paths:
-          - node_modules
-        key: v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
-    - run: yarn test
-    - run: yarn build:docs
-
 version: 2.1
+
 orbs:
-  win: circleci/windows@5.0.0
   cfa: continuousauth/npm@1.0.2
-jobs:
-  test-linux-14:
-    docker:
-      - image: cimg/node:14.17
-    <<: *steps-test
-  test-mac:
-    macos:
-      xcode: "13.0.0"
-    <<: *steps-test
-  test-windows:
-    executor:
-      name: win/server-2019
-      shell: bash.exe
-    <<: *steps-test
+  node: electronjs/node@1.1.0
 
 workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      - test-linux-14
-      - test-mac
-      - test-windows
+      - node/test:
+          name: test-<< matrix.executor >>-<< matrix.node-version >>
+          pre-steps:
+            - run: git config --global core.autocrlf input
+          post-steps:
+            - run: yarn build:docs
+          matrix:
+            alias: test
+            parameters:
+              executor:
+                - node/linux
+                - node/macos
+                - node/windows
+              node-version:
+                - 20.2.0
+                - 18.16.0
+                - 16.20.0
+                - 14.21.3
+                - 12.22.12
       - cfa/release:
           requires:
-            - test-linux-14
-            - test-mac
-            - test-windows
+            - test
           filters:
             branches:
               only:
