@@ -95,8 +95,8 @@ export interface ElectronDownloadRequestOptions {
    */
   mirrorOptions?: MirrorOptions;
   /**
-   * The custom [[Downloader]] class used to download artifacts. Defaults to the
-   * built-in [[GotDownloader]].
+   * The custom {@link Downloader} class used to download artifacts. Defaults to the
+   * built-in {@link GotDownloader}.
    */
   downloader?: Downloader<DownloadOptions>;
   /**
