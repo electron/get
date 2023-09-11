@@ -25,6 +25,7 @@ jobs:
       - run: yarn build:docs
       - uses: malept/github-action-gh-pages@e151760357583e2f9152f8e8c8658ceb3ccf3d64  # tag: v1.3.1
         with:
+          defaultBranch: main
           gitCommitEmail: 'github-actions@github.com'
           gitCommitMessage: 'Publish [skip ci]'
           gitCommitUser: 'github-actions'
