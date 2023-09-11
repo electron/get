@@ -23,7 +23,7 @@ jobs:
           node-version: 18.x
       - run: yarn --frozen-lockfile
       - run: yarn build:docs
-      - uses: dsanders11/github-action-gh-pages@6837fa66857ff3234e3ea5bcf709c86767ae3ce1
+      - uses: malept/github-action-gh-pages@e151760357583e2f9152f8e8c8658ceb3ccf3d64  # tag: v1.3.1
         with:
           gitCommitEmail: 'github-actions@github.com'
           gitCommitMessage: 'Publish [skip ci]'
