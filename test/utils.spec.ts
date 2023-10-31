@@ -25,7 +25,11 @@ describe('utils', () => {
   describe('uname()', () => {
     if (process.platform !== 'win32') {
       it('should return the correct arch for your system', () => {
-        expect(uname()).toEqual('x86_64');
+        if (process.arch === 'arm64') {
+          expect(uname()).toEqual('arm64');
+        } else {
+          expect(uname()).toEqual('x86_64');
+        }
       });
     }
   });
