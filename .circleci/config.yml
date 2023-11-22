@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   cfa: continuousauth/npm@2.1.0
-  node: electronjs/node@1.1.0
+  node: electronjs/node@2.1.0
 
 workflows:
   test_and_release:
@@ -13,6 +13,13 @@ workflows:
           override-ci-command: yarn install --frozen-lockfile --ignore-engines
           pre-steps:
             - run: git config --global core.autocrlf input
+            - when:
+                condition:
+                  and:
+                    - equal: [ node/macos, << matrix.executor >> ]
+                    - equal: [ '14.16', << matrix.node-version >> ]
+                steps:
+                  - node/install-rosetta
           post-steps:
             - run: yarn build:docs
           matrix:
@@ -23,10 +30,11 @@ workflows:
                 - node/macos
                 - node/windows
               node-version:
-                - 20.2.0
-                - 18.16.0
-                - 16.20.0
-                - 14.21.3
+                - '20.9'
+                - '18.17'
+                - '16.20'
+                # Stay below 14.17.0 or nvm tries to download arm64 artifacts which don't exist
+                - '14.16'
       - cfa/release:
           requires:
             - test
