@@ -10,7 +10,6 @@ workflows:
     jobs:
       - node/test:
           name: test-<< matrix.executor >>-<< matrix.node-version >>
-          override-ci-command: yarn install --frozen-lockfile --ignore-engines
           pre-steps:
             - run: git config --global core.autocrlf input
             - when:
@@ -30,8 +29,8 @@ workflows:
                 - node/macos
                 - node/windows
               node-version:
-                - '20.9'
-                - '18.17'
+                - '20.10'
+                - '18.18'
                 - '16.20'
                 # Stay below 14.17.0 or nvm tries to download arm64 artifacts which don't exist
                 - '14.16'
