@@ -20,7 +20,7 @@ import {
   getNodeArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
-  withTempDirectory,
+  mkdtemp,
 } from './utils';
 
 export { getHostArch } from './utils';
@@ -42,58 +42,73 @@ async function validateArtifact(
   downloadedAssetPath: string,
   _downloadArtifact: ArtifactDownloader,
 ) {
-  return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
-    // Don't try to verify the hash of the hash file itself
-    // and for older versions that don't have a SHASUMS256.txt
-    if (
-      !artifactDetails.artifactName.startsWith('SHASUMS256') &&
-      !artifactDetails.unsafelyDisableChecksums &&
-      semver.gte(artifactDetails.version, '1.3.2')
-    ) {
-      let shasumPath: string;
-      const checksums = artifactDetails.checksums;
-      if (checksums) {
-        shasumPath = path.resolve(tempFolder, 'SHASUMS256.txt');
-        const fileNames: string[] = Object.keys(checksums);
-        if (fileNames.length === 0) {
-          throw new Error(
-            'Provided "checksums" object is empty, cannot generate a valid SHASUMS256.txt',
-          );
+  return await withTempDirectoryIn(
+    artifactDetails.tempDirectory,
+    async tempFolder => {
+      // Don't try to verify the hash of the hash file itself
+      // and for older versions that don't have a SHASUMS256.txt
+      if (
+        !artifactDetails.artifactName.startsWith('SHASUMS256') &&
+        !artifactDetails.unsafelyDisableChecksums &&
+        semver.gte(artifactDetails.version, '1.3.2')
+      ) {
+        let shasumPath: string;
+        const checksums = artifactDetails.checksums;
+        if (checksums) {
+          shasumPath = path.resolve(tempFolder, 'SHASUMS256.txt');
+          const fileNames: string[] = Object.keys(checksums);
+          if (fileNames.length === 0) {
+            throw new Error(
+              'Provided "checksums" object is empty, cannot generate a valid SHASUMS256.txt',
+            );
+          }
+          const generatedChecksums = fileNames
+            .map(fileName => `${checksums[fileName]} *${fileName}`)
+            .join('\n');
+          await fs.writeFile(shasumPath, generatedChecksums);
+        } else {
+          shasumPath = await _downloadArtifact({
+            isGeneric: true,
+            version: artifactDetails.version,
+            artifactName: 'SHASUMS256.txt',
+            force: artifactDetails.force,
+            downloadOptions: artifactDetails.downloadOptions,
+            cacheRoot: artifactDetails.cacheRoot,
+            downloader: artifactDetails.downloader,
+            mirrorOptions: artifactDetails.mirrorOptions,
+            dontCache: artifactDetails.dontCache,
+          });
         }
-        const generatedChecksums = fileNames
-          .map(fileName => `${checksums[fileName]} *${fileName}`)
-          .join('\n');
-        await fs.writeFile(shasumPath, generatedChecksums);
-      } else {
-        shasumPath = await _downloadArtifact({
-          isGeneric: true,
-          version: artifactDetails.version,
-          artifactName: 'SHASUMS256.txt',
-          force: artifactDetails.force,
-          downloadOptions: artifactDetails.downloadOptions,
-          cacheRoot: artifactDetails.cacheRoot,
-          downloader: artifactDetails.downloader,
-          mirrorOptions: artifactDetails.mirrorOptions,
-        });
-      }
 
-      // For versions 1.3.2 - 1.3.4, need to overwrite the `defaultTextEncoding` option:
-      // https://github.com/electron/electron/pull/6676#discussion_r75332120
-      if (semver.satisfies(artifactDetails.version, '1.3.2 - 1.3.4')) {
-        const validatorOptions: sumchecker.ChecksumOptions = {};
-        validatorOptions.defaultTextEncoding = 'binary';
-        const checker = new sumchecker.ChecksumValidator('sha256', shasumPath, validatorOptions);
-        await checker.validate(
-          path.dirname(downloadedAssetPath),
-          path.basename(downloadedAssetPath),
-        );
-      } else {
-        await sumchecker('sha256', shasumPath, path.dirname(downloadedAssetPath), [
-          path.basename(downloadedAssetPath),
-        ]);
+        try {
+          // For versions 1.3.2 - 1.3.4, need to overwrite the `defaultTextEncoding` option:
+          // https://github.com/electron/electron/pull/6676#discussion_r75332120
+          if (semver.satisfies(artifactDetails.version, '1.3.2 - 1.3.4')) {
+            const validatorOptions: sumchecker.ChecksumOptions = {};
+            validatorOptions.defaultTextEncoding = 'binary';
+            const checker = new sumchecker.ChecksumValidator(
+              'sha256',
+              shasumPath,
+              validatorOptions,
+            );
+            await checker.validate(
+              path.dirname(downloadedAssetPath),
+              path.basename(downloadedAssetPath),
+            );
+          } else {
+            await sumchecker('sha256', shasumPath, path.dirname(downloadedAssetPath), [
+              path.basename(downloadedAssetPath),
+            ]);
+          }
+        } finally {
+          if (artifactDetails.dontCache) {
+            await fs.remove(path.dirname(shasumPath));
+          }
+        }
       }
-    }
-  });
+    },
+    artifactDetails.dontCache !== true,
+  );
 }
 
 /**
@@ -137,11 +152,21 @@ export async function downloadArtifact(
       d('Cache miss');
     } else {
       d('Cache hit');
+      let artifactPath = cachedPath;
+      if (artifactDetails.dontCache) {
+        // Copy out of cache into temporary directory if dontCache
+        const tempDir = await mkdtemp(artifactDetails.tempDirectory);
+        artifactPath = path.resolve(tempDir, fileName);
+        await fs.copyFile(cachedPath, artifactPath);
+      }
       try {
-        await validateArtifact(artifactDetails, cachedPath, downloadArtifact);
+        await validateArtifact(artifactDetails, artifactPath, downloadArtifact);
 
-        return cachedPath;
+        return artifactPath;
       } catch (err) {
+        if (artifactDetails.dontCache) {
+          await fs.remove(path.dirname(artifactPath));
+        }
         d("Artifact in cache didn't match checksums", err);
         d('falling back to re-download');
       }
@@ -161,21 +186,29 @@ export async function downloadArtifact(
     console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
   }
 
-  return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
-    const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
+  return await withTempDirectoryIn(
+    artifactDetails.tempDirectory,
+    async tempFolder => {
+      const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
 
-    const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
-    d(
-      `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
-        artifactDetails.downloadOptions,
-      )}`,
-    );
-    await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
+      const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
+      d(
+        `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
+          artifactDetails.downloadOptions,
+        )}`,
+      );
+      await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
 
-    await validateArtifact(artifactDetails, tempDownloadPath, downloadArtifact);
+      await validateArtifact(artifactDetails, tempDownloadPath, downloadArtifact);
 
-    return await cache.putFileInCache(url, tempDownloadPath, fileName);
-  });
+      if (artifactDetails.dontCache) {
+        return tempDownloadPath;
+      } else {
+        return await cache.putFileInCache(url, tempDownloadPath, fileName);
+      }
+    },
+    artifactDetails.dontCache !== true,
+  );
 }
 
 /**

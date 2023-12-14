@@ -106,6 +106,13 @@ export interface ElectronDownloadRequestOptions {
    * It is used before artifacts are put into cache.
    */
   tempDirectory?: string;
+  /**
+   * When set to `true`, do not put the downloaded artifact into the cache, leaving if
+   * in the temporary directory. You need to clean up the temporary directory yourself.
+   *
+   * Defaults to `false`.
+   */
+  dontCache?: boolean;
 }
 
 export type ElectronPlatformArtifactDetails = {

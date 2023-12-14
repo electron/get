@@ -31,6 +31,8 @@ describe('Public API', () => {
       expect(typeof zipPath).toEqual('string');
       expect(await fs.pathExists(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
+      expect(path.dirname(zipPath).startsWith(cacheRoot)).toEqual(true);
+      expect(fs.readdirSync(cacheRoot).length).toBeGreaterThan(0);
     });
 
     it('should return a valid path to a downloaded zip file for nightly releases', async () => {
@@ -129,6 +131,35 @@ describe('Public API', () => {
       expect(path.extname(zipPath)).toEqual('.zip');
       process.env.ELECTRON_CUSTOM_VERSION = '';
     });
+
+    it('should not put artifact in cache when dontCache=true', async () => {
+      const zipPath = await download('2.0.10', {
+        cacheRoot,
+        downloader,
+        dontCache: true,
+      });
+      expect(typeof zipPath).toEqual('string');
+      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(path.extname(zipPath)).toEqual('.zip');
+      expect(path.dirname(zipPath).startsWith(cacheRoot)).toEqual(false);
+      expect(fs.readdirSync(cacheRoot).length).toEqual(0);
+    });
+
+    it('should use cache hits when dontCache=true', async () => {
+      const zipPath = await download('2.0.9', {
+        cacheRoot,
+        downloader,
+      });
+      await fs.writeFile(zipPath, 'cached content');
+      const zipPath2 = await download('2.0.9', {
+        cacheRoot,
+        downloader,
+        dontCache: true,
+      });
+      expect(zipPath2).not.toEqual(zipPath);
+      expect(path.dirname(zipPath2).startsWith(cacheRoot)).toEqual(false);
+      expect(await fs.readFile(zipPath2, 'utf8')).toEqual('cached content');
+    });
   });
 
   describe('downloadArtifact()', () => {
@@ -143,6 +174,8 @@ describe('Public API', () => {
       expect(await fs.pathExists(dtsPath)).toEqual(true);
       expect(path.basename(dtsPath)).toEqual('electron.d.ts');
       expect(await fs.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
+      expect(path.dirname(dtsPath).startsWith(cacheRoot)).toEqual(true);
+      expect(fs.readdirSync(cacheRoot).length).toBeGreaterThan(0);
     });
 
     it('should work with the default platform/arch', async () => {
@@ -229,6 +262,49 @@ describe('Public API', () => {
       });
       expect(typeof zipPath).toEqual('string');
       expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
+    });
+
+    it('should not put artifact in cache when dontCache=true', async () => {
+      const driverPath = await downloadArtifact({
+        cacheRoot,
+        downloader,
+        version: '2.0.9',
+        artifactName: 'chromedriver',
+        platform: 'darwin',
+        arch: 'x64',
+        dontCache: true,
+      });
+      expect(await fs.pathExists(driverPath)).toEqual(true);
+      expect(path.basename(driverPath)).toMatchInlineSnapshot(
+        `"chromedriver-v2.0.9-darwin-x64.zip"`,
+      );
+      expect(path.extname(driverPath)).toEqual('.zip');
+      expect(path.dirname(driverPath).startsWith(cacheRoot)).toEqual(false);
+      expect(fs.readdirSync(cacheRoot).length).toEqual(0);
+    });
+
+    it('should use cache hits when dontCache=true', async () => {
+      const driverPath = await downloadArtifact({
+        cacheRoot,
+        downloader,
+        version: '2.0.9',
+        artifactName: 'chromedriver',
+        platform: 'darwin',
+        arch: 'x64',
+      });
+      await fs.writeFile(driverPath, 'cached content');
+      const driverPath2 = await downloadArtifact({
+        cacheRoot,
+        downloader,
+        version: '2.0.9',
+        artifactName: 'chromedriver',
+        platform: 'darwin',
+        arch: 'x64',
+        dontCache: true,
+      });
+      expect(driverPath2).not.toEqual(driverPath);
+      expect(path.dirname(driverPath2).startsWith(cacheRoot)).toEqual(false);
+      expect(await fs.readFile(driverPath2, 'utf8')).toEqual('cached content');
     });
 
     describe('sumchecker', () => {
