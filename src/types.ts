@@ -107,7 +107,7 @@ export interface ElectronDownloadRequestOptions {
    */
   tempDirectory?: string;
   /**
-   * When set to `true`, do not put the downloaded artifact into the cache, leaving if
+   * When set to `true`, do not put the downloaded artifact into the cache, leaving it
    * in the temporary directory. You need to clean up the temporary directory yourself.
    *
    * Defaults to `false`.
