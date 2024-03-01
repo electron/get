@@ -28,7 +28,7 @@ jobs:
           node-version: lts/*
       - run: yarn --frozen-lockfile
       - run: yarn build:docs
-      - name: Build docs
+      - name: Prepare docs
         uses: malept/github-action-gh-pages@e151760357583e2f9152f8e8c8658ceb3ccf3d64  # tag: v1.3.1
         with:
           defaultBranch: main
