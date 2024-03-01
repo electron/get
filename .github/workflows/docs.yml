@@ -38,7 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
       - name: Commit docs
-        uses: dsanders11/github-app-commit-action@1dd0a2d22c564461d3f598b6858856e8842d7a16 # v1.1.0
+        uses: dsanders11/github-app-commit-action@56f54b482f8019a16d8f8b0bfbbc9fa3ee9802e8 # v1.3.0
         with:
           fail-on-no-changes: false
           message: 'Publish [skip ci]'
