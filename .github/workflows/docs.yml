@@ -18,7 +18,6 @@ jobs:
         id: generate-token
         with:
           creds: ${{ secrets.GH_APP_CREDS }}
-          export-git-user: true
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # tag: v4.1.1
         with:
           token: ${{ steps.generate-token.outputs.token }}
@@ -29,13 +28,18 @@ jobs:
           node-version: lts/*
       - run: yarn --frozen-lockfile
       - run: yarn build:docs
-      - uses: malept/github-action-gh-pages@e151760357583e2f9152f8e8c8658ceb3ccf3d64  # tag: v1.3.1
+      - name: Prepare docs
+        uses: malept/github-action-gh-pages@f7952a65c4b763dc84b824a530dc38bd375ac91e  # tag: v1.4.0
         with:
           defaultBranch: main
-          gitCommitEmail: ${{ env.GIT_COMMITTER_EMAIL }}
-          gitCommitMessage: 'Publish [skip ci]'
-          gitCommitUser: ${{ env.GIT_COMMITTER_NAME }}
+          noCommit: true
           showUnderscoreFiles: true
           versionDocs: true
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Commit docs
+        uses: dsanders11/github-app-commit-action@56f54b482f8019a16d8f8b0bfbbc9fa3ee9802e8 # v1.3.0
+        with:
+          fail-on-no-changes: false
+          message: 'Publish [skip ci]'
+          token: ${{ steps.generate-token.outputs.token }}
