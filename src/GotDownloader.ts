@@ -59,9 +59,9 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
       downloadStream.on('downloadProgress', async progress => {
-        progressPercent = progress.percent;
+        const calculatedPercent = Math.round((progress.transferred / progress.total) * 100);
         if (bar) {
-          bar.update(progress.percent);
+          bar.update(calculatedPercent);
         }
         if (getProgressCallback) {
           await getProgressCallback(progress);
