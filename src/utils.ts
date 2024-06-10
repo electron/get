@@ -16,17 +16,29 @@ async function useAndRemoveDirectory<T>(
   return result;
 }
 
+export async function mkdtemp(parentDirectory: string = os.tmpdir()): Promise<string> {
+  const tempDirectoryPrefix = 'electron-download-';
+  return await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
+}
+
 export async function withTempDirectoryIn<T>(
   parentDirectory: string = os.tmpdir(),
   fn: (directory: string) => Promise<T>,
+  removeAfter?: boolean,
 ): Promise<T> {
-  const tempDirectoryPrefix = 'electron-download-';
-  const tempDirectory = await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
-  return useAndRemoveDirectory(tempDirectory, fn);
+  const tempDirectory = await mkdtemp(parentDirectory);
+  if (removeAfter === undefined ? true : removeAfter) {
+    return useAndRemoveDirectory(tempDirectory, fn);
+  } else {
+    return fn(tempDirectory);
+  }
 }
 
-export async function withTempDirectory<T>(fn: (directory: string) => Promise<T>): Promise<T> {
-  return withTempDirectoryIn(undefined, fn);
+export async function withTempDirectory<T>(
+  fn: (directory: string) => Promise<T>,
+  removeAfter?: boolean,
+): Promise<T> {
+  return withTempDirectoryIn(undefined, fn, removeAfter);
 }
 
 export function normalizeVersion(version: string): string {

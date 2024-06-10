@@ -47,13 +47,11 @@ describe('utils', () => {
     });
 
     it('should delete the directory when the function terminates', async () => {
-      let mDir: string | undefined = undefined;
-      await withTempDirectory(async dir => {
-        mDir = dir;
+      const mDir = await withTempDirectory(async dir => {
+        return dir;
       });
       expect(mDir).not.toBeUndefined();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(await fs.pathExists(mDir!)).toEqual(false);
+      expect(await fs.pathExists(mDir)).toEqual(false);
     });
 
     it('should delete the directory and reject correctly even if the function throws', async () => {
@@ -67,6 +65,18 @@ describe('utils', () => {
       expect(mDir).not.toBeUndefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(await fs.pathExists(mDir!)).toEqual(false);
+    });
+
+    it('should not delete the directory if removeAfter is false', async () => {
+      const mDir = await withTempDirectory(async dir => {
+        return dir;
+      }, false);
+      expect(mDir).not.toBeUndefined();
+      try {
+        expect(await fs.pathExists(mDir)).toEqual(true);
+      } finally {
+        await fs.remove(mDir);
+      }
     });
   });
 
