@@ -137,8 +137,6 @@ export type ElectronArtifactDetails =
   | ElectronPlatformArtifactDetails
   | ElectronGenericArtifactDetails;
 
-export type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
-
 export type ElectronPlatformArtifactDetailsWithDefaults =
   | (Omit<ElectronPlatformArtifactDetails, 'platform' | 'arch'> & {
       platform?: string;
