@@ -20,7 +20,6 @@ import {
   getNodeArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
-  withTempDirectory,
 } from './utils';
 
 export { getHostArch } from './utils';
@@ -41,7 +40,7 @@ async function validateArtifact(
   artifactDetails: ElectronArtifactDetails,
   downloadedAssetPath: string,
   _downloadArtifact: ArtifactDownloader,
-) {
+): Promise<void> {
   return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
     // Don't try to verify the hash of the hash file itself
     // and for older versions that don't have a SHASUMS256.txt
