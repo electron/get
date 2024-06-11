@@ -1,0 +1,39 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "excludeInternal": true,
+  "externalSymbolLinkMappings": {
+    "got": {
+      "Options": "https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#options",
+      "Progress": "https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#downloadprogress"
+    }
+  },
+  "navigation": true,
+  "categoryOrder": ["Download Electron", "Download Artifact", "Downloader", "Utility", "*"],
+  "sort": ["kind", "required-first", "alphabetical"],
+  "kindSortOrder": [
+    "Reference",
+    "Project",
+    "Module",
+    "Namespace",
+    "Enum",
+    "EnumMember",
+    "Function",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Constructor",
+    "Property",
+    "Variable",
+    "Accessor",
+    "Method",
+    "Parameter",
+    "TypeParameter",
+    "TypeLiteral",
+    "CallSignature",
+    "ConstructorSignature",
+    "IndexSignature",
+    "GetSignature",
+    "SetSignature"
+  ]
+}

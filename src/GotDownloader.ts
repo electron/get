@@ -8,11 +8,15 @@ import { Downloader } from './Downloader';
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 
 /**
- * See [`got#options`](https://github.com/sindresorhus/got#options) for possible keys/values.
+ * Options for the default [`got`](https://github.com/sindresorhus/got) Downloader implementation.
+ *
+ * @category Downloader
+ * @see {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#options | `got#options`} for possible keys/values.
  */
-export type GotDownloaderOptions = (GotOptions & { isStream?: true }) & {
+export type GotDownloaderOptions = (GotOptions) & { isStream?: true } & {
   /**
-   * if defined, triggers every time `got`'s `downloadProgress` event callback is triggered.
+   * if defined, triggers every time `got`'s
+   * {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#downloadprogress | `downloadProgress``} event callback is triggered.
    */
   getProgressCallback?: (progress: GotProgress) => Promise<void>;
   /**
@@ -22,6 +26,10 @@ export type GotDownloaderOptions = (GotOptions & { isStream?: true }) & {
   quiet?: boolean;
 };
 
+/**
+ * Default {@link Downloader} implemented with {@link https://npmjs.com/package/got | `got`}.
+ * @category Downloader
+ */
 export class GotDownloader implements Downloader<GotDownloaderOptions> {
   async download(
     url: string,

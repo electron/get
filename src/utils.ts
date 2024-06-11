@@ -67,7 +67,9 @@ export function getNodeArch(arch: string): string {
 
 /**
  * Generates an architecture name that would be used in an Electron or Node.js
- * download file name, from the `process` module information.
+ * download file name from the `process` module information.
+ *
+ * @category Utility
  */
 export function getHostArch(): string {
   return getNodeArch(process.arch);
