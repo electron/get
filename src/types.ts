@@ -13,7 +13,7 @@ export type DownloadOptions = any;
 /**
  * Options for specifying an alternative download mirror for Electron.
  *
- * @category Downloader
+ * @category Utility
  * @example
  *
  * To download the Electron v4.0.4 release for x64 Linux from
