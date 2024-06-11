@@ -19,8 +19,6 @@ workflows:
                     - equal: [ '14.16', << matrix.node-version >> ]
                 steps:
                   - node/install-rosetta
-          post-steps:
-            - run: yarn build:docs
           matrix:
             alias: test
             parameters:
