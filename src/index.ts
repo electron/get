@@ -8,6 +8,7 @@ import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from '.
 import {
   ElectronArtifactDetails,
   ElectronDownloadRequestOptions,
+  ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
 } from './types';
@@ -33,7 +34,7 @@ if (process.env.ELECTRON_GET_USE_PROXY) {
 }
 
 type ArtifactDownloader = (
-  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
+  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ) => Promise<string>;
 
 async function validateArtifact(
@@ -99,16 +100,22 @@ async function validateArtifact(
  * Downloads an artifact from an Electron release and returns an absolute path
  * to the downloaded file.
  *
+ * Each release of Electron comes with artifacts, many of which are
+ * platform/arch-specific (e.g. `ffmpeg-v31.0.0-darwin-arm64.zip`) and others that
+ * are generic (e.g. `SHASUMS256.txt`).
+ *
+ *
  * @param artifactDetails - The information required to download the artifact
+ * @category Download Artifact
  */
 export async function downloadArtifact(
-  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
+  artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ): Promise<string> {
-  const artifactDetails: ElectronArtifactDetails = {
-    ...(_artifactDetails as ElectronArtifactDetails),
+  const details: ElectronArtifactDetails = {
+    ...(artifactDetails as ElectronArtifactDetails),
   };
-  if (!_artifactDetails.isGeneric) {
-    const platformArtifactDetails = artifactDetails as ElectronPlatformArtifactDetails;
+  if (!artifactDetails.isGeneric) {
+    const platformArtifactDetails = details as ElectronPlatformArtifactDetails;
     if (!platformArtifactDetails.platform) {
       d('No platform found, defaulting to the host platform');
       platformArtifactDetails.platform = process.platform;
@@ -120,16 +127,16 @@ export async function downloadArtifact(
       platformArtifactDetails.arch = getHostArch();
     }
   }
-  ensureIsTruthyString(artifactDetails, 'version');
+  ensureIsTruthyString(details, 'version');
 
-  artifactDetails.version = getArtifactVersion(artifactDetails);
-  const fileName = getArtifactFileName(artifactDetails);
-  const url = await getArtifactRemoteURL(artifactDetails);
-  const cache = new Cache(artifactDetails.cacheRoot);
+  details.version = getArtifactVersion(details);
+  const fileName = getArtifactFileName(details);
+  const url = await getArtifactRemoteURL(details);
+  const cache = new Cache(details.cacheRoot);
 
   // Do not check if the file exists in the cache when force === true
-  if (!artifactDetails.force) {
-    d(`Checking the cache (${artifactDetails.cacheRoot}) for ${fileName} (${url})`);
+  if (!details.force) {
+    d(`Checking the cache (${details.cacheRoot}) for ${fileName} (${url})`);
     const cachedPath = await cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
@@ -137,7 +144,7 @@ export async function downloadArtifact(
     } else {
       d('Cache hit');
       try {
-        await validateArtifact(artifactDetails, cachedPath, downloadArtifact);
+        await validateArtifact(details, cachedPath, downloadArtifact);
 
         return cachedPath;
       } catch (err) {
@@ -148,40 +155,43 @@ export async function downloadArtifact(
   }
 
   if (
-    !artifactDetails.isGeneric &&
+    !details.isGeneric &&
     isOfficialLinuxIA32Download(
-      artifactDetails.platform,
-      artifactDetails.arch,
-      artifactDetails.version,
-      artifactDetails.mirrorOptions,
+      details.platform,
+      details.arch,
+      details.version,
+      details.mirrorOptions,
     )
   ) {
     console.warn('Official Linux/ia32 support is deprecated.');
     console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
   }
 
-  return await withTempDirectoryIn(artifactDetails.tempDirectory, async tempFolder => {
-    const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
+  return await withTempDirectoryIn(details.tempDirectory, async tempFolder => {
+    const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(details));
 
-    const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
+    const downloader = details.downloader || (await getDownloaderForSystem());
     d(
       `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
-        artifactDetails.downloadOptions,
+        details.downloadOptions,
       )}`,
     );
-    await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
+    await downloader.download(url, tempDownloadPath, details.downloadOptions);
 
-    await validateArtifact(artifactDetails, tempDownloadPath, downloadArtifact);
+    await validateArtifact(details, tempDownloadPath, downloadArtifact);
 
     return await cache.putFileInCache(url, tempDownloadPath, fileName);
   });
 }
 
 /**
- * Downloads a specific version of Electron and returns an absolute path to a
+ * Downloads the Electron binary for a specific version and returns an absolute path to a
  * ZIP file.
  *
- * @param version - The version of Electron you want to download
+ * @param version - The version of Electron you want to download (e.g. `31.0.0`)
+ * @param options - Options to customize the download behavior
+ * @returns An absolute path to the downloaded ZIP file
+ * @category Download Electron
  */
 export function download(
   version: string,

@@ -10,6 +10,12 @@ workflows:
     jobs:
       - node/test:
           name: test-<< matrix.executor >>-<< matrix.node-version >>
+          override-ci-command: |
+            if [ << matrix.node-version >> = '14.16' ]; then
+              yarn install --frozen-lockfile --ignore-engines
+            else
+              yarn install --frozen-lockfile
+            fi
           pre-steps:
             - run: git config --global core.autocrlf input
             - when:

@@ -1,21 +1,45 @@
 import { Downloader } from './Downloader';
+import { GotDownloader, GotDownloaderOptions } from './GotDownloader';
 
-export { Downloader };
+export { Downloader, GotDownloader, GotDownloaderOptions };
 
+/**
+ * Custom downloaders can implement any set of options.
+ * @category Downloader
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DownloadOptions = any;
 
+/**
+ * Options for specifying an alternative download mirror for Electron.
+ *
+ * @category Utility
+ * @example
+ *
+ * To download the Electron v4.0.4 release for x64 Linux from
+ * https://github.com/electron/electron/releases/download/v4.0.4/electron-v4.0.4-linux-x64.zip
+ *
+ * ```js
+ * const opts = {
+ *  mirror: 'https://github.com/electron/electron/releases/download',
+ *  customDir: 'v4.0.4',
+ *  customFilename: 'electron-v4.0.4-linux-x64.zip',
+ * }
+ * ```
+ */
 export interface MirrorOptions {
   /**
-   * DEPRECATED - see nightlyMirror.
+   * @deprecated
+   * @see {@link MirrorOptions.nightlyMirror}
    */
   nightly_mirror?: string;
   /**
-   * The Electron nightly-specific mirror URL.
+   * The mirror URL for [`electron-nightly`](https://npmjs.com/package/electron-nightly),
+   * which lives in a separate npm package.
    */
   nightlyMirror?: string;
   /**
-   * The base URL of the mirror to download from,
+   * The base URL of the mirror to download from.
    * e.g https://github.com/electron/electron/releases/download
    */
   mirror?: string;
@@ -41,6 +65,10 @@ export interface MirrorOptions {
   resolveAssetURL?: (opts: DownloadOptions) => Promise<string>;
 }
 
+/**
+ * @category Download Artifact
+ * @internal
+ */
 export interface ElectronDownloadRequest {
   /**
    * The version of Electron associated with the artifact.
@@ -54,18 +82,21 @@ export interface ElectronDownloadRequest {
   artifactName: string;
 }
 
+/**
+ * @category Download Electron
+ */
 export interface ElectronDownloadRequestOptions {
   /**
    * Whether to download an artifact regardless of whether it's in the cache directory.
    *
-   * Defaults to `false`.
+   * @defaultValue `false`
    */
   force?: boolean;
   /**
    * When set to `true`, disables checking that the artifact download completed successfully
    * with the correct payload.
    *
-   * Defaults to `false`.
+   * @defaultValue `false`
    */
   unsafelyDisableChecksums?: boolean;
   /**
@@ -76,12 +107,19 @@ export interface ElectronDownloadRequestOptions {
    *
    * This should be an object whose keys are the file names of the artifacts and
    * the values are their respective SHA256 checksums.
+   *
+   * @example
+   * ```json
+   * {
+   *   "electron-v4.0.4-linux-x64.zip": "877617029f4c0f2b24f3805a1c3554ba166fda65c4e88df9480ae7b6ffa26a22"
+   * }
+   * ```
    */
   checksums?: Record<string, string>;
   /**
    * The directory that caches Electron artifact downloads.
    *
-   * The default value is dependent upon the host platform:
+   * @defaultValue The default value is dependent upon the host platform:
    *
    * * Linux: `$XDG_CACHE_HOME` or `~/.cache/electron/`
    * * MacOS: `~/Library/Caches/electron/`
@@ -90,6 +128,8 @@ export interface ElectronDownloadRequestOptions {
   cacheRoot?: string;
   /**
    * Options passed to the downloader module.
+   *
+   * @see {@link GotDownloaderOptions} for options for the default {@link GotDownloader}.
    */
   downloadOptions?: DownloadOptions;
   /**
@@ -97,23 +137,31 @@ export interface ElectronDownloadRequestOptions {
    */
   mirrorOptions?: MirrorOptions;
   /**
-   * The custom {@link Downloader} class used to download artifacts. Defaults to the
+   * A custom {@link Downloader} class used to download artifacts. Defaults to the
    * built-in {@link GotDownloader}.
    */
   downloader?: Downloader<DownloadOptions>;
   /**
    * A temporary directory for downloads.
    * It is used before artifacts are put into cache.
+   *
+   * @defaultValue the OS default temporary directory via [`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir)
    */
   tempDirectory?: string;
 }
 
+/**
+ * @category Download Artifact
+ * @internal
+ */
 export type ElectronPlatformArtifactDetails = {
   /**
    * The target artifact platform. These are Node-style platform names, for example:
    * * `win32`
    * * `darwin`
    * * `linux`
+   *
+   * @see Node.js {@link https://nodejs.org/api/process.html#processplatform | process.platform} docs
    */
   platform: string;
   /**
@@ -121,6 +169,8 @@ export type ElectronPlatformArtifactDetails = {
    * * `ia32`
    * * `x64`
    * * `armv7l`
+   *
+   * @see Node.js {@link https://nodejs.org/api/process.html#processarch | process.arch} docs
    */
   arch: string;
   artifactSuffix?: string;
@@ -128,18 +178,58 @@ export type ElectronPlatformArtifactDetails = {
 } & ElectronDownloadRequest &
   ElectronDownloadRequestOptions;
 
+/**
+ * Options to download a generic (i.e. platform and architecture-agnostic)
+ * Electron artifact. Contains all options from {@link ElectronDownloadRequestOptions},
+ * but specifies a `version` and `artifactName` for the artifact to download.
+ *
+ * @category Download Artifact
+ * @interface
+ */
 export type ElectronGenericArtifactDetails = {
   isGeneric: true;
 } & ElectronDownloadRequest &
   ElectronDownloadRequestOptions;
 
+/**
+ * @category Download Artifact
+ * @internal
+ */
 export type ElectronArtifactDetails =
   | ElectronPlatformArtifactDetails
   | ElectronGenericArtifactDetails;
 
-export type ElectronPlatformArtifactDetailsWithDefaults =
-  | (Omit<ElectronPlatformArtifactDetails, 'platform' | 'arch'> & {
-      platform?: string;
-      arch?: string;
-    })
-  | ElectronGenericArtifactDetails;
+/**
+ * Options to download a platform and architecture-specific Electron artifact.
+ * Contains all options from {@link ElectronDownloadRequestOptions}, but
+ * specifies a `version` and `artifactName` for the artifact to download.
+ *
+ * If `platform` and `arch` are omitted, they will be inferred using the host
+ * system platform and architecture.
+ *
+ * @category Download Artifact
+ * @interface
+ */
+export type ElectronPlatformArtifactDetailsWithDefaults = Omit<
+  ElectronPlatformArtifactDetails,
+  'platform' | 'arch'
+> & {
+  /**
+   * The target artifact platform. These are Node-style platform names, for example:
+   * * `win32`
+   * * `darwin`
+   * * `linux`
+   *
+   * @see Node.js {@link https://nodejs.org/api/process.html#processplatform | process.platform} docs
+   */
+  platform?: string;
+  /**
+   * The target artifact architecture. These are Node-style architecture names, for example:
+   * * `ia32`
+   * * `x64`
+   * * `armv7l`
+   *
+   * @see Node.js {@link https://nodejs.org/api/process.html#processarch | process.arch} docs
+   */
+  arch?: string;
+};
