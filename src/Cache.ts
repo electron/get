@@ -39,7 +39,12 @@ export class Cache {
     return null;
   }
 
-  public async putFileInCache(url: string, currentPath: string, fileName: string): Promise<string> {
+  public async putFileInCache(
+    url: string,
+    currentPath: string,
+    fileName: string,
+    overwrite?: boolean,
+  ): Promise<string> {
     const cachePath = this.getCachePath(url, fileName);
     d(`Moving ${currentPath} to ${cachePath}`);
     if (await fs.pathExists(cachePath)) {
@@ -47,7 +52,7 @@ export class Cache {
       await fs.remove(cachePath);
     }
 
-    await fs.move(currentPath, cachePath);
+    await fs.move(currentPath, cachePath, { overwrite });
 
     return cachePath;
   }
