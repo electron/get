@@ -76,7 +76,7 @@ async function validateArtifact(
             cacheRoot: artifactDetails.cacheRoot,
             downloader: artifactDetails.downloader,
             mirrorOptions: artifactDetails.mirrorOptions,
-            dontCache: artifactDetails.dontCache,
+            dontCache: true,
           });
         }
 
@@ -101,9 +101,7 @@ async function validateArtifact(
             ]);
           }
         } finally {
-          if (artifactDetails.dontCache) {
-            await fs.remove(path.dirname(shasumPath));
-          }
+          await fs.remove(path.dirname(shasumPath));
         }
       }
     },
