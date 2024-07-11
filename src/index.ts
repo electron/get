@@ -180,12 +180,7 @@ export async function downloadArtifact(
 
     await validateArtifact(details, tempDownloadPath, downloadArtifact);
 
-    return await cache.putFileInCache(
-      url,
-      tempDownloadPath,
-      fileName,
-      details.artifactName.startsWith('SHASUMS256'), // overwrite the SHASUMS in the cache
-    );
+    return await cache.putFileInCache(url, tempDownloadPath, fileName);
   });
 }
 
