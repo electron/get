@@ -82,6 +82,28 @@ export interface ElectronDownloadRequest {
   artifactName: string;
 }
 
+export enum ElectronDownloadCacheMode {
+  /**
+   * Reads from the cache if present
+   * Writes to the cache after fetch if not present
+   */
+  ReadWrite,
+  /**
+   * Reads from the cache if present
+   * Will **not** write back to the cache after fetching missing artifact
+   */
+  ReadOnly,
+  /**
+   * Skips reading from the cache
+   * Will write back into the cache, overwriting anything currently in the cache after fetch
+   */
+  WriteOnly,
+  /**
+   * Bypasses the cache completely, neither reads from nor writes to the cache
+   */
+  Bypass,
+}
+
 /**
  * @category Download Electron
  */
@@ -90,6 +112,7 @@ export interface ElectronDownloadRequestOptions {
    * Whether to download an artifact regardless of whether it's in the cache directory.
    *
    * @defaultValue `false`
+   * @deprecated This option is depracated and directly maps to `cacheMode: ElectronDownloadCacheMode.WriteOnly`
    */
   force?: boolean;
   /**
@@ -149,12 +172,11 @@ export interface ElectronDownloadRequestOptions {
    */
   tempDirectory?: string;
   /**
-   * When set to `true`, do not put the downloaded artifact into the cache, leaving it
-   * in the temporary directory. You need to clean up the temporary directory yourself.
+   * Controls the cache read and write behavior.
    *
-   * Defaults to `false`.
+   * Defaults to `ElectronDownloadCacheMode.ReadWrite`.
    */
-  dontCache?: boolean;
+  cacheMode?: ElectronDownloadCacheMode;
 }
 
 /**

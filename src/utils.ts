@@ -2,6 +2,11 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
+import {
+  ElectronDownloadCacheMode,
+  ElectronGenericArtifactDetails,
+  ElectronPlatformArtifactDetailsWithDefaults,
+} from './types';
 
 async function useAndRemoveDirectory<T>(
   directory: string,
@@ -133,4 +138,40 @@ export function setEnv(key: string, value: string | undefined): void {
   if (value !== void 0) {
     process.env[key] = value;
   }
+}
+
+export function effectiveCacheMode(
+  artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
+): ElectronDownloadCacheMode {
+  if (artifactDetails.force) {
+    if (artifactDetails.cacheMode) {
+      throw new Error(
+        'Setting both "force" and "cacheMode" is not supported, please exclusively use "cacheMode"',
+      );
+    }
+    return ElectronDownloadCacheMode.ReadWrite;
+  }
+
+  return artifactDetails.cacheMode || ElectronDownloadCacheMode.ReadWrite;
+}
+
+export function shouldTryReadCache(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.ReadOnly ||
+    cacheMode === ElectronDownloadCacheMode.ReadWrite
+  );
+}
+
+export function shouldWriteCache(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.WriteOnly ||
+    cacheMode === ElectronDownloadCacheMode.ReadWrite
+  );
+}
+
+export function doesCallerOwnTemporaryOutput(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.Bypass ||
+    cacheMode === ElectronDownloadCacheMode.ReadOnly
+  );
 }

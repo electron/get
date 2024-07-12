@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
-import { DownloadOptions } from '../src/types';
+import { DownloadOptions, ElectronDownloadCacheMode } from '../src/types';
 import * as sumchecker from 'sumchecker';
 
 jest.mock('sumchecker');
@@ -132,11 +132,11 @@ describe('Public API', () => {
       process.env.ELECTRON_CUSTOM_VERSION = '';
     });
 
-    it('should not put artifact in cache when dontCache=true', async () => {
+    it('should not put artifact in cache when cacheMode=ReadOnly', async () => {
       const zipPath = await download('2.0.10', {
         cacheRoot,
         downloader,
-        dontCache: true,
+        cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
       expect(typeof zipPath).toEqual('string');
       expect(await fs.pathExists(zipPath)).toEqual(true);
@@ -145,7 +145,7 @@ describe('Public API', () => {
       expect(fs.readdirSync(cacheRoot).length).toEqual(0);
     });
 
-    it('should use cache hits when dontCache=true', async () => {
+    it('should use cache hits when cacheMode=ReadOnly', async () => {
       const zipPath = await download('2.0.9', {
         cacheRoot,
         downloader,
@@ -154,7 +154,7 @@ describe('Public API', () => {
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
         downloader,
-        dontCache: true,
+        cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
       expect(zipPath2).not.toEqual(zipPath);
       expect(path.dirname(zipPath2).startsWith(cacheRoot)).toEqual(false);
@@ -264,7 +264,7 @@ describe('Public API', () => {
       expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
     });
 
-    it('should not put artifact in cache when dontCache=true', async () => {
+    it('should not put artifact in cache when cacheMode=ReadOnly', async () => {
       const driverPath = await downloadArtifact({
         cacheRoot,
         downloader,
@@ -272,7 +272,7 @@ describe('Public API', () => {
         artifactName: 'chromedriver',
         platform: 'darwin',
         arch: 'x64',
-        dontCache: true,
+        cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
       expect(await fs.pathExists(driverPath)).toEqual(true);
       expect(path.basename(driverPath)).toMatchInlineSnapshot(
@@ -283,7 +283,7 @@ describe('Public API', () => {
       expect(fs.readdirSync(cacheRoot).length).toEqual(0);
     });
 
-    it('should use cache hits when dontCache=true', async () => {
+    it('should use cache hits when cacheMode=ReadOnly', async () => {
       const driverPath = await downloadArtifact({
         cacheRoot,
         downloader,
@@ -300,7 +300,7 @@ describe('Public API', () => {
         artifactName: 'chromedriver',
         platform: 'darwin',
         arch: 'x64',
-        dontCache: true,
+        cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
       expect(driverPath2).not.toEqual(driverPath);
       expect(path.dirname(driverPath2).startsWith(cacheRoot)).toEqual(false);
