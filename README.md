@@ -7,6 +7,8 @@
 
 ## Usage
 
+For full API details, see the [API documentation](https://electron.github.io/get/).
+
 ### Simple: Downloading an Electron Binary ZIP
 
 ```typescript
@@ -18,7 +20,6 @@ const zipFilePath = await download('4.0.4');
 ```
 
 ### Advanced: Downloading a macOS Electron Symbol File
-
 
 ```typescript
 import { downloadArtifact } from '@electron/get';
@@ -136,3 +137,9 @@ disable, set the `ELECTRON_GET_NO_PROGRESS` environment variable to any non-empt
 
 Downstream packages should utilize the `initializeProxy` function to add HTTP(S) proxy support. If
 the environment variable `ELECTRON_GET_USE_PROXY` is set, it is called automatically.
+
+### Debug
+
+[`debug`](https://www.npmjs.com/package/debug) is used to display logs and messages.
+Set the `DEBUG=@electron/get*` environment variable to log additional
+debug information from this module.

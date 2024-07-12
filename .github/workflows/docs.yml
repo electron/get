@@ -18,24 +18,28 @@ jobs:
         id: generate-token
         with:
           creds: ${{ secrets.GH_APP_CREDS }}
-          export-git-user: true
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608  # tag: v4.1.0
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332  # tag: v4.1.7
         with:
           token: ${{ steps.generate-token.outputs.token }}
       - name: Fetch all git branches
         run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d  # tag: v3.8.1
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # tag: v4.0.2
         with:
           node-version: lts/*
       - run: yarn --frozen-lockfile
       - run: yarn build:docs
-      - uses: malept/github-action-gh-pages@e151760357583e2f9152f8e8c8658ceb3ccf3d64  # tag: v1.3.1
+      - name: Prepare docs
+        uses: malept/github-action-gh-pages@f7952a65c4b763dc84b824a530dc38bd375ac91e  # tag: v1.4.0
         with:
           defaultBranch: main
-          gitCommitEmail: ${{ env.GIT_COMMITTER_EMAIL }}
-          gitCommitMessage: 'Publish [skip ci]'
-          gitCommitUser: ${{ env.GIT_COMMITTER_NAME }}
+          noCommit: true
           showUnderscoreFiles: true
           versionDocs: true
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Commit docs
+        uses: dsanders11/github-app-commit-action@48d2ff8c1a855eb15d16afa97ae12616456d7cbc # v1.4.0
+        with:
+          fail-on-no-changes: false
+          message: 'Publish [skip ci]'
+          token: ${{ steps.generate-token.outputs.token }}

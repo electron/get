@@ -7,7 +7,9 @@ import * as sumchecker from 'sumchecker';
 import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils';
 import {
   ElectronArtifactDetails,
+  ElectronDownloadCacheMode,
   ElectronDownloadRequestOptions,
+  ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
 } from './types';
@@ -21,6 +23,9 @@ import {
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
   mkdtemp,
+  doesCallerOwnTemporaryOutput,
+  effectiveCacheMode,
+  shouldTryReadCache,
 } from './utils';
 
 export { getHostArch } from './utils';
@@ -34,14 +39,14 @@ if (process.env.ELECTRON_GET_USE_PROXY) {
 }
 
 type ArtifactDownloader = (
-  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
+  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ) => Promise<string>;
 
 async function validateArtifact(
   artifactDetails: ElectronArtifactDetails,
   downloadedAssetPath: string,
   _downloadArtifact: ArtifactDownloader,
-) {
+): Promise<void> {
   return await withTempDirectoryIn(
     artifactDetails.tempDirectory,
     async tempFolder => {
@@ -71,12 +76,14 @@ async function validateArtifact(
             isGeneric: true,
             version: artifactDetails.version,
             artifactName: 'SHASUMS256.txt',
-            force: artifactDetails.force,
+            force: false,
             downloadOptions: artifactDetails.downloadOptions,
             cacheRoot: artifactDetails.cacheRoot,
             downloader: artifactDetails.downloader,
             mirrorOptions: artifactDetails.mirrorOptions,
-            dontCache: artifactDetails.dontCache,
+            // Never use the cache for loading checksums, load
+            // them fresh every time
+            cacheMode: ElectronDownloadCacheMode.Bypass,
           });
         }
 
@@ -101,13 +108,12 @@ async function validateArtifact(
             ]);
           }
         } finally {
-          if (artifactDetails.dontCache) {
-            await fs.remove(path.dirname(shasumPath));
-          }
+          // Once we're done make sure we clean up the shasum temp dir
+          await fs.remove(path.dirname(shasumPath));
         }
       }
     },
-    artifactDetails.dontCache !== true,
+    !doesCallerOwnTemporaryOutput(effectiveCacheMode(artifactDetails)),
   );
 }
 
@@ -115,16 +121,22 @@ async function validateArtifact(
  * Downloads an artifact from an Electron release and returns an absolute path
  * to the downloaded file.
  *
+ * Each release of Electron comes with artifacts, many of which are
+ * platform/arch-specific (e.g. `ffmpeg-v31.0.0-darwin-arm64.zip`) and others that
+ * are generic (e.g. `SHASUMS256.txt`).
+ *
+ *
  * @param artifactDetails - The information required to download the artifact
+ * @category Download Artifact
  */
 export async function downloadArtifact(
-  _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults,
+  artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ): Promise<string> {
-  const artifactDetails: ElectronArtifactDetails = {
-    ...(_artifactDetails as ElectronArtifactDetails),
+  const details: ElectronArtifactDetails = {
+    ...(artifactDetails as ElectronArtifactDetails),
   };
-  if (!_artifactDetails.isGeneric) {
-    const platformArtifactDetails = artifactDetails as ElectronPlatformArtifactDetails;
+  if (!artifactDetails.isGeneric) {
+    const platformArtifactDetails = details as ElectronPlatformArtifactDetails;
     if (!platformArtifactDetails.platform) {
       d('No platform found, defaulting to the host platform');
       platformArtifactDetails.platform = process.platform;
@@ -136,16 +148,17 @@ export async function downloadArtifact(
       platformArtifactDetails.arch = getHostArch();
     }
   }
-  ensureIsTruthyString(artifactDetails, 'version');
+  ensureIsTruthyString(details, 'version');
 
-  artifactDetails.version = getArtifactVersion(artifactDetails);
-  const fileName = getArtifactFileName(artifactDetails);
-  const url = await getArtifactRemoteURL(artifactDetails);
-  const cache = new Cache(artifactDetails.cacheRoot);
+  details.version = getArtifactVersion(details);
+  const fileName = getArtifactFileName(details);
+  const url = await getArtifactRemoteURL(details);
+  const cache = new Cache(details.cacheRoot);
+  const cacheMode = effectiveCacheMode(details);
 
   // Do not check if the file exists in the cache when force === true
-  if (!artifactDetails.force) {
-    d(`Checking the cache (${artifactDetails.cacheRoot}) for ${fileName} (${url})`);
+  if (shouldTryReadCache(cacheMode)) {
+    d(`Checking the cache (${details.cacheRoot}) for ${fileName} (${url})`);
     const cachedPath = await cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
@@ -153,18 +166,19 @@ export async function downloadArtifact(
     } else {
       d('Cache hit');
       let artifactPath = cachedPath;
-      if (artifactDetails.dontCache) {
-        // Copy out of cache into temporary directory if dontCache
+      if (doesCallerOwnTemporaryOutput(cacheMode)) {
+        // Copy out of cache into temporary directory if readOnly cache so
+        // that the caller can take ownership of the returned file
         const tempDir = await mkdtemp(artifactDetails.tempDirectory);
         artifactPath = path.resolve(tempDir, fileName);
         await fs.copyFile(cachedPath, artifactPath);
       }
       try {
-        await validateArtifact(artifactDetails, artifactPath, downloadArtifact);
+        await validateArtifact(details, artifactPath, downloadArtifact);
 
         return artifactPath;
       } catch (err) {
-        if (artifactDetails.dontCache) {
+        if (doesCallerOwnTemporaryOutput(cacheMode)) {
           await fs.remove(path.dirname(artifactPath));
         }
         d("Artifact in cache didn't match checksums", err);
@@ -174,12 +188,12 @@ export async function downloadArtifact(
   }
 
   if (
-    !artifactDetails.isGeneric &&
+    !details.isGeneric &&
     isOfficialLinuxIA32Download(
-      artifactDetails.platform,
-      artifactDetails.arch,
-      artifactDetails.version,
-      artifactDetails.mirrorOptions,
+      details.platform,
+      details.arch,
+      details.version,
+      details.mirrorOptions,
     )
   ) {
     console.warn('Official Linux/ia32 support is deprecated.');
@@ -189,7 +203,7 @@ export async function downloadArtifact(
   return await withTempDirectoryIn(
     artifactDetails.tempDirectory,
     async tempFolder => {
-      const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(artifactDetails));
+      const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(details));
 
       const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
       d(
@@ -199,23 +213,26 @@ export async function downloadArtifact(
       );
       await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
 
-      await validateArtifact(artifactDetails, tempDownloadPath, downloadArtifact);
+      await validateArtifact(details, tempDownloadPath, downloadArtifact);
 
-      if (artifactDetails.dontCache) {
+      if (doesCallerOwnTemporaryOutput(cacheMode)) {
         return tempDownloadPath;
       } else {
         return await cache.putFileInCache(url, tempDownloadPath, fileName);
       }
     },
-    artifactDetails.dontCache !== true,
+    !doesCallerOwnTemporaryOutput(cacheMode),
   );
 }
 
 /**
- * Downloads a specific version of Electron and returns an absolute path to a
+ * Downloads the Electron binary for a specific version and returns an absolute path to a
  * ZIP file.
  *
- * @param version - The version of Electron you want to download
+ * @param version - The version of Electron you want to download (e.g. `31.0.0`)
+ * @param options - Options to customize the download behavior
+ * @returns An absolute path to the downloaded ZIP file
+ * @category Download Electron
  */
 export function download(
   version: string,
