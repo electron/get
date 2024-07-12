@@ -154,7 +154,7 @@ export function effectiveCacheMode(
         'Setting both "force" and "cacheMode" is not supported, please exclusively use "cacheMode"',
       );
     }
-    return ElectronDownloadCacheMode.ReadWrite;
+    return ElectronDownloadCacheMode.WriteOnly;
   }
 
   return artifactDetails.cacheMode || ElectronDownloadCacheMode.ReadWrite;
