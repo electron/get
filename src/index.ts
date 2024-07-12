@@ -26,6 +26,7 @@ import {
   doesCallerOwnTemporaryOutput,
   effectiveCacheMode,
   shouldTryReadCache,
+  TempDirCleanUpMode,
 } from './utils';
 
 export { getHostArch } from './utils';
@@ -113,7 +114,9 @@ async function validateArtifact(
         }
       }
     },
-    !doesCallerOwnTemporaryOutput(effectiveCacheMode(artifactDetails)),
+    doesCallerOwnTemporaryOutput(effectiveCacheMode(artifactDetails))
+      ? TempDirCleanUpMode.ORPHAN
+      : TempDirCleanUpMode.CLEAN,
   );
 }
 
@@ -221,7 +224,7 @@ export async function downloadArtifact(
         return await cache.putFileInCache(url, tempDownloadPath, fileName);
       }
     },
-    !doesCallerOwnTemporaryOutput(cacheMode),
+    doesCallerOwnTemporaryOutput(cacheMode) ? TempDirCleanUpMode.ORPHAN : TempDirCleanUpMode.CLEAN,
   );
 }
 

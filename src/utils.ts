@@ -26,13 +26,18 @@ export async function mkdtemp(parentDirectory: string = os.tmpdir()): Promise<st
   return await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
 }
 
+export enum TempDirCleanUpMode {
+  CLEAN,
+  ORPHAN,
+}
+
 export async function withTempDirectoryIn<T>(
   parentDirectory: string = os.tmpdir(),
   fn: (directory: string) => Promise<T>,
-  removeAfter?: boolean,
+  cleanUp: TempDirCleanUpMode,
 ): Promise<T> {
   const tempDirectory = await mkdtemp(parentDirectory);
-  if (removeAfter === undefined ? true : removeAfter) {
+  if (cleanUp === TempDirCleanUpMode.CLEAN) {
     return useAndRemoveDirectory(tempDirectory, fn);
   } else {
     return fn(tempDirectory);
@@ -41,9 +46,9 @@ export async function withTempDirectoryIn<T>(
 
 export async function withTempDirectory<T>(
   fn: (directory: string) => Promise<T>,
-  removeAfter?: boolean,
+  cleanUp: TempDirCleanUpMode,
 ): Promise<T> {
-  return withTempDirectoryIn(undefined, fn, removeAfter);
+  return withTempDirectoryIn(undefined, fn, cleanUp);
 }
 
 export function normalizeVersion(version: string): string {

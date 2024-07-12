@@ -9,6 +9,7 @@ import {
   isOfficialLinuxIA32Download,
   getEnv,
   setEnv,
+  TempDirCleanUpMode,
 } from '../src/utils';
 
 describe('utils', () => {
@@ -39,17 +40,17 @@ describe('utils', () => {
       await withTempDirectory(async dir => {
         expect(await fs.pathExists(dir)).toEqual(true);
         expect(await fs.readdir(dir)).toEqual([]);
-      });
+      }, TempDirCleanUpMode.CLEAN);
     });
 
     it('should return the value the function returns', async () => {
-      expect(await withTempDirectory(async () => 1234)).toEqual(1234);
+      expect(await withTempDirectory(async () => 1234, TempDirCleanUpMode.CLEAN)).toEqual(1234);
     });
 
     it('should delete the directory when the function terminates', async () => {
       const mDir = await withTempDirectory(async dir => {
         return dir;
-      });
+      }, TempDirCleanUpMode.CLEAN);
       expect(mDir).not.toBeUndefined();
       expect(await fs.pathExists(mDir)).toEqual(false);
     });
@@ -60,17 +61,17 @@ describe('utils', () => {
         withTempDirectory(async dir => {
           mDir = dir;
           throw 'my error';
-        }),
+        }, TempDirCleanUpMode.CLEAN),
       ).rejects.toEqual('my error');
       expect(mDir).not.toBeUndefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       expect(await fs.pathExists(mDir!)).toEqual(false);
     });
 
-    it('should not delete the directory if removeAfter is false', async () => {
+    it('should not delete the directory if told to orphan the temp dir', async () => {
       const mDir = await withTempDirectory(async dir => {
         return dir;
-      }, false);
+      }, TempDirCleanUpMode.ORPHAN);
       expect(mDir).not.toBeUndefined();
       try {
         expect(await fs.pathExists(mDir)).toEqual(true);
