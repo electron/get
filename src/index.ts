@@ -204,17 +204,17 @@ export async function downloadArtifact(
   }
 
   return await withTempDirectoryIn(
-    artifactDetails.tempDirectory,
+    details.tempDirectory,
     async tempFolder => {
       const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(details));
 
-      const downloader = artifactDetails.downloader || (await getDownloaderForSystem());
+      const downloader = details.downloader || (await getDownloaderForSystem());
       d(
         `Downloading ${url} to ${tempDownloadPath} with options: ${JSON.stringify(
-          artifactDetails.downloadOptions,
+          details.downloadOptions,
         )}`,
       );
-      await downloader.download(url, tempDownloadPath, artifactDetails.downloadOptions);
+      await downloader.download(url, tempDownloadPath, details.downloadOptions);
 
       await validateArtifact(details, tempDownloadPath, downloadArtifact);
 

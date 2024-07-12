@@ -174,6 +174,14 @@ export interface ElectronDownloadRequestOptions {
   /**
    * Controls the cache read and write behavior.
    *
+   * When set to either `ReadOnly` or `Bypass` the caller is responsible
+   * for cleaning up the returned file path once they are done using
+   * it. E.g. `fs.remove(path.dirname(pathFromElectronGet))`
+   *
+   * When set to either `WriteOnly` or `ReadWrite` (the default) the caller
+   * should not move or delete the file path that is returned as the path
+   * points directly to the disk cache.
+   *
    * Defaults to `ElectronDownloadCacheMode.ReadWrite`.
    */
   cacheMode?: ElectronDownloadCacheMode;
