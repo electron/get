@@ -112,7 +112,7 @@ export interface ElectronDownloadRequestOptions {
    * Whether to download an artifact regardless of whether it's in the cache directory.
    *
    * @defaultValue `false`
-   * @deprecated This option is deprecated and directly maps to `cacheMode: ElectronDownloadCacheMode.WriteOnly`
+   * @deprecated This option is deprecated and directly maps to {@link cacheMode | `cacheMode: ElectronDownloadCacheMode.WriteOnly`}
    */
   force?: boolean;
   /**
