@@ -188,6 +188,7 @@ export interface ElectronDownloadRequestOptions {
    *
    * @defaultValue {@link ElectronDownloadCacheMode.ReadWrite}
    */
+  cacheMode?: ElectronDownloadCacheMode;
 }
 
 /**
