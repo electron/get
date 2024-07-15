@@ -82,6 +82,28 @@ export interface ElectronDownloadRequest {
   artifactName: string;
 }
 
+export enum ElectronDownloadCacheMode {
+  /**
+   * Reads from the cache if present
+   * Writes to the cache after fetch if not present
+   */
+  ReadWrite,
+  /**
+   * Reads from the cache if present
+   * Will **not** write back to the cache after fetching missing artifact
+   */
+  ReadOnly,
+  /**
+   * Skips reading from the cache
+   * Will write back into the cache, overwriting anything currently in the cache after fetch
+   */
+  WriteOnly,
+  /**
+   * Bypasses the cache completely, neither reads from nor writes to the cache
+   */
+  Bypass,
+}
+
 /**
  * @category Download Electron
  */
@@ -90,6 +112,7 @@ export interface ElectronDownloadRequestOptions {
    * Whether to download an artifact regardless of whether it's in the cache directory.
    *
    * @defaultValue `false`
+   * @deprecated This option is deprecated and directly maps to {@link cacheMode | `cacheMode: ElectronDownloadCacheMode.WriteOnly`}
    */
   force?: boolean;
   /**
@@ -148,6 +171,24 @@ export interface ElectronDownloadRequestOptions {
    * @defaultValue the OS default temporary directory via [`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir)
    */
   tempDirectory?: string;
+  /**
+   * Controls the cache read and write behavior.
+   *
+   * When set to either {@link ElectronDownloadCacheMode.ReadOnly | ReadOnly} or
+   * {@link ElectronDownloadCacheMode.Bypass | Bypass}, the caller is responsible
+   * for cleaning up the returned file path once they are done using it
+   * (e.g. via `fs.remove(path.dirname(pathFromElectronGet))`).
+   *
+   * When set to either {@link ElectronDownloadCacheMode.WriteOnly | WriteOnly} or
+   * {@link ElectronDownloadCacheMode.ReadWrite | ReadWrite} (the default), the caller
+   * should not move or delete the file path that is returned as the path
+   * points directly to the disk cache.
+   *
+   * This option cannot be used in conjunction with {@link ElectronDownloadRequestOptions.force}.
+   *
+   * @defaultValue {@link ElectronDownloadCacheMode.ReadWrite}
+   */
+  cacheMode?: ElectronDownloadCacheMode;
 }
 
 /**

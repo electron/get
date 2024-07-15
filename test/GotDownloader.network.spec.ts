@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 import { GotDownloader } from '../src/GotDownloader';
-import { withTempDirectory } from '../src/utils';
+import { TempDirCleanUpMode, withTempDirectory } from '../src/utils';
 import { EventEmitter } from 'events';
 
 describe('GotDownloader', () => {
@@ -26,7 +26,7 @@ describe('GotDownloader', () => {
         expect(await fs.pathExists(testFile)).toEqual(true);
         expect(await fs.readFile(testFile, 'utf8')).toMatchSnapshot();
         expect(progressCallbackCalled).toEqual(true);
-      });
+      }, TempDirCleanUpMode.CLEAN);
     });
 
     it('should throw an error if the file does not exist', async function() {
@@ -36,7 +36,7 @@ describe('GotDownloader', () => {
         const url = 'https://github.com/electron/electron/releases/download/v2.0.18/bad.file';
         const snapshot = `[HTTPError: Response code 404 (Not Found) for ${url}]`;
         await expect(downloader.download(url, testFile)).rejects.toMatchInlineSnapshot(snapshot);
-      });
+      }, TempDirCleanUpMode.CLEAN);
     });
 
     it('should throw an error if the file write stream fails', async () => {
@@ -55,7 +55,7 @@ describe('GotDownloader', () => {
             testFile,
           ),
         ).rejects.toMatchInlineSnapshot(`"bad write error thing"`);
-      });
+      }, TempDirCleanUpMode.CLEAN);
     });
 
     it('should download to a deep uncreated path', async () => {
@@ -71,7 +71,7 @@ describe('GotDownloader', () => {
         ).resolves.toBeUndefined();
         expect(await fs.pathExists(testFile)).toEqual(true);
         expect(await fs.readFile(testFile, 'utf8')).toMatchSnapshot();
-      });
+      }, TempDirCleanUpMode.CLEAN);
     });
   });
 });

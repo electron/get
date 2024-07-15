@@ -2,6 +2,11 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs-extra';
 import * as os from 'os';
 import * as path from 'path';
+import {
+  ElectronDownloadCacheMode,
+  ElectronGenericArtifactDetails,
+  ElectronPlatformArtifactDetailsWithDefaults,
+} from './types';
 
 async function useAndRemoveDirectory<T>(
   directory: string,
@@ -16,17 +21,34 @@ async function useAndRemoveDirectory<T>(
   return result;
 }
 
+export async function mkdtemp(parentDirectory: string = os.tmpdir()): Promise<string> {
+  const tempDirectoryPrefix = 'electron-download-';
+  return await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
+}
+
+export enum TempDirCleanUpMode {
+  CLEAN,
+  ORPHAN,
+}
+
 export async function withTempDirectoryIn<T>(
   parentDirectory: string = os.tmpdir(),
   fn: (directory: string) => Promise<T>,
+  cleanUp: TempDirCleanUpMode,
 ): Promise<T> {
-  const tempDirectoryPrefix = 'electron-download-';
-  const tempDirectory = await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
-  return useAndRemoveDirectory(tempDirectory, fn);
+  const tempDirectory = await mkdtemp(parentDirectory);
+  if (cleanUp === TempDirCleanUpMode.CLEAN) {
+    return useAndRemoveDirectory(tempDirectory, fn);
+  } else {
+    return fn(tempDirectory);
+  }
 }
 
-export async function withTempDirectory<T>(fn: (directory: string) => Promise<T>): Promise<T> {
-  return withTempDirectoryIn(undefined, fn);
+export async function withTempDirectory<T>(
+  fn: (directory: string) => Promise<T>,
+  cleanUp: TempDirCleanUpMode,
+): Promise<T> {
+  return withTempDirectoryIn(undefined, fn, cleanUp);
 }
 
 export function normalizeVersion(version: string): string {
@@ -121,4 +143,40 @@ export function setEnv(key: string, value: string | undefined): void {
   if (value !== void 0) {
     process.env[key] = value;
   }
+}
+
+export function effectiveCacheMode(
+  artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
+): ElectronDownloadCacheMode {
+  if (artifactDetails.force) {
+    if (artifactDetails.cacheMode) {
+      throw new Error(
+        'Setting both "force" and "cacheMode" is not supported, please exclusively use "cacheMode"',
+      );
+    }
+    return ElectronDownloadCacheMode.WriteOnly;
+  }
+
+  return artifactDetails.cacheMode || ElectronDownloadCacheMode.ReadWrite;
+}
+
+export function shouldTryReadCache(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.ReadOnly ||
+    cacheMode === ElectronDownloadCacheMode.ReadWrite
+  );
+}
+
+export function shouldWriteCache(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.WriteOnly ||
+    cacheMode === ElectronDownloadCacheMode.ReadWrite
+  );
+}
+
+export function doesCallerOwnTemporaryOutput(cacheMode: ElectronDownloadCacheMode): boolean {
+  return (
+    cacheMode === ElectronDownloadCacheMode.Bypass ||
+    cacheMode === ElectronDownloadCacheMode.ReadOnly
+  );
 }
