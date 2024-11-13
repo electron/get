@@ -28,7 +28,7 @@ jobs:
           cache: 'yarn'
       - name: Install
         run: yarn install --frozen-lockfile
-      - uses: continuousauth/action@c32f05c950d4e6f4abd8d1d8a46269525e2dbf55 # v1.0.3
+      - uses: continuousauth/action@732eeb237ac0a0b330a7247f744ddc57898ff9c4 # v1.0.4
         with:
           project-id: ${{ secrets.CFA_PROJECT_ID }}
           secret: ${{ secrets.CFA_SECRET }}
