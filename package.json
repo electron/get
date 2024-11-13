@@ -7,6 +7,9 @@
   "repository": "https://github.com/electron/get",
   "author": "Samuel Attard",
   "license": "MIT",
+  "publishConfig": {
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "npx typedoc",
