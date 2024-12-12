@@ -62,10 +62,7 @@ export function normalizeVersion(version: string): string {
  * Runs the `uname` command and returns the trimmed output.
  */
 export function uname(): string {
-  return childProcess
-    .execSync('uname -m')
-    .toString()
-    .trim();
+  return childProcess.execSync('uname -m').toString().trim();
 }
 
 /**

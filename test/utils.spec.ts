@@ -37,7 +37,7 @@ describe('utils', () => {
 
   describe('withTempDirectory()', () => {
     it('should generate a new and empty directory', async () => {
-      await withTempDirectory(async dir => {
+      await withTempDirectory(async (dir) => {
         expect(await fs.pathExists(dir)).toEqual(true);
         expect(await fs.readdir(dir)).toEqual([]);
       }, TempDirCleanUpMode.CLEAN);
@@ -48,7 +48,7 @@ describe('utils', () => {
     });
 
     it('should delete the directory when the function terminates', async () => {
-      const mDir = await withTempDirectory(async dir => {
+      const mDir = await withTempDirectory(async (dir) => {
         return dir;
       }, TempDirCleanUpMode.CLEAN);
       expect(mDir).not.toBeUndefined();
@@ -58,7 +58,7 @@ describe('utils', () => {
     it('should delete the directory and reject correctly even if the function throws', async () => {
       let mDir: string | undefined;
       await expect(
-        withTempDirectory(async dir => {
+        withTempDirectory(async (dir) => {
           mDir = dir;
           throw 'my error';
         }, TempDirCleanUpMode.CLEAN),
@@ -69,7 +69,7 @@ describe('utils', () => {
     });
 
     it('should not delete the directory if told to orphan the temp dir', async () => {
-      const mDir = await withTempDirectory(async dir => {
+      const mDir = await withTempDirectory(async (dir) => {
         return dir;
       }, TempDirCleanUpMode.ORPHAN);
       expect(mDir).not.toBeUndefined();

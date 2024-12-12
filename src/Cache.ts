@@ -20,10 +20,7 @@ export class Cache {
     const { search, hash, pathname, ...rest } = parsedDownloadUrl;
     const strippedUrl = url.format({ ...rest, pathname: path.dirname(pathname || 'electron') });
 
-    return crypto
-      .createHash('sha256')
-      .update(strippedUrl)
-      .digest('hex');
+    return crypto.createHash('sha256').update(strippedUrl).digest('hex');
   }
 
   public getCachePath(downloadUrl: string, fileName: string): string {
