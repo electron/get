@@ -50,7 +50,7 @@ async function validateArtifact(
 ): Promise<void> {
   return await withTempDirectoryIn(
     artifactDetails.tempDirectory,
-    async tempFolder => {
+    async (tempFolder) => {
       // Don't try to verify the hash of the hash file itself
       // and for older versions that don't have a SHASUMS256.txt
       if (
@@ -69,7 +69,7 @@ async function validateArtifact(
             );
           }
           const generatedChecksums = fileNames
-            .map(fileName => `${checksums[fileName]} *${fileName}`)
+            .map((fileName) => `${checksums[fileName]} *${fileName}`)
             .join('\n');
           await fs.writeFile(shasumPath, generatedChecksums);
         } else {
@@ -205,7 +205,7 @@ export async function downloadArtifact(
 
   return await withTempDirectoryIn(
     details.tempDirectory,
-    async tempFolder => {
+    async (tempFolder) => {
       const tempDownloadPath = path.resolve(tempFolder, getArtifactFileName(details));
 
       const downloader = details.downloader || (await getDownloaderForSystem());

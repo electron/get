@@ -13,7 +13,7 @@ const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
  * @category Downloader
  * @see {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#options | `got#options`} for possible keys/values.
  */
-export type GotDownloaderOptions = (GotOptions) & { isStream?: true } & {
+export type GotDownloaderOptions = GotOptions & { isStream?: true } & {
   /**
    * if defined, triggers every time `got`'s
    * {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#downloadprogress | `downloadProgress``} event callback is triggered.
@@ -66,7 +66,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     }
     await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
-      downloadStream.on('downloadProgress', async progress => {
+      downloadStream.on('downloadProgress', async (progress) => {
         progressPercent = progress.percent;
         if (bar) {
           bar.update(progress.percent);
@@ -75,7 +75,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
           await getProgressCallback(progress);
         }
       });
-      downloadStream.on('error', error => {
+      downloadStream.on('error', (error) => {
         if (error instanceof HTTPError && error.response.statusCode === 404) {
           error.message += ` for ${error.response.url}`;
         }
@@ -85,7 +85,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
 
         reject(error);
       });
-      writeStream.on('error', error => reject(error));
+      writeStream.on('error', (error) => reject(error));
       writeStream.on('close', () => resolve());
 
       downloadStream.pipe(writeStream);
