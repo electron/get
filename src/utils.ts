@@ -1,7 +1,8 @@
-import * as childProcess from 'child_process';
-import * as fs from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import childProcess from 'node:child_process';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+
 import {
   ElectronDownloadCacheMode,
   ElectronGenericArtifactDetails,
@@ -16,8 +17,9 @@ async function useAndRemoveDirectory<T>(
   try {
     result = await fn(directory);
   } finally {
-    await fs.remove(directory);
+    await fs.rm(directory, { recursive: true, force: true });
   }
+
   return result;
 }
 

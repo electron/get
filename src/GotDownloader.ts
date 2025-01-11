@@ -1,7 +1,7 @@
-import * as fs from 'fs-extra';
 import got, { HTTPError, Progress as GotProgress, Options as GotOptions } from 'got';
-import * as path from 'path';
-import * as ProgressBar from 'progress';
+import fs from 'node:fs';
+import path from 'node:path';
+import ProgressBar from 'progress';
 
 import { Downloader } from './Downloader';
 
@@ -44,7 +44,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     let bar: ProgressBar | undefined;
     let progressPercent: number;
     let timeout: NodeJS.Timeout | undefined = undefined;
-    await fs.mkdirp(path.dirname(targetFilePath));
+    await fs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
     const writeStream = fs.createWriteStream(targetFilePath);
 
     if (!quiet || !process.env.ELECTRON_GET_NO_PROGRESS) {

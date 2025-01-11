@@ -1,6 +1,7 @@
-import * as fs from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
 import { Cache } from '../src/Cache';
 
 describe('Cache', () => {
@@ -11,11 +12,11 @@ describe('Cache', () => {
   const sanitizedDummyUrl = '0c57d948bd4829db99d75c3b4a5d6836c37bc335f38012981baf5d1193b5a612';
 
   beforeEach(async () => {
-    cacheDir = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
+    cacheDir = await fs.promises.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
     cache = new Cache(cacheDir);
   });
 
-  afterEach(() => fs.remove(cacheDir));
+  afterEach(() => fs.promises.rm(cacheDir, { recursive: true, force: true }));
 
   describe('getCachePath()', () => {
     it('should strip the hash and query params off the url', async () => {
@@ -23,21 +24,23 @@ describe('Cache', () => {
       const secondUrl = 'https://example.com?foo=2';
       const assetName = 'electron-v7.2.4-darwin-x64.zip-v7.2.4-darwin-x64.zip';
 
-      expect(await cache.getCachePath(firstUrl, assetName)).toEqual(
-        await cache.getCachePath(secondUrl, assetName),
+      expect(cache.getCachePath(firstUrl, assetName)).toEqual(
+        cache.getCachePath(secondUrl, assetName),
       );
     });
   });
 
   describe('getPathForFileInCache()', () => {
     it('should return null for a file not in the cache', async () => {
-      expect(await cache.getPathForFileInCache(dummyUrl, 'test.txt')).toBeNull();
+      expect(cache.getPathForFileInCache(dummyUrl, 'test.txt')).toBeNull();
     });
 
     it('should return an absolute path for a file in the cache', async () => {
-      const cachePath = path.resolve(cacheDir, sanitizedDummyUrl, 'test.txt');
-      await fs.outputFile(cachePath, 'dummy data');
-      expect(await cache.getPathForFileInCache(dummyUrl, 'test.txt')).toEqual(cachePath);
+      const cacheFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+      await fs.promises.mkdir(cacheFolder, { recursive: true });
+      const cachePath = path.resolve(cacheFolder, 'test.txt');
+      await fs.promises.writeFile(cachePath, 'dummy data');
+      expect(cache.getPathForFileInCache(dummyUrl, 'test.txt')).toEqual(cachePath);
     });
   });
 
@@ -46,32 +49,41 @@ describe('Cache', () => {
       const fakePath = path.resolve(__dirname, 'fake.file');
       await expect(cache.putFileInCache(dummyUrl, fakePath, 'fake.file')).rejects.toHaveProperty(
         'message',
-        `ENOENT: no such file or directory, stat '${fakePath}'`,
+        expect.stringContaining(`ENOENT: no such file or directory, rename '${fakePath}'`),
       );
     });
 
     it('should delete the original file', async () => {
-      const originalPath = path.resolve(cacheDir, sanitizedDummyUrl, 'original.txt');
-      await fs.outputFile(originalPath, 'dummy data');
+      const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+      await fs.promises.mkdir(originalFolder, { recursive: true });
+      const originalPath = path.resolve(originalFolder, 'original.txt');
+      await fs.promises.writeFile(originalPath, 'dummy data');
       await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
-      expect(await fs.pathExists(originalPath)).toEqual(false);
+      expect(fs.existsSync(originalPath)).toEqual(false);
     });
 
     it('should create a new file in the cache with exactly the same content', async () => {
-      const originalPath = path.resolve(cacheDir, sanitizedDummyUrl, 'original.txt');
-      await fs.outputFile(originalPath, 'example content');
+      const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+      await fs.promises.mkdir(originalFolder, { recursive: true });
+      const originalPath = path.resolve(originalFolder, 'original.txt');
+      await fs.promises.writeFile(originalPath, 'example content');
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
-      expect(await fs.readFile(cachePath, 'utf8')).toEqual('example content');
+      expect(await fs.promises.readFile(cachePath, 'utf8')).toEqual('example content');
     });
 
     it('should overwrite the file if it already exists in cache', async () => {
+      const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+      await fs.promises.mkdir(originalFolder, { recursive: true });
       const originalPath = path.resolve(cacheDir, 'original.txt');
-      await fs.outputFile(originalPath, 'example content');
-      await fs.outputFile(path.resolve(cacheDir, sanitizedDummyUrl, 'test.txt'), 'bad content');
+      await fs.promises.writeFile(originalPath, 'example content');
+      await fs.promises.writeFile(
+        path.resolve(cacheDir, sanitizedDummyUrl, 'test.txt'),
+        'bad content',
+      );
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
-      expect(await fs.readFile(cachePath, 'utf8')).toEqual('example content');
+      expect(await fs.promises.readFile(cachePath, 'utf8')).toEqual('example content');
     });
   });
 });

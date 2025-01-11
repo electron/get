@@ -1,8 +1,8 @@
 import debug from 'debug';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as semver from 'semver';
-import * as sumchecker from 'sumchecker';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import semver from 'semver';
+import sumchecker from 'sumchecker';
 
 import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils';
 import {
@@ -110,7 +110,7 @@ async function validateArtifact(
           }
         } finally {
           // Once we're done make sure we clean up the shasum temp dir
-          await fs.remove(path.dirname(shasumPath));
+          await fs.rm(path.dirname(shasumPath), { recursive: true, force: true });
         }
       }
     },
@@ -162,7 +162,7 @@ export async function downloadArtifact(
   // Do not check if the file exists in the cache when force === true
   if (shouldTryReadCache(cacheMode)) {
     d(`Checking the cache (${details.cacheRoot}) for ${fileName} (${url})`);
-    const cachedPath = await cache.getPathForFileInCache(url, fileName);
+    const cachedPath = cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
       d('Cache miss');
@@ -182,7 +182,7 @@ export async function downloadArtifact(
         return artifactPath;
       } catch (err) {
         if (doesCallerOwnTemporaryOutput(cacheMode)) {
-          await fs.remove(path.dirname(artifactPath));
+          await fs.rm(path.dirname(artifactPath), { recursive: true, force: true });
         }
         d("Artifact in cache didn't match checksums", err);
         d('falling back to re-download');
@@ -216,7 +216,10 @@ export async function downloadArtifact(
       );
       await downloader.download(url, tempDownloadPath, details.downloadOptions);
 
+      d('attempting to validate artifact...', { details });
       await validateArtifact(details, tempDownloadPath, downloadArtifact);
+
+      d('artifact validated');
 
       if (doesCallerOwnTemporaryOutput(cacheMode)) {
         return tempDownloadPath;

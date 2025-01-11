@@ -1,4 +1,4 @@
-import * as fs from 'fs-extra';
+import fs from 'node:fs';
 
 import {
   normalizeVersion,
@@ -26,11 +26,8 @@ describe('utils', () => {
   describe('uname()', () => {
     if (process.platform !== 'win32') {
       it('should return the correct arch for your system', () => {
-        if (process.arch === 'arm64') {
-          expect(uname()).toEqual('arm64');
-        } else {
-          expect(uname()).toEqual('x86_64');
-        }
+        const arch = process.arch === 'arm64' ? 'arm64' : 'x86_64';
+        expect(uname()).toEqual(arch);
       });
     }
   });
@@ -38,8 +35,8 @@ describe('utils', () => {
   describe('withTempDirectory()', () => {
     it('should generate a new and empty directory', async () => {
       await withTempDirectory(async (dir) => {
-        expect(await fs.pathExists(dir)).toEqual(true);
-        expect(await fs.readdir(dir)).toEqual([]);
+        expect(fs.existsSync(dir)).toEqual(true);
+        expect(await fs.promises.readdir(dir)).toEqual([]);
       }, TempDirCleanUpMode.CLEAN);
     });
 
@@ -52,7 +49,7 @@ describe('utils', () => {
         return dir;
       }, TempDirCleanUpMode.CLEAN);
       expect(mDir).not.toBeUndefined();
-      expect(await fs.pathExists(mDir)).toEqual(false);
+      expect(fs.existsSync(mDir)).toEqual(false);
     });
 
     it('should delete the directory and reject correctly even if the function throws', async () => {
@@ -65,7 +62,7 @@ describe('utils', () => {
       ).rejects.toEqual('my error');
       expect(mDir).not.toBeUndefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(await fs.pathExists(mDir!)).toEqual(false);
+      expect(fs.existsSync(mDir!)).toEqual(false);
     });
 
     it('should not delete the directory if told to orphan the temp dir', async () => {
@@ -74,9 +71,9 @@ describe('utils', () => {
       }, TempDirCleanUpMode.ORPHAN);
       expect(mDir).not.toBeUndefined();
       try {
-        expect(await fs.pathExists(mDir)).toEqual(true);
+        expect(fs.existsSync(mDir)).toEqual(true);
       } finally {
-        await fs.remove(mDir);
+        await fs.promises.rm(mDir, { recursive: true, force: true });
       }
     });
   });
@@ -131,7 +128,6 @@ describe('utils', () => {
         });
         Object.defineProperty(process.config, 'variables', {
           value: {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             arm_version: '6',
           },
         });
@@ -145,7 +141,6 @@ describe('utils', () => {
       });
       Object.defineProperty(process.config, 'variables', {
         value: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
           arm_version: '7',
         },
       });
@@ -236,8 +231,7 @@ describe('setEnv()', () => {
 
   it('successfully sets the environment variable when the value is falsey', () => {
     const [key, value] = ['Set_AAA_electron', false];
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
+    // @ts-expect-error - we want to ensure that the boolean gets converted to string accordingly
     setEnv(key, value);
     expect(process.env[key]).toEqual('false');
   });

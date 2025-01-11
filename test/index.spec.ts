@@ -1,12 +1,12 @@
-import * as crypto from 'crypto';
-import * as fs from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
 import { DownloadOptions, ElectronDownloadCacheMode } from '../src/types';
-import * as sumchecker from 'sumchecker';
+import sumchecker from 'sumchecker';
 
 jest.mock('sumchecker');
 
@@ -15,11 +15,11 @@ describe('Public API', () => {
 
   let cacheRoot: string;
   beforeEach(async () => {
-    cacheRoot = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
+    cacheRoot = await fs.promises.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
   });
 
   afterEach(async () => {
-    await fs.remove(cacheRoot);
+    await fs.promises.rm(cacheRoot, { recursive: true, force: true });
   });
 
   describe('download()', () => {
@@ -29,7 +29,7 @@ describe('Public API', () => {
         downloader,
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
       expect(path.dirname(zipPath).startsWith(cacheRoot)).toEqual(true);
       expect(fs.readdirSync(cacheRoot).length).toBeGreaterThan(0);
@@ -41,7 +41,7 @@ describe('Public API', () => {
         downloader,
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
     });
 
@@ -51,14 +51,14 @@ describe('Public API', () => {
         downloader,
         force: false,
       });
-      await fs.writeFile(zipPath, 'bad content');
+      await fs.promises.writeFile(zipPath, 'bad content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
         downloader,
         force: false,
       });
       expect(zipPath).toEqual(zipPath2);
-      expect(await fs.readFile(zipPath, 'utf8')).toEqual('bad content');
+      expect(await fs.promises.readFile(zipPath, 'utf8')).toEqual('bad content');
     });
 
     it('should redownload when force=true', async () => {
@@ -69,9 +69,9 @@ describe('Public API', () => {
       });
       const hash = crypto
         .createHash('sha256')
-        .update(await fs.readFile(zipPath))
+        .update(await fs.promises.readFile(zipPath))
         .digest('hex');
-      await fs.writeFile(zipPath, 'bad content');
+      await fs.promises.writeFile(zipPath, 'bad content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
         downloader,
@@ -80,7 +80,7 @@ describe('Public API', () => {
       expect(zipPath).toEqual(zipPath2);
       const hash2 = crypto
         .createHash('sha256')
-        .update(await fs.readFile(zipPath2))
+        .update(await fs.promises.readFile(zipPath2))
         .digest('hex');
       expect(hash).toEqual(hash2);
     });
@@ -94,11 +94,11 @@ describe('Public API', () => {
             expect(
               url.replace(process.platform, 'platform').replace(process.arch, 'arch'),
             ).toMatchSnapshot();
-            await fs.writeFile(targetPath, 'faked from downloader');
+            await fs.promises.writeFile(targetPath, 'faked from downloader');
           },
         },
       });
-      expect(await fs.readFile(zipPath, 'utf8')).toEqual('faked from downloader');
+      expect(await fs.promises.readFile(zipPath, 'utf8')).toEqual('faked from downloader');
     });
 
     it('should pass download options to a custom downloader', async () => {
@@ -112,7 +112,7 @@ describe('Public API', () => {
         downloader: {
           async download(url: string, targetPath: string, opts?: DownloadOptions): Promise<void> {
             expect(opts).toStrictEqual(downloadOpts);
-            await fs.writeFile(targetPath, 'file');
+            await fs.promises.writeFile(targetPath, 'file');
           },
         },
         downloadOptions: downloadOpts,
@@ -126,7 +126,7 @@ describe('Public API', () => {
         downloader,
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.basename(zipPath)).toMatch(/v2.0.10/);
       expect(path.extname(zipPath)).toEqual('.zip');
       process.env.ELECTRON_CUSTOM_VERSION = '';
@@ -139,7 +139,7 @@ describe('Public API', () => {
         cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
       expect(path.dirname(zipPath).startsWith(cacheRoot)).toEqual(false);
       expect(fs.readdirSync(cacheRoot).length).toEqual(0);
@@ -150,7 +150,7 @@ describe('Public API', () => {
         cacheRoot,
         downloader,
       });
-      await fs.writeFile(zipPath, 'cached content');
+      await fs.promises.writeFile(zipPath, 'cached content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
         downloader,
@@ -158,7 +158,7 @@ describe('Public API', () => {
       });
       expect(zipPath2).not.toEqual(zipPath);
       expect(path.dirname(zipPath2).startsWith(cacheRoot)).toEqual(false);
-      expect(await fs.readFile(zipPath2, 'utf8')).toEqual('cached content');
+      expect(await fs.promises.readFile(zipPath2, 'utf8')).toEqual('cached content');
     });
   });
 
@@ -171,9 +171,9 @@ describe('Public API', () => {
         version: '2.0.9',
         artifactName: 'electron.d.ts',
       });
-      expect(await fs.pathExists(dtsPath)).toEqual(true);
+      expect(fs.existsSync(dtsPath)).toEqual(true);
       expect(path.basename(dtsPath)).toEqual('electron.d.ts');
-      expect(await fs.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
+      expect(await fs.promises.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
       expect(path.dirname(dtsPath).startsWith(cacheRoot)).toEqual(true);
       expect(fs.readdirSync(cacheRoot).length).toBeGreaterThan(0);
     });
@@ -224,7 +224,7 @@ describe('Public API', () => {
         platform: 'darwin',
         arch: 'x64',
       });
-      expect(await fs.pathExists(driverPath)).toEqual(true);
+      expect(fs.existsSync(driverPath)).toEqual(true);
       expect(path.basename(driverPath)).toMatchInlineSnapshot(
         `"chromedriver-v2.0.9-darwin-x64.zip"`,
       );
@@ -242,7 +242,7 @@ describe('Public API', () => {
         version: '2.0.3',
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.basename(zipPath)).toMatchInlineSnapshot(`"electron-v2.0.10-darwin-x64.zip"`);
       expect(path.extname(zipPath)).toEqual('.zip');
       process.env.ELECTRON_CUSTOM_VERSION = '';
@@ -274,7 +274,7 @@ describe('Public API', () => {
         arch: 'x64',
         cacheMode: ElectronDownloadCacheMode.ReadOnly,
       });
-      expect(await fs.pathExists(driverPath)).toEqual(true);
+      expect(fs.existsSync(driverPath)).toEqual(true);
       expect(path.basename(driverPath)).toMatchInlineSnapshot(
         `"chromedriver-v2.0.9-darwin-x64.zip"`,
       );
@@ -292,7 +292,7 @@ describe('Public API', () => {
         platform: 'darwin',
         arch: 'x64',
       });
-      await fs.writeFile(driverPath, 'cached content');
+      await fs.promises.writeFile(driverPath, 'cached content');
       const driverPath2 = await downloadArtifact({
         cacheRoot,
         downloader,
@@ -304,7 +304,7 @@ describe('Public API', () => {
       });
       expect(driverPath2).not.toEqual(driverPath);
       expect(path.dirname(driverPath2).startsWith(cacheRoot)).toEqual(false);
-      expect(await fs.readFile(driverPath2, 'utf8')).toEqual('cached content');
+      expect(await fs.promises.readFile(driverPath2, 'utf8')).toEqual('cached content');
     });
 
     describe('sumchecker', () => {

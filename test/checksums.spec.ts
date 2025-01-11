@@ -1,6 +1,6 @@
-import * as fs from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import { FixtureDownloader } from './FixtureDownloader';
 import { downloadArtifact } from '../src';
@@ -10,11 +10,11 @@ describe('Hard-coded checksums', () => {
 
   let cacheRoot: string;
   beforeEach(async () => {
-    cacheRoot = await fs.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
+    cacheRoot = await fs.promises.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
   });
 
   afterEach(async () => {
-    await fs.remove(cacheRoot);
+    await fs.promises.rm(cacheRoot, { recursive: true, force: true });
   });
 
   describe('download()', () => {
@@ -32,7 +32,7 @@ describe('Hard-coded checksums', () => {
         },
       });
       expect(typeof zipPath).toEqual('string');
-      expect(await fs.pathExists(zipPath)).toEqual(true);
+      expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
     });
 

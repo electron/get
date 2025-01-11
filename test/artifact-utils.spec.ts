@@ -109,8 +109,7 @@ describe('artifact-utils', () => {
           artifactName: 'electron',
           mirrorOptions: {
             mirror: 'https://mirror.example.com/',
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            nightly_mirror: 'https://nightly.example.com/',
+            nightlyMirror: 'https://nightly.example.com/',
           },
           platform: 'linux',
           version: 'v6.0.0-nightly',
