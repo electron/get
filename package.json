@@ -14,7 +14,7 @@
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "npx typedoc",
     "eslint": "eslint --ext .ts src test",
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "npm run prettier && npm run eslint",
     "prettier": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "prettier:write": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
