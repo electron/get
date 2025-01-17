@@ -77,7 +77,6 @@ async function validateArtifact(
             isGeneric: true,
             version: artifactDetails.version,
             artifactName: 'SHASUMS256.txt',
-            force: false,
             downloadOptions: artifactDetails.downloadOptions,
             cacheRoot: artifactDetails.cacheRoot,
             downloader: artifactDetails.downloader,

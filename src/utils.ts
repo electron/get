@@ -147,15 +147,6 @@ export function setEnv(key: string, value: string | undefined): void {
 export function effectiveCacheMode(
   artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ): ElectronDownloadCacheMode {
-  if (artifactDetails.force) {
-    if (artifactDetails.cacheMode) {
-      throw new Error(
-        'Setting both "force" and "cacheMode" is not supported, please exclusively use "cacheMode"',
-      );
-    }
-    return ElectronDownloadCacheMode.WriteOnly;
-  }
-
   return artifactDetails.cacheMode || ElectronDownloadCacheMode.ReadWrite;
 }
 

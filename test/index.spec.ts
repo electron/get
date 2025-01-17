@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -43,46 +42,6 @@ describe('Public API', () => {
       expect(typeof zipPath).toEqual('string');
       expect(fs.existsSync(zipPath)).toEqual(true);
       expect(path.extname(zipPath)).toEqual('.zip');
-    });
-
-    it('should not redownload when force=false', async () => {
-      const zipPath = await download('2.0.9', {
-        cacheRoot,
-        downloader,
-        force: false,
-      });
-      await fs.promises.writeFile(zipPath, 'bad content');
-      const zipPath2 = await download('2.0.9', {
-        cacheRoot,
-        downloader,
-        force: false,
-      });
-      expect(zipPath).toEqual(zipPath2);
-      expect(await fs.promises.readFile(zipPath, 'utf8')).toEqual('bad content');
-    });
-
-    it('should redownload when force=true', async () => {
-      const zipPath = await download('2.0.9', {
-        cacheRoot,
-        downloader,
-        force: true,
-      });
-      const hash = crypto
-        .createHash('sha256')
-        .update(await fs.promises.readFile(zipPath))
-        .digest('hex');
-      await fs.promises.writeFile(zipPath, 'bad content');
-      const zipPath2 = await download('2.0.9', {
-        cacheRoot,
-        downloader,
-        force: true,
-      });
-      expect(zipPath).toEqual(zipPath2);
-      const hash2 = crypto
-        .createHash('sha256')
-        .update(await fs.promises.readFile(zipPath2))
-        .digest('hex');
-      expect(hash).toEqual(hash2);
     });
 
     it('should accept a custom downloader', async () => {
@@ -316,13 +275,13 @@ describe('Public API', () => {
         await downloadArtifact({
           artifactName: 'electron',
           downloader,
-          force: true,
+          cacheMode: ElectronDownloadCacheMode.WriteOnly,
           version: 'v1.3.5',
         });
         await downloadArtifact({
           artifactName: 'electron',
           downloader,
-          force: true,
+          cacheMode: ElectronDownloadCacheMode.WriteOnly,
           version: 'v2.0.3',
         });
 
@@ -334,7 +293,7 @@ describe('Public API', () => {
         await downloadArtifact({
           artifactName: 'electron',
           downloader,
-          force: true,
+          cacheMode: ElectronDownloadCacheMode.WriteOnly,
           version: 'v1.3.3',
         });
 
@@ -346,7 +305,7 @@ describe('Public API', () => {
         await downloadArtifact({
           artifactName: 'electron',
           downloader,
-          force: true,
+          cacheMode: ElectronDownloadCacheMode.WriteOnly,
           version: 'v1.0.0',
         });
 

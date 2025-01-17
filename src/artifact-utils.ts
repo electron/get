@@ -51,13 +51,7 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
   const opts: MirrorOptions = details.mirrorOptions || {};
   let base = mirrorVar('mirror', opts, BASE_URL);
   if (details.version.includes('nightly')) {
-    const nightlyDeprecated = mirrorVar('nightly_mirror', opts, '');
-    if (nightlyDeprecated) {
-      base = nightlyDeprecated;
-      console.warn(`nightly_mirror is deprecated, please use nightlyMirror`);
-    } else {
-      base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
-    }
+    base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
   }
   const path = mirrorVar('customDir', opts, details.version).replace(
     '{{ version }}',

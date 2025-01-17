@@ -29,11 +29,6 @@ export type DownloadOptions = any;
  */
 export interface MirrorOptions {
   /**
-   * @deprecated
-   * @see {@link MirrorOptions.nightlyMirror}
-   */
-  nightly_mirror?: string;
-  /**
    * The mirror URL for [`electron-nightly`](https://npmjs.com/package/electron-nightly),
    * which lives in a separate npm package.
    */
@@ -109,13 +104,6 @@ export enum ElectronDownloadCacheMode {
  */
 export interface ElectronDownloadRequestOptions {
   /**
-   * Whether to download an artifact regardless of whether it's in the cache directory.
-   *
-   * @defaultValue `false`
-   * @deprecated This option is deprecated and directly maps to {@link cacheMode | `cacheMode: ElectronDownloadCacheMode.WriteOnly`}
-   */
-  force?: boolean;
-  /**
    * When set to `true`, disables checking that the artifact download completed successfully
    * with the correct payload.
    *
@@ -183,8 +171,6 @@ export interface ElectronDownloadRequestOptions {
    * {@link ElectronDownloadCacheMode.ReadWrite | ReadWrite} (the default), the caller
    * should not move or delete the file path that is returned as the path
    * points directly to the disk cache.
-   *
-   * This option cannot be used in conjunction with {@link ElectronDownloadRequestOptions.force}.
    *
    * @defaultValue {@link ElectronDownloadCacheMode.ReadWrite}
    */
