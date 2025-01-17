@@ -25,7 +25,7 @@ jobs:
         run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # tag: v4.1.0
         with:
-          node-version: lts/*
+          node-version: 22.11.x
       - run: yarn --frozen-lockfile
       - run: yarn build:docs
       - name: Prepare docs

@@ -14,14 +14,18 @@
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:docs": "npx typedoc",
     "eslint": "eslint --ext .ts src test",
-    "test": "jest --coverage",
     "lint": "npm run prettier && npm run eslint",
+    "prepare": "husky",
     "prettier": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "prettier:write": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepublishOnly": "npm run build",
+    "test": "jest --coverage",
     "test:nonetwork": "npm run lint && npm run jest -- --testPathIgnorePatterns network.spec"
   },
-  "files": ["dist/", "README.md"],
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "engines": {
     "node": ">=22.0.0"
   },
@@ -30,24 +34,24 @@
     "env-paths": "^2.2.0",
     "got": "^11.8.5",
     "progress": "^2.0.3",
-    "semver": "^6.2.0",
+    "semver": "^7.6.3",
     "sumchecker": "^3.0.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.4",
     "@types/jest": "^29.0.0",
-    "@types/node": "^22.10.5",
+    "@types/node": "~22.10.5",
     "@types/progress": "^2.0.3",
-    "@types/semver": "^6.2.0",
+    "@types/semver": "^7.5.8",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.10.0",
-    "husky": "^2.3.0",
+    "husky": "^9.1.7",
     "jest": "^29.3.1",
-    "lint-staged": "^13.0.4",
+    "lint-staged": "^15.4.1",
     "prettier": "^3.4.2",
     "ts-jest": "^29.0.0",
     "typedoc": "~0.25.13",
@@ -59,9 +63,19 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["eslint --fix", "prettier --write"]
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
-  "keywords": ["electron", "download", "prebuild", "get", "artifact", "release"],
+  "keywords": [
+    "electron",
+    "download",
+    "prebuild",
+    "get",
+    "artifact",
+    "release"
+  ],
   "optionalDependencies": {
     "global-agent": "^3.0.0"
   }
