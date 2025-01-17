@@ -38,6 +38,7 @@
     "sumchecker": "^3.0.1"
   },
   "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
     "@types/debug": "^4.1.4",
     "@types/jest": "^29.0.0",
     "@types/node": "~22.10.5",
