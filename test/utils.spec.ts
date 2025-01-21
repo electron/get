@@ -25,13 +25,11 @@ describe('utils', () => {
     });
   });
 
-  describe('uname()', () => {
-    if (process.platform !== 'win32') {
-      it('should return the correct arch for your system', () => {
-        const arch = process.arch === 'arm64' ? 'arm64' : 'x86_64';
-        expect(uname()).toEqual(arch);
-      });
-    }
+  describe.skipIf(process.platform === 'win32')('uname()', () => {
+    it('should return the correct arch for your system', () => {
+      const arch = process.arch === 'arm64' ? 'arm64' : 'x86_64';
+      expect(uname()).toEqual(arch);
+    });
   });
 
   describe('withTempDirectory()', () => {
@@ -101,19 +99,17 @@ describe('utils', () => {
       expect(getHostArch()).toEqual('armv7l');
     });
 
-    if (process.platform !== 'win32') {
-      it('should return uname on arm 6', () => {
-        vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
-        vi.spyOn(process, 'config', 'get').mockReturnValue({
-          ...process.config,
-          variables: {
-            //@ts-expect-error - `arm_version` actually exists
-            arm_version: '6',
-          },
-        });
-        expect(getHostArch()).toEqual(uname());
+    it.skipIf(process.platform === 'win32')('should return uname on arm 6', () => {
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        variables: {
+          //@ts-expect-error - `arm_version` actually exists
+          arm_version: '6',
+        },
       });
-    }
+      expect(getHostArch()).toEqual(uname());
+    });
 
     it('should return armv7l on arm 7', () => {
       vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
