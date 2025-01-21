@@ -1,6 +1,6 @@
 /* eslint-disable */
 // @ts-ignore - require(esm) supported in Node 22.12
-import got, { HTTPError, Progress as GotProgress, Options as GotOptions } from 'got';
+import got, { HTTPError, Progress as GotProgress, Options as GotOptions, Progress } from 'got';
 /* eslint-enable */
 
 import fs from 'node:fs';
@@ -70,7 +70,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     }
     await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
-      downloadStream.on('downloadProgress', async (progress) => {
+      downloadStream.on('downloadProgress', async (progress: Progress) => {
         progressPercent = progress.percent;
         if (bar) {
           bar.update(progress.percent);
@@ -79,9 +79,9 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
           await getProgressCallback(progress);
         }
       });
-      downloadStream.on('error', (error) => {
-        if (error instanceof HTTPError && error.response.statusCode === 404) {
-          error.message += ` for ${error.response.url}`;
+      downloadStream.on('error', (error: Error) => {
+        if (error instanceof HTTPError && (error as HTTPError).response.statusCode === 404) {
+          error.message += ` for ${(error as HTTPError).response.url}`;
         }
         if (writeStream.destroy) {
           writeStream.destroy(error);

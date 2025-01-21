@@ -5,8 +5,7 @@
     "outDir": "dist/cjs",
     "types": ["node"],
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "skipLibCheck": false
+    "declaration": true
   },
   "include": ["src"]
 }

@@ -32,7 +32,7 @@
   "dependencies": {
     "debug": "^4.1.1",
     "env-paths": "^3.0.0",
-    "got": "^12.6.1",
+    "got": "^14.4.5",
     "progress": "^2.0.3",
     "semver": "^7.6.3",
     "sumchecker": "^3.0.1"
