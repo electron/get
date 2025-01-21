@@ -1,4 +1,5 @@
 import debug from 'debug';
+// @ts-ignore - require(esm) supported in Node 22.12
 import envPaths from 'env-paths';
 
 import crypto from 'node:crypto';

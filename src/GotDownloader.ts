@@ -1,4 +1,8 @@
+/* eslint-disable */
+// @ts-ignore - require(esm) supported in Node 22.12
 import got, { HTTPError, Progress as GotProgress, Options as GotOptions } from 'got';
+/* eslint-enable */
+
 import fs from 'node:fs';
 import path from 'node:path';
 import ProgressBar from 'progress';
@@ -34,7 +38,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
   async download(
     url: string,
     targetFilePath: string,
-    options?: GotDownloaderOptions,
+    options?: Partial<GotDownloaderOptions>,
   ): Promise<void> {
     if (!options) {
       options = {};

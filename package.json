@@ -20,7 +20,7 @@
     "prettier:write": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
-    "test:nonetwork": "npm run lint && npm run jest -- --testPathIgnorePatterns network.spec"
+    "test:nonetwork": "npm run lint && vitest run --coverage --testPathIgnorePatterns network.spec"
   },
   "files": [
     "dist/",
@@ -32,7 +32,7 @@
   "dependencies": {
     "debug": "^4.1.1",
     "env-paths": "^3.0.0",
-    "got": "^14.4.5",
+    "got": "^12.6.1",
     "progress": "^2.0.3",
     "semver": "^7.6.3",
     "sumchecker": "^3.0.1"

@@ -95,6 +95,7 @@ describe('utils', () => {
       vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
       vi.spyOn(process, 'config', 'get').mockReturnValue({
         ...process.config,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         variables: {} as any,
       });
       expect(getHostArch()).toEqual('armv7l');
