@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { getArtifactFileName, getArtifactRemoteURL } from '../src/artifact-utils';
 
 describe('artifact-utils', () => {

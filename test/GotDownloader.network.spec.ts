@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { describe, expect, it, vi } from 'vitest';
+
 import { GotDownloader } from '../src/GotDownloader';
 import { TempDirCleanUpMode, withTempDirectory } from '../src/utils';
 import { EventEmitter } from 'events';
@@ -41,7 +43,7 @@ describe('GotDownloader', () => {
 
     it('should throw an error if the file write stream fails', async () => {
       const downloader = new GotDownloader();
-      const spy = jest.spyOn(fs, 'createWriteStream');
+      const spy = vi.spyOn(fs, 'createWriteStream');
       spy.mockImplementationOnce(() => {
         const emitter = new EventEmitter();
         setTimeout(() => emitter.emit('error', 'bad write error thing'), 10);

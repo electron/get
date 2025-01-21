@@ -2,12 +2,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import sumchecker from 'sumchecker';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { FixtureDownloader } from './FixtureDownloader';
 import { download, downloadArtifact } from '../src';
 import { DownloadOptions, ElectronDownloadCacheMode } from '../src/types';
-import sumchecker from 'sumchecker';
 
-jest.mock('sumchecker');
+vi.mock('sumchecker');
 
 describe('Public API', () => {
   const downloader = new FixtureDownloader();
@@ -268,7 +270,7 @@ describe('Public API', () => {
 
     describe('sumchecker', () => {
       beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
       });
 
       it('should use the default constructor for versions from v1.3.5 onward', async () => {

@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+
 import {
   normalizeVersion,
   uname,
@@ -79,55 +81,32 @@ describe('utils', () => {
   });
 
   describe('getHostArch()', () => {
-    let savedArch: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let savedVariables: any;
-
-    beforeEach(() => {
-      savedArch = process.arch;
-      savedVariables = process.config.variables;
-    });
-
-    afterEach(() => {
-      Object.defineProperty(process, 'arch', {
-        value: savedArch,
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: savedVariables,
-      });
-    });
-
     it('should return process.arch on x64', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'x64',
-      });
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('x64');
       expect(getHostArch()).toEqual('x64');
     });
 
     it('should return process.arch on ia32', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'ia32',
-      });
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('ia32');
       expect(getHostArch()).toEqual('ia32');
     });
 
     it('should return process.arch on unknown arm', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'arm',
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: {},
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        variables: {} as any,
       });
       expect(getHostArch()).toEqual('armv7l');
     });
 
     if (process.platform !== 'win32') {
       it('should return uname on arm 6', () => {
-        Object.defineProperty(process, 'arch', {
-          value: 'arm',
-        });
-        Object.defineProperty(process.config, 'variables', {
-          value: {
+        vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+        vi.spyOn(process, 'config', 'get').mockReturnValue({
+          ...process.config,
+          variables: {
+            //@ts-expect-error - `arm_version` actually exists
             arm_version: '6',
           },
         });
@@ -136,11 +115,11 @@ describe('utils', () => {
     }
 
     it('should return armv7l on arm 7', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'arm',
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: {
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        variables: {
+          //@ts-expect-error - `arm_version` actually exists
           arm_version: '7',
         },
       });
