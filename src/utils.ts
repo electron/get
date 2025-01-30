@@ -7,7 +7,7 @@ import {
   ElectronDownloadCacheMode,
   ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
-} from './types';
+} from './types.js';
 
 async function useAndRemoveDirectory<T>(
   directory: string,

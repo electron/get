@@ -1,9 +1,8 @@
 {
   "name": "@electron/get",
   "version": "0.0.0-development",
+  "type": "module",
   "description": "Utility for downloading artifacts from different versions of Electron",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
   "repository": "https://github.com/electron/get",
   "author": "Samuel Attard",
   "license": "MIT",
@@ -11,7 +10,7 @@
     "provenance": true
   },
   "scripts": {
-    "build": "tsc && tsc -p tsconfig.esm.json",
+    "build": "tsc",
     "build:docs": "npx typedoc",
     "eslint": "eslint --ext .ts src test",
     "lint": "npm run prettier && npm run eslint",
@@ -46,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "3.0.3",
+    "esbuild-plugin-file-path-extensions": "^2.1.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.31.0",

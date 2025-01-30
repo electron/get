@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import ProgressBar from 'progress';
 
-import { Downloader } from './Downloader';
+import { Downloader } from './Downloader.js';
 
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 

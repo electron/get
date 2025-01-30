@@ -11,6 +11,7 @@
   ],
   "rules": {
     "@typescript-eslint/prefer-ts-expect-error": 0,
-    "@typescript-eslint/ban-ts-comment": 0
+    "@typescript-eslint/ban-ts-comment": 0,
+    "import/no-unresolved": "off"
   }
 }

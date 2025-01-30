@@ -4,7 +4,7 @@ import path from 'node:path';
 import semver from 'semver';
 import sumchecker from 'sumchecker';
 
-import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils.js';
 import {
   ElectronArtifactDetails,
   ElectronDownloadCacheMode,
@@ -12,10 +12,10 @@ import {
   ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
-} from './types';
-import { Cache } from './Cache';
-import { getDownloaderForSystem } from './downloader-resolver';
-import { initializeProxy } from './proxy';
+} from './types.js';
+import { Cache } from './Cache.js';
+import { getDownloaderForSystem } from './downloader-resolver.js';
+import { initializeProxy } from './proxy.js';
 import {
   withTempDirectoryIn,
   getHostArch,
@@ -27,11 +27,11 @@ import {
   effectiveCacheMode,
   shouldTryReadCache,
   TempDirCleanUpMode,
-} from './utils';
+} from './utils.js';
 
-export { getHostArch } from './utils';
-export { initializeProxy } from './proxy';
-export * from './types';
+export { getHostArch } from './utils.js';
+export { initializeProxy } from './proxy.js';
+export * from './types.js';
 
 const d = debug('@electron/get:index');
 

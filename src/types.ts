@@ -1,5 +1,5 @@
-import { Downloader } from './Downloader';
-import { GotDownloader, GotDownloaderOptions } from './GotDownloader';
+import { Downloader } from './Downloader.js';
+import { GotDownloader, GotDownloaderOptions } from './GotDownloader.js';
 
 export { Downloader, GotDownloader, GotDownloaderOptions };
 

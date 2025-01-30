@@ -1,5 +1,5 @@
-import { ElectronArtifactDetails, MirrorOptions } from './types';
-import { ensureIsTruthyString, normalizeVersion } from './utils';
+import { ElectronArtifactDetails, MirrorOptions } from './types.js';
+import { ensureIsTruthyString, normalizeVersion } from './utils.js';
 
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';

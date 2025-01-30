@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { getEnv, setEnv } from './utils';
+import { getEnv, setEnv } from './utils.js';
 
 const d = debug('@electron/get:proxy');
 
