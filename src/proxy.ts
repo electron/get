@@ -1,5 +1,5 @@
-import * as debug from 'debug';
-import { getEnv, setEnv } from './utils';
+import debug from 'debug';
+import { getEnv, setEnv } from './utils.js';
 
 const d = debug('@electron/get:proxy');
 
@@ -32,6 +32,7 @@ export function initializeProxy(): void {
      * TODO: replace global-agent with a hpagent. @BlackHole1
      * https://github.com/sindresorhus/got/blob/HEAD/documentation/tips.md#proxying
      */
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('global-agent').bootstrap();
   } catch (e) {
     d('Could not load either proxy modules, built-in proxy support not available:', e);
