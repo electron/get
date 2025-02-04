@@ -32,6 +32,7 @@
     "debug": "^4.1.1",
     "env-paths": "^3.0.0",
     "got": "^14.4.5",
+    "graceful-fs": "^4.2.11",
     "progress": "^2.0.3",
     "semver": "^7.6.3",
     "sumchecker": "^3.0.1"
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/debug": "^4.1.4",
+    "@types/graceful-fs": "^4.1.9",
     "@types/node": "~22.10.5",
     "@types/progress": "^2.0.3",
     "@types/semver": "^7.5.8",

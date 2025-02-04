@@ -1,7 +1,7 @@
-import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import fs from 'graceful-fs';
 import sumchecker from 'sumchecker';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 

@@ -1,5 +1,5 @@
 import debug from 'debug';
-import fs from 'node:fs/promises';
+import fs from 'graceful-fs';
 import path from 'node:path';
 import semver from 'semver';
 import sumchecker from 'sumchecker';
@@ -71,7 +71,7 @@ async function validateArtifact(
           const generatedChecksums = fileNames
             .map((fileName) => `${checksums[fileName]} *${fileName}`)
             .join('\n');
-          await fs.writeFile(shasumPath, generatedChecksums);
+          await fs.promises.writeFile(shasumPath, generatedChecksums);
         } else {
           shasumPath = await _downloadArtifact({
             isGeneric: true,
@@ -109,7 +109,7 @@ async function validateArtifact(
           }
         } finally {
           // Once we're done make sure we clean up the shasum temp dir
-          await fs.rm(path.dirname(shasumPath), { recursive: true, force: true });
+          await fs.promises.rm(path.dirname(shasumPath), { recursive: true, force: true });
         }
       }
     },
@@ -173,7 +173,7 @@ export async function downloadArtifact(
         // that the caller can take ownership of the returned file
         const tempDir = await mkdtemp(artifactDetails.tempDirectory);
         artifactPath = path.resolve(tempDir, fileName);
-        await fs.copyFile(cachedPath, artifactPath);
+        await fs.promises.copyFile(cachedPath, artifactPath);
       }
       try {
         await validateArtifact(details, artifactPath, downloadArtifact);
@@ -181,7 +181,7 @@ export async function downloadArtifact(
         return artifactPath;
       } catch (err) {
         if (doesCallerOwnTemporaryOutput(cacheMode)) {
-          await fs.rm(path.dirname(artifactPath), { recursive: true, force: true });
+          await fs.promises.rm(path.dirname(artifactPath), { recursive: true, force: true });
         }
         d("Artifact in cache didn't match checksums", err);
         d('falling back to re-download');

@@ -1,6 +1,6 @@
 import got, { HTTPError, Progress as GotProgress, Options as GotOptions, Progress } from 'got';
+import fs from 'graceful-fs';
 
-import fs from 'node:fs';
 import path from 'node:path';
 import ProgressBar from 'progress';
 

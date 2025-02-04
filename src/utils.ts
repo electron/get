@@ -1,5 +1,5 @@
 import childProcess from 'node:child_process';
-import fs from 'node:fs/promises';
+import fs from 'graceful-fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -17,7 +17,7 @@ async function useAndRemoveDirectory<T>(
   try {
     result = await fn(directory);
   } finally {
-    await fs.rm(directory, { recursive: true, force: true });
+    await fs.promises.rm(directory, { recursive: true, force: true });
   }
 
   return result;
@@ -25,7 +25,7 @@ async function useAndRemoveDirectory<T>(
 
 export async function mkdtemp(parentDirectory: string = os.tmpdir()): Promise<string> {
   const tempDirectoryPrefix = 'electron-download-';
-  return await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
+  return await fs.promises.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
 }
 
 export enum TempDirCleanUpMode {

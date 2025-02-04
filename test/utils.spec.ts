@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'graceful-fs';
 
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
