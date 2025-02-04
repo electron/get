@@ -1,7 +1,4 @@
-/* eslint-disable */
-// @ts-ignore - require(esm) supported in Node 22.12
 import got, { HTTPError, Progress as GotProgress, Options as GotOptions, Progress } from 'got';
-/* eslint-enable */
 
 import fs from 'node:fs';
 import path from 'node:path';
