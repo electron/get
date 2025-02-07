@@ -3,7 +3,7 @@ name: Publish documentation
 on:
   push:
     branches:
-      - main
+      - erick-test
     tags:
       - v[0-9]+.[0-9]+.[0-9]+*
 
@@ -13,33 +13,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate GitHub App token
-        uses: electron/github-app-auth-action@384fd19694fe7b6dcc9a684746c6976ad78228ae # v1.1.1
-        id: generate-token
+      - name: Azure login
+        uses: azure/login@a65d910e8af852a8061c627c456678983e180302 # v2.2.0
         with:
-          creds: ${{ secrets.GH_APP_CREDS }}
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # tag: v4.2.2
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-      - name: Fetch all git branches
-        run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a  # tag: v4.2.0
-        with:
-          node-version: lts/*
-      - run: yarn --frozen-lockfile
-      - run: yarn build:docs
-      - name: Prepare docs
-        uses: malept/github-action-gh-pages@f7952a65c4b763dc84b824a530dc38bd375ac91e  # tag: v1.4.0
-        with:
-          defaultBranch: main
-          noCommit: true
-          showUnderscoreFiles: true
-          versionDocs: true
-        env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-      - name: Commit docs
-        uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac # v1.5.0
-        with:
-          fail-on-no-changes: false
-          message: 'Publish [skip ci]'
-          token: ${{ steps.generate-token.outputs.token }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
