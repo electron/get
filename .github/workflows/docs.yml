@@ -15,6 +15,14 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # tag: v4.2.2
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a  # tag: v4.2.0
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build API documentation
+        run: yarn build:docs
       - name: Azure login
         uses: azure/login@a65d910e8af852a8061c627c456678983e180302 # v2.2.0
         with:
