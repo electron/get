@@ -33,4 +33,4 @@ jobs:
         uses: azure/cli@089eac9d8cc39f5d003e94f8b65efc51076c9cbd  # tag: v2.1.0
         with:
           inlineScript: |
-            az storage blob upload-batch --account-name $ACCOUNT_NAME -d '$web/get/${{ github.ref_name }}' -s ./docs --overwrite"
+            az storage blob upload-batch --account-name $ACCOUNT_NAME -d '$web/get/${{ github.ref_name }}' -s ./docs --overwrite
