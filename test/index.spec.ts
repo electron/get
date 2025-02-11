@@ -1,5 +1,6 @@
 import os from 'node:os';
 import path from 'node:path';
+import util from 'node:util';
 
 import fs from 'graceful-fs';
 import sumchecker from 'sumchecker';
@@ -55,11 +56,11 @@ describe('Public API', () => {
             expect(
               url.replace(process.platform, 'platform').replace(process.arch, 'arch'),
             ).toMatchSnapshot();
-            await fs.promises.writeFile(targetPath, 'faked from downloader');
+            await util.promisify(fs.writeFile)(targetPath, 'faked from downloader');
           },
         },
       });
-      expect(await fs.promises.readFile(zipPath, 'utf8')).toEqual('faked from downloader');
+      expect(await util.promisify(fs.readFile)(zipPath, 'utf8')).toEqual('faked from downloader');
     });
 
     it('should pass download options to a custom downloader', async () => {
@@ -73,7 +74,7 @@ describe('Public API', () => {
         downloader: {
           async download(url: string, targetPath: string, opts?: DownloadOptions): Promise<void> {
             expect(opts).toStrictEqual(downloadOpts);
-            await fs.promises.writeFile(targetPath, 'file');
+            await util.promisify(fs.writeFile)(targetPath, 'file');
           },
         },
         downloadOptions: downloadOpts,
@@ -111,7 +112,7 @@ describe('Public API', () => {
         cacheRoot,
         downloader,
       });
-      await fs.promises.writeFile(zipPath, 'cached content');
+      await util.promisify(fs.writeFile)(zipPath, 'cached content');
       const zipPath2 = await download('2.0.9', {
         cacheRoot,
         downloader,
@@ -119,7 +120,7 @@ describe('Public API', () => {
       });
       expect(zipPath2).not.toEqual(zipPath);
       expect(path.dirname(zipPath2).startsWith(cacheRoot)).toEqual(false);
-      expect(await fs.promises.readFile(zipPath2, 'utf8')).toEqual('cached content');
+      expect(await util.promisify(fs.readFile)(zipPath2, 'utf8')).toEqual('cached content');
     });
   });
 
@@ -134,7 +135,9 @@ describe('Public API', () => {
       });
       expect(fs.existsSync(dtsPath)).toEqual(true);
       expect(path.basename(dtsPath)).toEqual('electron.d.ts');
-      expect(await fs.promises.readFile(dtsPath, 'utf8')).toContain('declare namespace Electron');
+      expect(await util.promisify(fs.readFile)(dtsPath, 'utf8')).toContain(
+        'declare namespace Electron',
+      );
       expect(path.dirname(dtsPath).startsWith(cacheRoot)).toEqual(true);
       expect(fs.readdirSync(cacheRoot).length).toBeGreaterThan(0);
     });
@@ -253,7 +256,7 @@ describe('Public API', () => {
         platform: 'darwin',
         arch: 'x64',
       });
-      await fs.promises.writeFile(driverPath, 'cached content');
+      await util.promisify(fs.writeFile)(driverPath, 'cached content');
       const driverPath2 = await downloadArtifact({
         cacheRoot,
         downloader,
@@ -265,7 +268,7 @@ describe('Public API', () => {
       });
       expect(driverPath2).not.toEqual(driverPath);
       expect(path.dirname(driverPath2).startsWith(cacheRoot)).toEqual(false);
-      expect(await fs.promises.readFile(driverPath2, 'utf8')).toEqual('cached content');
+      expect(await util.promisify(fs.readFile)(driverPath2, 'utf8')).toEqual('cached content');
     });
 
     describe('sumchecker', () => {

@@ -1,5 +1,6 @@
 import fs from 'graceful-fs';
 import path from 'node:path';
+import util from 'node:util';
 
 import { DownloadOptions } from '../src/types';
 import { Downloader } from '../src/Downloader';
@@ -14,6 +15,6 @@ export class FixtureDownloader implements Downloader<DownloadOptions> {
       throw new Error(`Cannot find the fixture '${fixtureFile}'`);
     }
 
-    await fs.promises.copyFile(fixtureFile, targetFilePath);
+    await util.promisify(fs.copyFile)(fixtureFile, targetFilePath);
   }
 }

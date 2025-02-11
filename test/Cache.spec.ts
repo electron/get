@@ -1,6 +1,7 @@
 import fs from 'graceful-fs';
 import os from 'node:os';
 import path from 'node:path';
+import util from 'node:util';
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -41,7 +42,7 @@ describe('Cache', () => {
       const cacheFolder = path.resolve(cacheDir, sanitizedDummyUrl);
       await fs.promises.mkdir(cacheFolder, { recursive: true });
       const cachePath = path.resolve(cacheFolder, 'test.txt');
-      await fs.promises.writeFile(cachePath, 'dummy data');
+      await util.promisify(fs.writeFile)(cachePath, 'dummy data');
       expect(cache.getPathForFileInCache(dummyUrl, 'test.txt')).toEqual(cachePath);
     });
   });
@@ -59,7 +60,7 @@ describe('Cache', () => {
       const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
       await fs.promises.mkdir(originalFolder, { recursive: true });
       const originalPath = path.resolve(originalFolder, 'original.txt');
-      await fs.promises.writeFile(originalPath, 'dummy data');
+      await util.promisify(fs.writeFile)(originalPath, 'dummy data');
       await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(fs.existsSync(originalPath)).toEqual(false);
     });
@@ -68,24 +69,24 @@ describe('Cache', () => {
       const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
       await fs.promises.mkdir(originalFolder, { recursive: true });
       const originalPath = path.resolve(originalFolder, 'original.txt');
-      await fs.promises.writeFile(originalPath, 'example content');
+      await util.promisify(fs.writeFile)(originalPath, 'example content');
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
-      expect(await fs.promises.readFile(cachePath, 'utf8')).toEqual('example content');
+      expect(await util.promisify(fs.readFile)(cachePath, 'utf8')).toEqual('example content');
     });
 
     it('should overwrite the file if it already exists in cache', async () => {
       const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
       await fs.promises.mkdir(originalFolder, { recursive: true });
       const originalPath = path.resolve(cacheDir, 'original.txt');
-      await fs.promises.writeFile(originalPath, 'example content');
-      await fs.promises.writeFile(
+      await util.promisify(fs.writeFile)(originalPath, 'example content');
+      await util.promisify(fs.writeFile)(
         path.resolve(cacheDir, sanitizedDummyUrl, 'test.txt'),
         'bad content',
       );
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
-      expect(await fs.promises.readFile(cachePath, 'utf8')).toEqual('example content');
+      expect(await util.promisify(fs.readFile)(cachePath, 'utf8')).toEqual('example content');
     });
   });
 });

@@ -1,6 +1,7 @@
 import debug from 'debug';
 import fs from 'graceful-fs';
 import path from 'node:path';
+import util from 'node:util';
 import semver from 'semver';
 import sumchecker from 'sumchecker';
 
@@ -71,7 +72,7 @@ async function validateArtifact(
           const generatedChecksums = fileNames
             .map((fileName) => `${checksums[fileName]} *${fileName}`)
             .join('\n');
-          await fs.promises.writeFile(shasumPath, generatedChecksums);
+          await util.promisify(fs.writeFile)(shasumPath, generatedChecksums);
         } else {
           shasumPath = await _downloadArtifact({
             isGeneric: true,
@@ -173,7 +174,7 @@ export async function downloadArtifact(
         // that the caller can take ownership of the returned file
         const tempDir = await mkdtemp(artifactDetails.tempDirectory);
         artifactPath = path.resolve(tempDir, fileName);
-        await fs.promises.copyFile(cachedPath, artifactPath);
+        await util.promisify(fs.copyFile)(cachedPath, artifactPath);
       }
       try {
         await validateArtifact(details, artifactPath, downloadArtifact);

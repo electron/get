@@ -1,5 +1,6 @@
 import fs from 'graceful-fs';
 import path from 'node:path';
+import util from 'node:util';
 
 import { describe, expect, it, vi } from 'vitest';
 
@@ -26,7 +27,7 @@ describe('GotDownloader', () => {
           },
         );
         expect(fs.existsSync(testFile)).toEqual(true);
-        expect(await fs.promises.readFile(testFile, 'utf8')).toMatchSnapshot();
+        expect(await util.promisify(fs.readFile)(testFile, 'utf8')).toMatchSnapshot();
         expect(progressCallbackCalled).toEqual(true);
       }, TempDirCleanUpMode.CLEAN);
     });
@@ -72,7 +73,7 @@ describe('GotDownloader', () => {
           ),
         ).resolves.toBeUndefined();
         expect(fs.existsSync(testFile)).toEqual(true);
-        expect(await fs.promises.readFile(testFile, 'utf8')).toMatchSnapshot();
+        expect(await util.promisify(fs.readFile)(testFile, 'utf8')).toMatchSnapshot();
       }, TempDirCleanUpMode.CLEAN);
     });
   });
