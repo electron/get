@@ -1,4 +1,6 @@
-import * as fs from 'fs-extra';
+import fs from 'graceful-fs';
+
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import {
   normalizeVersion,
@@ -23,23 +25,18 @@ describe('utils', () => {
     });
   });
 
-  describe('uname()', () => {
-    if (process.platform !== 'win32') {
-      it('should return the correct arch for your system', () => {
-        if (process.arch === 'arm64') {
-          expect(uname()).toEqual('arm64');
-        } else {
-          expect(uname()).toEqual('x86_64');
-        }
-      });
-    }
+  describe.skipIf(process.platform === 'win32')('uname()', () => {
+    it('should return the correct arch for your system', () => {
+      const arch = process.arch === 'arm64' ? 'arm64' : 'x86_64';
+      expect(uname()).toEqual(arch);
+    });
   });
 
   describe('withTempDirectory()', () => {
     it('should generate a new and empty directory', async () => {
       await withTempDirectory(async (dir) => {
-        expect(await fs.pathExists(dir)).toEqual(true);
-        expect(await fs.readdir(dir)).toEqual([]);
+        expect(fs.existsSync(dir)).toEqual(true);
+        expect(await fs.promises.readdir(dir)).toEqual([]);
       }, TempDirCleanUpMode.CLEAN);
     });
 
@@ -52,7 +49,7 @@ describe('utils', () => {
         return dir;
       }, TempDirCleanUpMode.CLEAN);
       expect(mDir).not.toBeUndefined();
-      expect(await fs.pathExists(mDir)).toEqual(false);
+      expect(fs.existsSync(mDir)).toEqual(false);
     });
 
     it('should delete the directory and reject correctly even if the function throws', async () => {
@@ -65,7 +62,7 @@ describe('utils', () => {
       ).rejects.toEqual('my error');
       expect(mDir).not.toBeUndefined();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(await fs.pathExists(mDir!)).toEqual(false);
+      expect(fs.existsSync(mDir!)).toEqual(false);
     });
 
     it('should not delete the directory if told to orphan the temp dir', async () => {
@@ -74,78 +71,52 @@ describe('utils', () => {
       }, TempDirCleanUpMode.ORPHAN);
       expect(mDir).not.toBeUndefined();
       try {
-        expect(await fs.pathExists(mDir)).toEqual(true);
+        expect(fs.existsSync(mDir)).toEqual(true);
       } finally {
-        await fs.remove(mDir);
+        await fs.promises.rm(mDir, { recursive: true, force: true });
       }
     });
   });
 
   describe('getHostArch()', () => {
-    let savedArch: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let savedVariables: any;
-
-    beforeEach(() => {
-      savedArch = process.arch;
-      savedVariables = process.config.variables;
-    });
-
-    afterEach(() => {
-      Object.defineProperty(process, 'arch', {
-        value: savedArch,
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: savedVariables,
-      });
-    });
-
     it('should return process.arch on x64', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'x64',
-      });
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('x64');
       expect(getHostArch()).toEqual('x64');
     });
 
     it('should return process.arch on ia32', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'ia32',
-      });
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('ia32');
       expect(getHostArch()).toEqual('ia32');
     });
 
     it('should return process.arch on unknown arm', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'arm',
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: {},
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        variables: {} as any,
       });
       expect(getHostArch()).toEqual('armv7l');
     });
 
-    if (process.platform !== 'win32') {
-      it('should return uname on arm 6', () => {
-        Object.defineProperty(process, 'arch', {
-          value: 'arm',
-        });
-        Object.defineProperty(process.config, 'variables', {
-          value: {
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            arm_version: '6',
-          },
-        });
-        expect(getHostArch()).toEqual(uname());
+    it.skipIf(process.platform === 'win32')('should return uname on arm 6', () => {
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        variables: {
+          //@ts-expect-error - `arm_version` actually exists
+          arm_version: '6',
+        },
       });
-    }
+      expect(getHostArch()).toEqual(uname());
+    });
 
     it('should return armv7l on arm 7', () => {
-      Object.defineProperty(process, 'arch', {
-        value: 'arm',
-      });
-      Object.defineProperty(process.config, 'variables', {
-        value: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
+      vi.spyOn(process, 'arch', 'get').mockReturnValue('arm');
+      vi.spyOn(process, 'config', 'get').mockReturnValue({
+        ...process.config,
+        variables: {
+          //@ts-expect-error - `arm_version` actually exists
           arm_version: '7',
         },
       });
@@ -236,8 +207,7 @@ describe('setEnv()', () => {
 
   it('successfully sets the environment variable when the value is falsey', () => {
     const [key, value] = ['Set_AAA_electron', false];
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
+    // @ts-expect-error - we want to ensure that the boolean gets converted to string accordingly
     setEnv(key, value);
     expect(process.env[key]).toEqual('false');
   });

@@ -1,10 +1,11 @@
 import debug from 'debug';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as semver from 'semver';
-import * as sumchecker from 'sumchecker';
+import fs from 'graceful-fs';
+import path from 'node:path';
+import util from 'node:util';
+import semver from 'semver';
+import sumchecker from 'sumchecker';
 
-import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils';
+import { getArtifactFileName, getArtifactRemoteURL, getArtifactVersion } from './artifact-utils.js';
 import {
   ElectronArtifactDetails,
   ElectronDownloadCacheMode,
@@ -12,10 +13,10 @@ import {
   ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
-} from './types';
-import { Cache } from './Cache';
-import { getDownloaderForSystem } from './downloader-resolver';
-import { initializeProxy } from './proxy';
+} from './types.js';
+import { Cache } from './Cache.js';
+import { getDownloaderForSystem } from './downloader-resolver.js';
+import { initializeProxy } from './proxy.js';
 import {
   withTempDirectoryIn,
   getHostArch,
@@ -27,11 +28,11 @@ import {
   effectiveCacheMode,
   shouldTryReadCache,
   TempDirCleanUpMode,
-} from './utils';
+} from './utils.js';
 
-export { getHostArch } from './utils';
-export { initializeProxy } from './proxy';
-export * from './types';
+export { getHostArch } from './utils.js';
+export { initializeProxy } from './proxy.js';
+export * from './types.js';
 
 const d = debug('@electron/get:index');
 
@@ -71,13 +72,12 @@ async function validateArtifact(
           const generatedChecksums = fileNames
             .map((fileName) => `${checksums[fileName]} *${fileName}`)
             .join('\n');
-          await fs.writeFile(shasumPath, generatedChecksums);
+          await util.promisify(fs.writeFile)(shasumPath, generatedChecksums);
         } else {
           shasumPath = await _downloadArtifact({
             isGeneric: true,
             version: artifactDetails.version,
             artifactName: 'SHASUMS256.txt',
-            force: false,
             downloadOptions: artifactDetails.downloadOptions,
             cacheRoot: artifactDetails.cacheRoot,
             downloader: artifactDetails.downloader,
@@ -110,7 +110,7 @@ async function validateArtifact(
           }
         } finally {
           // Once we're done make sure we clean up the shasum temp dir
-          await fs.remove(path.dirname(shasumPath));
+          await fs.promises.rm(path.dirname(shasumPath), { recursive: true, force: true });
         }
       }
     },
@@ -162,7 +162,7 @@ export async function downloadArtifact(
   // Do not check if the file exists in the cache when force === true
   if (shouldTryReadCache(cacheMode)) {
     d(`Checking the cache (${details.cacheRoot}) for ${fileName} (${url})`);
-    const cachedPath = await cache.getPathForFileInCache(url, fileName);
+    const cachedPath = cache.getPathForFileInCache(url, fileName);
 
     if (cachedPath === null) {
       d('Cache miss');
@@ -174,7 +174,7 @@ export async function downloadArtifact(
         // that the caller can take ownership of the returned file
         const tempDir = await mkdtemp(artifactDetails.tempDirectory);
         artifactPath = path.resolve(tempDir, fileName);
-        await fs.copyFile(cachedPath, artifactPath);
+        await util.promisify(fs.copyFile)(cachedPath, artifactPath);
       }
       try {
         await validateArtifact(details, artifactPath, downloadArtifact);
@@ -182,7 +182,7 @@ export async function downloadArtifact(
         return artifactPath;
       } catch (err) {
         if (doesCallerOwnTemporaryOutput(cacheMode)) {
-          await fs.remove(path.dirname(artifactPath));
+          await fs.promises.rm(path.dirname(artifactPath), { recursive: true, force: true });
         }
         d("Artifact in cache didn't match checksums", err);
         d('falling back to re-download');
@@ -216,7 +216,10 @@ export async function downloadArtifact(
       );
       await downloader.download(url, tempDownloadPath, details.downloadOptions);
 
+      d('attempting to validate artifact...', { details });
       await validateArtifact(details, tempDownloadPath, downloadArtifact);
+
+      d('artifact validated');
 
       if (doesCallerOwnTemporaryOutput(cacheMode)) {
         return tempDownloadPath;

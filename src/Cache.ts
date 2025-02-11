@@ -1,9 +1,10 @@
 import debug from 'debug';
 import envPaths from 'env-paths';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-import * as url from 'url';
-import * as crypto from 'crypto';
+import fs from 'graceful-fs';
+
+import crypto from 'node:crypto';
+import path from 'node:path';
+import url from 'node:url';
 
 const d = debug('@electron/get:cache');
 
@@ -27,9 +28,9 @@ export class Cache {
     return path.resolve(this.cacheRoot, Cache.getCacheDirectory(downloadUrl), fileName);
   }
 
-  public async getPathForFileInCache(url: string, fileName: string): Promise<string | null> {
+  public getPathForFileInCache(url: string, fileName: string): string | null {
     const cachePath = this.getCachePath(url, fileName);
-    if (await fs.pathExists(cachePath)) {
+    if (fs.existsSync(cachePath)) {
       return cachePath;
     }
 
@@ -39,12 +40,16 @@ export class Cache {
   public async putFileInCache(url: string, currentPath: string, fileName: string): Promise<string> {
     const cachePath = this.getCachePath(url, fileName);
     d(`Moving ${currentPath} to ${cachePath}`);
-    if (await fs.pathExists(cachePath)) {
-      d('* Replacing existing file');
-      await fs.remove(cachePath);
+
+    if (!fs.existsSync(path.dirname(cachePath))) {
+      await fs.promises.mkdir(path.dirname(cachePath), { recursive: true });
     }
 
-    await fs.move(currentPath, cachePath);
+    if (fs.existsSync(cachePath)) {
+      d('* Replacing existing file');
+      await fs.promises.rm(cachePath, { recursive: true, force: true });
+    }
+    await fs.promises.rename(currentPath, cachePath);
 
     return cachePath;
   }

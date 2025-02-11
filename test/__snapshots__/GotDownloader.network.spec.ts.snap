@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`GotDownloader download() should download a remote file to the given file path 1`] = `
+exports[`GotDownloader > download() > should download a remote file to the given file path 1`] = `
 "d186456c8e44155298521aafc5e270875c6cde41bbd3c19ce38ae53f1d98f284 *chromedriver-v2.0.18-darwin-x64.zip
 dfb244c4347481a526567418f78a0fb6b9ccff6205a55f51225cfe4d1796b0d9 *chromedriver-v2.0.18-linux-arm.zip
 516981ca6f7465dba55228df9ba30b7e0566a3eec694e5a2cc2fbe58a41ff006 *chromedriver-v2.0.18-linux-arm64.zip
@@ -58,7 +58,7 @@ f83f0433d0e2f4d62db59892d4105c5693242da867cb76f3ec42ce020868bf98 *mksnapshot-v2.
 "
 `;
 
-exports[`GotDownloader download() should download to a deep uncreated path 1`] = `
+exports[`GotDownloader > download() > should download to a deep uncreated path 1`] = `
 "06fbdc5cdebf63b6fc579092d572878304125286b0db3ed0d6b1d506dc75e286 *chromedriver-v2.0.1-darwin-x64.zip
 7347204e847fd7403dfac7de0a92a345932cc99a60b3279ca9e6d307483a190a *chromedriver-v2.0.1-linux-arm.zip
 0a5807a4f26bc42de70d008e6ec775fed54a66f55d517b68071b801c3b306b4c *chromedriver-v2.0.1-linux-arm64.zip
