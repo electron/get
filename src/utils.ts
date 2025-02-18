@@ -1,12 +1,13 @@
-import * as childProcess from 'child_process';
-import * as fs from 'fs-extra';
-import * as os from 'os';
-import * as path from 'path';
+import childProcess from 'node:child_process';
+import fs from 'graceful-fs';
+import os from 'node:os';
+import path from 'node:path';
+
 import {
   ElectronDownloadCacheMode,
   ElectronGenericArtifactDetails,
   ElectronPlatformArtifactDetailsWithDefaults,
-} from './types';
+} from './types.js';
 
 async function useAndRemoveDirectory<T>(
   directory: string,
@@ -16,14 +17,15 @@ async function useAndRemoveDirectory<T>(
   try {
     result = await fn(directory);
   } finally {
-    await fs.remove(directory);
+    await fs.promises.rm(directory, { recursive: true, force: true });
   }
+
   return result;
 }
 
 export async function mkdtemp(parentDirectory: string = os.tmpdir()): Promise<string> {
   const tempDirectoryPrefix = 'electron-download-';
-  return await fs.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
+  return await fs.promises.mkdtemp(path.resolve(parentDirectory, tempDirectoryPrefix));
 }
 
 export enum TempDirCleanUpMode {
@@ -145,15 +147,6 @@ export function setEnv(key: string, value: string | undefined): void {
 export function effectiveCacheMode(
   artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ): ElectronDownloadCacheMode {
-  if (artifactDetails.force) {
-    if (artifactDetails.cacheMode) {
-      throw new Error(
-        'Setting both "force" and "cacheMode" is not supported, please exclusively use "cacheMode"',
-      );
-    }
-    return ElectronDownloadCacheMode.WriteOnly;
-  }
-
   return artifactDetails.cacheMode || ElectronDownloadCacheMode.ReadWrite;
 }
 

@@ -1,5 +1,5 @@
-import { ElectronArtifactDetails, MirrorOptions } from './types';
-import { ensureIsTruthyString, normalizeVersion } from './utils';
+import { ElectronArtifactDetails, MirrorOptions } from './types.js';
+import { ensureIsTruthyString, normalizeVersion } from './utils.js';
 
 const BASE_URL = 'https://github.com/electron/electron/releases/download/';
 const NIGHTLY_BASE_URL = 'https://github.com/electron/nightlies/releases/download/';
@@ -51,13 +51,7 @@ export async function getArtifactRemoteURL(details: ElectronArtifactDetails): Pr
   const opts: MirrorOptions = details.mirrorOptions || {};
   let base = mirrorVar('mirror', opts, BASE_URL);
   if (details.version.includes('nightly')) {
-    const nightlyDeprecated = mirrorVar('nightly_mirror', opts, '');
-    if (nightlyDeprecated) {
-      base = nightlyDeprecated;
-      console.warn(`nightly_mirror is deprecated, please use nightlyMirror`);
-    } else {
-      base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
-    }
+    base = mirrorVar('nightlyMirror', opts, NIGHTLY_BASE_URL);
   }
   const path = mirrorVar('customDir', opts, details.version).replace(
     '{{ version }}',
