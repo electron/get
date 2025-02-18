@@ -1,9 +1,10 @@
-import * as fs from 'fs-extra';
-import got, { HTTPError, Progress as GotProgress, Options as GotOptions } from 'got';
-import * as path from 'path';
-import * as ProgressBar from 'progress';
+import got, { HTTPError, Progress as GotProgress, Options as GotOptions, Progress } from 'got';
+import fs from 'graceful-fs';
 
-import { Downloader } from './Downloader';
+import path from 'node:path';
+import ProgressBar from 'progress';
+
+import { Downloader } from './Downloader.js';
 
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 
@@ -34,7 +35,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
   async download(
     url: string,
     targetFilePath: string,
-    options?: GotDownloaderOptions,
+    options?: Partial<GotDownloaderOptions>,
   ): Promise<void> {
     if (!options) {
       options = {};
@@ -44,7 +45,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     let bar: ProgressBar | undefined;
     let progressPercent: number;
     let timeout: NodeJS.Timeout | undefined = undefined;
-    await fs.mkdirp(path.dirname(targetFilePath));
+    await fs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
     const writeStream = fs.createWriteStream(targetFilePath);
 
     if (!quiet || !process.env.ELECTRON_GET_NO_PROGRESS) {
@@ -66,7 +67,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     }
     await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
-      downloadStream.on('downloadProgress', async (progress) => {
+      downloadStream.on('downloadProgress', async (progress: Progress) => {
         progressPercent = progress.percent;
         if (bar) {
           bar.update(progress.percent);
@@ -75,9 +76,9 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
           await getProgressCallback(progress);
         }
       });
-      downloadStream.on('error', (error) => {
-        if (error instanceof HTTPError && error.response.statusCode === 404) {
-          error.message += ` for ${error.response.url}`;
+      downloadStream.on('error', (error: Error) => {
+        if (error instanceof HTTPError && (error as HTTPError).response.statusCode === 404) {
+          error.message += ` for ${(error as HTTPError).response.url}`;
         }
         if (writeStream.destroy) {
           writeStream.destroy(error);
