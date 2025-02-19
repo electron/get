@@ -7,7 +7,7 @@
 
 ## Usage
 
-For full API details, see the [API documentation](https://electron.github.io/get/).
+For full API details, see the [API documentation](https://packages.electronjs.org/get/v4.0.0/index.html).
 
 ### Simple: Downloading an Electron Binary ZIP
 
