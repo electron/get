@@ -17,7 +17,7 @@ const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 export type GotDownloaderOptions = GotOptions & { isStream?: true } & {
   /**
    * if defined, triggers every time `got`'s
-   * {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file#downloadprogress | `downloadProgress``} event callback is triggered.
+   * {@link https://github.com/sindresorhus/got/tree/v11.8.5?tab=readme-ov-file# | ```} event callback is triggered.
    */
   getProgressCallback?: (progress: GotProgress) => Promise<void>;
   /**
@@ -68,7 +68,8 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     await new Promise<void>((resolve, reject) => {
       const downloadStream = got.stream(url, gotOptions);
       downloadStream.on('downloadProgress', async (progress: Progress) => {
-        progressPercent = progress.percent;
+        console.log(`🔍 DEBUG: Raw Progress Data -`, progress);
+        progressPercent = Math.round(progress.percent * 100); // Convert to whole number
         if (bar) {
           bar.update(progress.percent);
         }
