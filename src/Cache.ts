@@ -49,7 +49,9 @@ export class Cache {
       d('* Replacing existing file');
       await fs.promises.rm(cachePath, { recursive: true, force: true });
     }
-    await fs.promises.rename(currentPath, cachePath);
+
+    await fs.promises.copyFile(currentPath, cachePath);
+    await fs.promises.rm(currentPath);
 
     return cachePath;
   }
