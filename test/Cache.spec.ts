@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import util from 'node:util';
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Cache } from '../src/Cache';
 
@@ -50,9 +50,13 @@ describe('Cache', () => {
   describe('putFileInCache()', () => {
     it('should throw an error if the provided file path does not exist', async () => {
       const fakePath = path.resolve(__dirname, 'fake.file');
+      const cacheFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+      const cachePath = path.resolve(cacheFolder, 'fake.file');
       await expect(cache.putFileInCache(dummyUrl, fakePath, 'fake.file')).rejects.toHaveProperty(
         'message',
-        expect.stringContaining(`ENOENT: no such file or directory, rename '${fakePath}'`),
+        expect.stringContaining(
+          `ENOENT: no such file or directory, copyfile '${fakePath}' -> '${cachePath}'`,
+        ),
       );
     });
 
@@ -87,6 +91,27 @@ describe('Cache', () => {
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
       expect(await util.promisify(fs.readFile)(cachePath, 'utf8')).toEqual('example content');
+    });
+
+    describe('when fs.promises.rename throws', () => {
+      beforeEach(() => {
+        // when /tmp is on a different file system, rename cannot be used to move the file.
+        vi.spyOn(fs.promises, 'rename').mockImplementation(() => {
+          return Promise.reject(new Error());
+        });
+      });
+      afterEach(() => {
+        vi.restoreAllMocks();
+      });
+      it('still succeeds', async () => {
+        const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+        await fs.promises.mkdir(originalFolder, { recursive: true });
+        const originalPath = path.resolve(cacheDir, 'original.txt');
+        await util.promisify(fs.writeFile)(originalPath, 'example content');
+        await expect(cache.putFileInCache(dummyUrl, originalPath, 'test.txt')).resolves.toEqual(
+          expect.stringContaining(cacheDir),
+        );
+      });
     });
   });
 });
