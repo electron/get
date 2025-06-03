@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import util from 'node:util';
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Cache } from '../src/Cache';
 
@@ -87,6 +87,26 @@ describe('Cache', () => {
       const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
       expect(cachePath.startsWith(cacheDir)).toEqual(true);
       expect(await util.promisify(fs.readFile)(cachePath, 'utf8')).toEqual('example content');
+    });
+
+    it('can handle cross-device cache paths', async () => {
+      const error: NodeJS.ErrnoException = new Error('EXDEV: cross-device link not permitted');
+      error.code = 'EXDEV';
+
+      const spy = vi.spyOn(fs.promises, 'rename').mockRejectedValueOnce(error);
+
+      try {
+        const originalFolder = path.resolve(cacheDir, sanitizedDummyUrl);
+        await fs.promises.mkdir(originalFolder, { recursive: true });
+        const originalPath = path.resolve(originalFolder, 'original.txt');
+        await util.promisify(fs.writeFile)(originalPath, 'example content');
+        const cachePath = await cache.putFileInCache(dummyUrl, originalPath, 'test.txt');
+        expect(cachePath.startsWith(cacheDir)).toEqual(true);
+        expect(await util.promisify(fs.readFile)(cachePath, 'utf8')).toEqual('example content');
+        expect(spy).toHaveBeenCalled();
+      } finally {
+        spy.mockRestore();
+      }
     });
   });
 });
