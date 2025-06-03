@@ -49,7 +49,22 @@ export class Cache {
       d('* Replacing existing file');
       await fs.promises.rm(cachePath, { recursive: true, force: true });
     }
-    await fs.promises.rename(currentPath, cachePath);
+
+    try {
+      await fs.promises.rename(currentPath, cachePath);
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === 'EXDEV') {
+        // Cross-device link, fallback to copy and delete
+        await fs.promises.cp(currentPath, cachePath, {
+          force: true,
+          recursive: true,
+          verbatimSymlinks: true,
+        });
+        await fs.promises.rm(currentPath, { force: true, recursive: true });
+      } else {
+        throw err;
+      }
+    }
 
     return cachePath;
   }
