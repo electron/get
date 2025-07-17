@@ -5,6 +5,7 @@ import path from 'node:path';
 import ProgressBar from 'progress';
 
 import { Downloader } from './Downloader.js';
+import { pipeline } from 'node:stream/promises';
 
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
 
@@ -65,32 +66,24 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
-    await new Promise<void>((resolve, reject) => {
-      const downloadStream = got.stream(url, gotOptions);
-      downloadStream.on('downloadProgress', async (progress: Progress) => {
-        progressPercent = progress.percent;
-        if (bar) {
-          bar.update(progress.percent);
-        }
-        if (getProgressCallback) {
-          await getProgressCallback(progress);
-        }
-      });
-      downloadStream.on('error', (error: Error) => {
-        if (error instanceof HTTPError && (error as HTTPError).response.statusCode === 404) {
-          error.message += ` for ${(error as HTTPError).response.url}`;
-        }
-        if (writeStream.destroy) {
-          writeStream.destroy(error);
-        }
-
-        reject(error);
-      });
-      writeStream.on('error', (error) => reject(error));
-      writeStream.on('close', () => resolve());
-
-      downloadStream.pipe(writeStream);
+    const downloadStream = got.stream(url, gotOptions);
+    downloadStream.on('downloadProgress', async (progress: Progress) => {
+      progressPercent = progress.percent;
+      if (bar) {
+        bar.update(progress.percent);
+      }
+      if (getProgressCallback) {
+        await getProgressCallback(progress);
+      }
     });
+    try {
+      await pipeline(downloadStream, writeStream);
+    } catch (error) {
+      if (error instanceof HTTPError && (error as HTTPError).response.statusCode === 404) {
+        error.message += ` for ${(error as HTTPError).response.url}`;
+      }
+      throw error;
+    }
 
     downloadCompleted = true;
     if (timeout) {
