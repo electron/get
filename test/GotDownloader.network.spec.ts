@@ -48,7 +48,7 @@ describe('GotDownloader', () => {
       const spy = vi.spyOn(fs, 'createWriteStream');
       spy.mockImplementationOnce((path: PathLike) => {
         const stream = createWriteStream(path);
-        setTimeout(() => stream.emit('error', 'bad write error thing'), 10);
+        setTimeout(() => stream.emit('error', 'bad write error thing'), 0);
         return stream;
       });
       await withTempDirectory(async (dir) => {
