@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { GotDownloader } from '../src/GotDownloader';
 import { TempDirCleanUpMode, withTempDirectory } from '../src/utils';
-import { EventEmitter } from 'events';
+import { PathLike } from 'node:fs';
 
 describe('GotDownloader', () => {
   describe('download()', () => {
@@ -44,11 +44,12 @@ describe('GotDownloader', () => {
 
     it('should throw an error if the file write stream fails', async () => {
       const downloader = new GotDownloader();
+      const createWriteStream = fs.createWriteStream;
       const spy = vi.spyOn(fs, 'createWriteStream');
-      spy.mockImplementationOnce(() => {
-        const emitter = new EventEmitter();
-        setTimeout(() => emitter.emit('error', 'bad write error thing'), 10);
-        return emitter as fs.WriteStream;
+      spy.mockImplementationOnce((path: PathLike) => {
+        const stream = createWriteStream(path);
+        setTimeout(() => stream.emit('error', 'bad write error thing'), 0);
+        return stream;
       });
       await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
