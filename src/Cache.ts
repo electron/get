@@ -61,7 +61,7 @@ export class Cache {
           ]);
           if (existingHash !== currentHash) {
             d('* Replacing existing file as it does not match our inbound file');
-            fs.promises.rm(cachePath, { recursive: true, force: true });
+            await fs.promises.rm(cachePath, { recursive: true, force: true });
           } else {
             d('* Using existing file as the hash matches our inbound file, no need to replace');
             return cachePath;
