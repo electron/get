@@ -4,3 +4,4 @@ docs
 node_modules
 .idea
 .vscode
+.yarn/install-state.gz
