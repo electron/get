@@ -4,10 +4,12 @@
 
 [![Test](https://github.com/electron/get/actions/workflows/test.yml/badge.svg)](https://github.com/electron/get/actions/workflows/test.yml)
 [![NPM package](https://img.shields.io/npm/v/@electron/get)](https://npm.im/@electron/get)
+[![API docs](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.npmjs.org%2F%40electron%2Fget%2Flatest&query=%24.version&logo=typescript&logoColor=white&label=API%20Docs
+)](https://packages.electronjs.org/get)
 
 ## Usage
 
-For full API details, see the [API documentation](https://packages.electronjs.org/get/v4.0.0/index.html).
+For full API details, see the [API documentation](https://packages.electronjs.org/get).
 
 ### Simple: Downloading an Electron Binary ZIP
 
