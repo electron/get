@@ -42,12 +42,12 @@
     "@tsconfig/node22": "^22.0.0",
     "@types/debug": "^4.1.4",
     "@types/graceful-fs": "^4.1.9",
-    "@types/node": "~22.10.5",
+    "@types/node": "~22.12.0",
     "@types/progress": "^2.0.3",
     "@types/semver": "^7.5.8",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "3.0.5",
+    "@vitest/coverage-v8": "4.0.15",
     "esbuild-plugin-file-path-extensions": "^2.1.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^6.15.0",
@@ -57,7 +57,7 @@
     "prettier": "^3.4.2",
     "typedoc": "~0.25.13",
     "typescript": "~5.4.5",
-    "vitest": "^3.0.5"
+    "vitest": "^4.0.15"
   },
   "husky": {
     "hooks": {
