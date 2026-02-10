@@ -77,5 +77,53 @@ describe('GotDownloader', () => {
         expect(await util.promisify(fs.readFile)(testFile, 'utf8')).toMatchSnapshot();
       }, TempDirCleanUpMode.CLEAN);
     });
+
+    it('should abort a running download and remove partial file', async () => {
+      const downloader = new GotDownloader();
+      // create a tiny HTTP server that streams data slowly so we can abort mid-download
+      const http = await import('node:http');
+
+      const server = http.createServer((req, res) => {
+        res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+        let i = 0;
+        const iv = setInterval(() => {
+          if (i++ > 20) {
+            clearInterval(iv);
+            res.end();
+            return;
+          }
+          // write a chunk
+          res.write(Buffer.alloc(1024, 'a'));
+        }, 50);
+      });
+
+      await new Promise<void>((resolve) => server.listen(0, resolve));
+      await withTempDirectory(async (dir) => {
+        const testFile = path.resolve(dir, 'f', 'b', 'test.txt');
+        console.log('testFile: ', testFile);
+        await expect(fs.existsSync(testFile)).toEqual(false);
+
+        const controller = new AbortController();
+
+        // start the download but abort shortly after
+        const downloadPromise = downloader.download(
+          'https://github.com/electron/electron/releases/download/v2.0.1/SHASUMS256.txt',
+          testFile,
+          {
+            // pass the AbortSignal through to got options
+            signal: controller.signal,
+          },
+        );
+
+        // abort after 200ms (during the stream)
+        await setTimeout(() => controller.abort(), 20);
+
+        await expect(downloadPromise).rejects.toThrow('The download was aborted');
+        // partial file should have been removed
+        await expect(fs.existsSync(testFile)).toEqual(false);
+      }, TempDirCleanUpMode.CLEAN);
+
+      server.close();
+    });
   });
 });
