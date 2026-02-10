@@ -41,13 +41,16 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     if (!options) {
       options = {};
     }
-    const { quiet, getProgressCallback, ...gotOptions } = options;
+    const { quiet, getProgressCallback, signal, ...gotOptions } = options;
     let downloadCompleted = false;
     let bar: ProgressBar | undefined;
     let progressPercent: number;
     let timeout: NodeJS.Timeout | undefined = undefined;
     await fs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
     const writeStream = fs.createWriteStream(targetFilePath);
+    writeStream.on('error', () => {
+      fs.promises.unlink(targetFilePath).catch(() => {});
+    });
 
     if (!quiet || !process.env.ELECTRON_GET_NO_PROGRESS) {
       const start = new Date();
@@ -66,8 +69,8 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
-    const downloadStream = got.stream(url, gotOptions);
-    downloadStream.on('downloadProgress', async (progress: Progress) => {
+
+    const progressCallback = async (progress: Progress) => {
       progressPercent = progress.percent;
       if (bar) {
         bar.update(progress.percent);
@@ -75,19 +78,72 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
       if (getProgressCallback) {
         await getProgressCallback(progress);
       }
+    };
+
+    const downloadStream = got.stream(url, gotOptions);
+    downloadStream.on('downloadProgress', progressCallback);
+    downloadStream.on('error', () => {
+      fs.promises.unlink(targetFilePath).catch(() => {});
     });
+
+    let abortListener: ((this: AbortSignal, ev?: Event) => void) | undefined;
+    if (signal) {
+      if (signal.aborted) {
+        // already aborted
+        // ensure streams are cleaned up and partial file removed
+        writeStream.destroy();
+        try {
+          await fs.promises.unlink(targetFilePath);
+        } catch {
+          // ignore
+        }
+        throw new Error('The download was aborted');
+      }
+
+      abortListener = () => {
+        console.log('Aborting download');
+        // destroy streams to abort pipeline and stop the download
+        try {
+          downloadStream.destroy();
+          downloadStream.off('downloadProgress', progressCallback);
+        } catch {
+          // ignore
+        }
+        try {
+          writeStream.destroy();
+        } catch {
+          // ignore
+        }
+        fs.promises.unlink(targetFilePath).catch(() => {});
+      };
+      signal.addEventListener('abort', abortListener);
+    }
+
     try {
-      await pipeline(downloadStream, writeStream);
+      await pipeline(downloadStream, writeStream, { signal: signal });
     } catch (error) {
+      if (signal && signal.aborted) {
+        throw new Error('The download was aborted');
+      }
       if (error instanceof HTTPError && (error as HTTPError).response.statusCode === 404) {
         error.message += ` for ${(error as HTTPError).response.url}`;
       }
       throw error;
-    }
-
-    downloadCompleted = true;
-    if (timeout) {
-      clearTimeout(timeout);
+    } finally {
+      if (signal && abortListener) {
+        try {
+          signal.removeEventListener(
+            'abort',
+            abortListener as (this: AbortSignal, ev?: Event) => void,
+          );
+        } catch {
+          // ignore
+        }
+      }
+      downloadCompleted = true;
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     }
   }
 }
