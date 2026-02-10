@@ -30,7 +30,7 @@ describe('Hard-coded checksums', () => {
         artifactName: 'electron',
         checksums: {
           'electron-v2.0.9-darwin-x64.zip':
-            'ff0bfe95bc2a351e09b959aab0bdab893cb33c203bfff83413c3f0989858c684',
+            '7d1c9971d1fe24ebb185090c7d180fb825e83a3358c3e826b490a40292d2cffa',
         },
       });
       expect(typeof zipPath).toEqual('string');
