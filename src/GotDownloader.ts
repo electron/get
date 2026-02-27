@@ -3,11 +3,25 @@ import fs from 'graceful-fs';
 
 import path from 'node:path';
 import ProgressBar from 'progress';
+import { ProxyAgent } from 'proxy-agent';
 
 import { Downloader } from './Downloader.js';
 import { pipeline } from 'node:stream/promises';
 
 const PROGRESS_BAR_DELAY_IN_SECONDS = 30;
+
+const proxyAgent = new ProxyAgent();
+
+/**
+ * Default `got` options with proxy support.
+ * Proxy is automatically detected from `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables.
+ */
+const defaultGotOptions = {
+  agent: {
+    http: proxyAgent,
+    https: proxyAgent,
+  },
+};
 
 /**
  * Options for the default [`got`](https://github.com/sindresorhus/got) Downloader implementation.
@@ -66,7 +80,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         }
       }, PROGRESS_BAR_DELAY_IN_SECONDS * 1000);
     }
-    const downloadStream = got.stream(url, gotOptions);
+    const downloadStream = got.stream(url, { ...defaultGotOptions, ...gotOptions });
     downloadStream.on('downloadProgress', async (progress: Progress) => {
       progressPercent = progress.percent;
       if (bar) {
