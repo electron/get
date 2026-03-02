@@ -115,35 +115,6 @@ export function isOfficialLinuxIA32Download(
     typeof mirrorOptions === 'undefined'
   );
 }
-
-/**
- * Find the value of a environment variable which may or may not have the
- * prefix, in a case-insensitive manner.
- */
-export function getEnv(prefix = ''): (name: string) => string | undefined {
-  const envsLowerCase: NodeJS.ProcessEnv = {};
-
-  for (const envKey in process.env) {
-    envsLowerCase[envKey.toLowerCase()] = process.env[envKey];
-  }
-
-  return (name: string): string | undefined => {
-    return (
-      envsLowerCase[`${prefix}${name}`.toLowerCase()] ||
-      envsLowerCase[name.toLowerCase()] ||
-      undefined
-    );
-  };
-}
-
-export function setEnv(key: string, value: string | undefined): void {
-  // The `void` operator always returns `undefined`.
-  // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/void
-  if (value !== void 0) {
-    process.env[key] = value;
-  }
-}
-
 export function effectiveCacheMode(
   artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
 ): ElectronDownloadCacheMode {

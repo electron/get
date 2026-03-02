@@ -137,8 +137,9 @@ disable, set the `ELECTRON_GET_NO_PROGRESS` environment variable to any non-empt
 
 ### Proxies
 
-Downstream packages should utilize the `initializeProxy` function to add HTTP(S) proxy support. If
-the environment variable `ELECTRON_GET_USE_PROXY` is set, it is called automatically.
+Proxy support is built-in via [`proxy-agent`](https://github.com/TooTallNate/proxy-agents). The standard
+`HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables are automatically detected
+for all downloads. No additional configuration is required.
 
 ### Debug
 

@@ -16,7 +16,6 @@ import {
 } from './types.js';
 import { Cache } from './Cache.js';
 import { getDownloaderForSystem } from './downloader-resolver.js';
-import { initializeProxy } from './proxy.js';
 import {
   withTempDirectoryIn,
   getHostArch,
@@ -31,14 +30,17 @@ import {
 } from './utils.js';
 
 export { getHostArch } from './utils.js';
-export { initializeProxy } from './proxy.js';
 export * from './types.js';
 
-const d = debug('@electron/get:index');
+/**
+ * @deprecated Proxy support is now built-in and enabled automatically.
+ * This function is a no-op and will be removed in a future major release.
+ * Standard `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY` environment variables
+ * are detected automatically for all downloads.
+ */
+export function initializeProxy(): void {}
 
-if (process.env.ELECTRON_GET_USE_PROXY) {
-  initializeProxy();
-}
+const d = debug('@electron/get:index');
 
 type ArtifactDownloader = (
   _artifactDetails: ElectronPlatformArtifactDetailsWithDefaults | ElectronGenericArtifactDetails,
