@@ -1,6 +1,6 @@
 import fs from 'graceful-fs';
 
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   normalizeVersion,
@@ -9,8 +9,6 @@ import {
   getHostArch,
   ensureIsTruthyString,
   isOfficialLinuxIA32Download,
-  getEnv,
-  setEnv,
   TempDirCleanUpMode,
 } from '../src/utils';
 
@@ -153,62 +151,5 @@ describe('utils', () => {
       expect(isOfficialLinuxIA32Download('win32', 'ia32', 'v4.0.0')).toEqual(false);
       expect(isOfficialLinuxIA32Download('linux', 'x64', 'v4.0.0')).toEqual(false);
     });
-  });
-
-  describe('getEnv()', () => {
-    const [prefix, envName] = ['TeSt_EnV_vAr_', 'eNv_Key'];
-    const prefixEnvName = `${prefix}${envName}`;
-    const [hasPrefixValue, noPrefixValue] = ['yes_prefix', 'no_prefix'];
-
-    beforeAll(() => {
-      process.env[prefixEnvName] = hasPrefixValue;
-      process.env[envName] = noPrefixValue;
-    });
-
-    afterAll(() => {
-      delete process.env[prefixEnvName];
-      delete process.env[envName];
-    });
-
-    it('should return prefixed environment variable if prefixed variable found', () => {
-      const env = getEnv(prefix);
-      expect(env(envName)).toEqual(hasPrefixValue);
-      expect(env(envName.toLowerCase())).toEqual(hasPrefixValue);
-      expect(env(envName.toUpperCase())).toEqual(hasPrefixValue);
-    });
-
-    it('should return non-prefixed environment variable if no prefixed variable found', () => {
-      expect(getEnv()(envName)).toEqual(noPrefixValue);
-      expect(getEnv()(envName.toLowerCase())).toEqual(noPrefixValue);
-      expect(getEnv()(envName.toUpperCase())).toEqual(noPrefixValue);
-    });
-
-    it('should return undefined if no match', () => {
-      const randomStr = 'AAAAA_electron_';
-      expect(getEnv()(randomStr)).toEqual(undefined);
-      expect(getEnv()(randomStr.toLowerCase())).toEqual(undefined);
-      expect(getEnv()(randomStr.toUpperCase())).toEqual(undefined);
-    });
-  });
-});
-
-describe('setEnv()', () => {
-  it("doesn't set the environment variable if the value is undefined", () => {
-    const [key, value] = ['Set_AAA_electron', undefined];
-    setEnv(key, value);
-    expect(process.env[key]).toEqual(void 0);
-  });
-
-  it('successfully sets the environment variable when the value is defined', () => {
-    const [key, value] = ['Set_BBB_electron', 'Test'];
-    setEnv(key, value);
-    expect(process.env[key]).toEqual(value);
-  });
-
-  it('successfully sets the environment variable when the value is falsey', () => {
-    const [key, value] = ['Set_AAA_electron', false];
-    // @ts-expect-error - we want to ensure that the boolean gets converted to string accordingly
-    setEnv(key, value);
-    expect(process.env[key]).toEqual('false');
   });
 });
