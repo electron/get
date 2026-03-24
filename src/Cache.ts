@@ -5,7 +5,6 @@ import fs from 'graceful-fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import url from 'node:url';
 
 const d = debug('@electron/get:cache');
 
@@ -17,12 +16,12 @@ export class Cache {
   constructor(private cacheRoot = defaultCacheRoot) {}
 
   public static getCacheDirectory(downloadUrl: string): string {
-    const parsedDownloadUrl = url.parse(downloadUrl);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { search, hash, pathname, ...rest } = parsedDownloadUrl;
-    const strippedUrl = url.format({ ...rest, pathname: path.dirname(pathname || 'electron') });
+    const parsed = new URL(downloadUrl);
+    parsed.hash = '';
+    parsed.search = '';
+    parsed.pathname = path.posix.dirname(parsed.pathname);
 
-    return crypto.createHash('sha256').update(strippedUrl).digest('hex');
+    return crypto.createHash('sha256').update(parsed.toString()).digest('hex');
   }
 
   public getCachePath(downloadUrl: string, fileName: string): string {
