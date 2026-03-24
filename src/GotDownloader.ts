@@ -83,11 +83,11 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         error.message += ` for ${(error as HTTPError).response.url}`;
       }
       throw error;
-    }
-
-    downloadCompleted = true;
-    if (timeout) {
-      clearTimeout(timeout);
+    } finally {
+      downloadCompleted = true;
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     }
   }
 }
