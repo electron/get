@@ -115,9 +115,7 @@ async function validateArtifact(
         }
       }
     },
-    doesCallerOwnTemporaryOutput(effectiveCacheMode(artifactDetails))
-      ? TempDirCleanUpMode.ORPHAN
-      : TempDirCleanUpMode.CLEAN,
+    TempDirCleanUpMode.CLEAN,
   );
 }
 
