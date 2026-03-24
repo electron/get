@@ -156,12 +156,12 @@ describe('Bug: initializeProxy uses require() in an ESM module', () => {
   // Output (with DEBUG=@electron/get:proxy):
   //   ReferenceError: require is not defined
 
-  it('documents the require-in-ESM bug (cannot reproduce under vitest)', () => {
+  it('defines require via createRequire before using it', () => {
     const source = fs.readFileSync(path.resolve(__dirname, '../src/proxy.ts'), 'utf8');
-    // This assertion fails while the bug exists: the source still uses
-    // bare `require(` which is undefined in ESM. The fix is to use
-    // `createRequire(import.meta.url)` or a dynamic `import()`.
-    expect(source).not.toMatch(/\brequire\(['"]global-agent['"]\)/);
+    // The source calls `require('global-agent')`; in ESM that identifier must
+    // be explicitly defined via `createRequire(import.meta.url)` (or the call
+    // replaced with a dynamic `import()`).
+    expect(source).toMatch(/createRequire\s*\(\s*import\.meta\.url\s*\)/);
   });
 });
 
