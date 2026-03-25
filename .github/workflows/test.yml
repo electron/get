@@ -41,3 +41,14 @@ jobs:
         run: yarn lint && yarn test
       - name: Build docs
         run: yarn build:docs
+
+  required-ci:
+    name: Required CI
+    if: always()
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check test results
+        if: needs.test.result != 'success' && needs.test.result != 'skipped'
+        run: exit 1
