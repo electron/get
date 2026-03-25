@@ -21,6 +21,19 @@ describe('Cache', () => {
 
   afterEach(() => fs.promises.rm(cacheDir, { recursive: true, force: true }));
 
+  describe('getCacheDirectory()', () => {
+    it('should produce a stable cache key for real-world download URLs', () => {
+      // This hash is part of the on-disk cache layout. Changing it invalidates
+      // every user's existing Electron cache, so any diff here must be
+      // deliberate and called out.
+      expect(
+        Cache.getCacheDirectory(
+          'https://github.com/electron/electron/releases/download/v2.0.9/electron-v2.0.9-darwin-x64.zip',
+        ),
+      ).toEqual('7658513ccebc15fd4c4dec9ff8cdef8eb586f7fe5bad56f08b218650df37b1b6');
+    });
+  });
+
   describe('getCachePath()', () => {
     it('should strip the hash and query params off the url', async () => {
       const firstUrl = 'https://example.com?foo=1';
