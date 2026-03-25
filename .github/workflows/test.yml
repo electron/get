@@ -41,3 +41,14 @@ jobs:
         run: yarn lint && yarn test
       - name: Build docs
         run: yarn build:docs
+
+  required-ci:
+    name: Required CI
+    if: always()
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job results
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
