@@ -82,6 +82,7 @@ async function validateArtifact(
             cacheRoot: artifactDetails.cacheRoot,
             downloader: artifactDetails.downloader,
             mirrorOptions: artifactDetails.mirrorOptions,
+            tempDirectory: artifactDetails.tempDirectory,
             // Never use the cache for loading checksums, load
             // them fresh every time
             cacheMode: ElectronDownloadCacheMode.Bypass,
@@ -114,9 +115,7 @@ async function validateArtifact(
         }
       }
     },
-    doesCallerOwnTemporaryOutput(effectiveCacheMode(artifactDetails))
-      ? TempDirCleanUpMode.ORPHAN
-      : TempDirCleanUpMode.CLEAN,
+    TempDirCleanUpMode.CLEAN,
   );
 }
 

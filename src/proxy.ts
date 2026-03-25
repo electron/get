@@ -1,7 +1,10 @@
+import { createRequire } from 'node:module';
+
 import debug from 'debug';
 import { getEnv, setEnv } from './utils.js';
 
 const d = debug('@electron/get:proxy');
+const require = createRequire(import.meta.url);
 
 /**
  * Initializes a third-party proxy module for HTTP(S) requests. Call this function before

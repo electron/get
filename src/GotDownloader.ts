@@ -49,7 +49,7 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
     await fs.promises.mkdir(path.dirname(targetFilePath), { recursive: true });
     const writeStream = fs.createWriteStream(targetFilePath);
 
-    if (!quiet || !process.env.ELECTRON_GET_NO_PROGRESS) {
+    if (!quiet && !process.env.ELECTRON_GET_NO_PROGRESS) {
       const start = new Date();
       timeout = setTimeout(() => {
         if (!downloadCompleted) {
@@ -83,11 +83,11 @@ export class GotDownloader implements Downloader<GotDownloaderOptions> {
         error.message += ` for ${(error as HTTPError).response.url}`;
       }
       throw error;
-    }
-
-    downloadCompleted = true;
-    if (timeout) {
-      clearTimeout(timeout);
+    } finally {
+      downloadCompleted = true;
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     }
   }
 }

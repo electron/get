@@ -271,6 +271,70 @@ describe('Public API', () => {
       expect(await util.promisify(fs.readFile)(driverPath2, 'utf8')).toEqual('cached content');
     });
 
+    describe('tempDirectory', () => {
+      let customTemp: string;
+
+      beforeEach(async () => {
+        customTemp = await fs.promises.mkdtemp(
+          path.resolve(os.tmpdir(), 'electron-download-spec-temp-'),
+        );
+      });
+
+      afterEach(async () => {
+        await fs.promises.rm(customTemp, { recursive: true, force: true });
+      });
+
+      it('should use the custom tempDirectory for the SHASUMS256.txt download', async () => {
+        const shasumsTargetDirs: string[] = [];
+
+        const trackingDownloader = {
+          async download(url: string, targetFilePath: string): Promise<void> {
+            if (url.endsWith('SHASUMS256.txt')) {
+              shasumsTargetDirs.push(path.dirname(targetFilePath));
+            }
+            return downloader.download(url, targetFilePath);
+          },
+        };
+
+        await downloadArtifact({
+          artifactName: 'electron',
+          version: '2.0.9',
+          platform: 'darwin',
+          arch: 'x64',
+          cacheRoot,
+          tempDirectory: customTemp,
+          downloader: trackingDownloader,
+          cacheMode: ElectronDownloadCacheMode.WriteOnly,
+        });
+
+        expect(shasumsTargetDirs.length).toBeGreaterThan(0);
+        for (const dir of shasumsTargetDirs) {
+          expect(dir.startsWith(customTemp)).toBe(true);
+        }
+      });
+
+      it('should not leak temp directories when cacheMode=Bypass', async () => {
+        const before = await fs.promises.readdir(customTemp);
+        expect(before).toEqual([]);
+
+        const artifactPath = await downloadArtifact({
+          artifactName: 'electron',
+          version: '2.0.9',
+          platform: 'darwin',
+          arch: 'x64',
+          cacheRoot,
+          tempDirectory: customTemp,
+          downloader,
+          cacheMode: ElectronDownloadCacheMode.Bypass,
+        });
+
+        await fs.promises.rm(path.dirname(artifactPath), { recursive: true, force: true });
+
+        const after = await fs.promises.readdir(customTemp);
+        expect(after).toEqual([]);
+      });
+    });
+
     describe('sumchecker', () => {
       beforeEach(() => {
         vi.clearAllMocks();

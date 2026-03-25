@@ -12,7 +12,7 @@ describe('Cache', () => {
   let cache: Cache;
 
   const dummyUrl = 'dummy://dummypath';
-  const sanitizedDummyUrl = '0c57d948bd4829db99d75c3b4a5d6836c37bc335f38012981baf5d1193b5a612';
+  const sanitizedDummyUrl = 'a1f9d38d51b311ef8e4a0accc1c4d98b8b17b8b7469c5dc987b6f7ba9b6ff350';
 
   beforeEach(async () => {
     cacheDir = await fs.promises.mkdtemp(path.resolve(os.tmpdir(), 'electron-download-spec-'));
@@ -20,6 +20,19 @@ describe('Cache', () => {
   });
 
   afterEach(() => fs.promises.rm(cacheDir, { recursive: true, force: true }));
+
+  describe('getCacheDirectory()', () => {
+    it('should produce a stable cache key for real-world download URLs', () => {
+      // This hash is part of the on-disk cache layout. Changing it invalidates
+      // every user's existing Electron cache, so any diff here must be
+      // deliberate and called out.
+      expect(
+        Cache.getCacheDirectory(
+          'https://github.com/electron/electron/releases/download/v2.0.9/electron-v2.0.9-darwin-x64.zip',
+        ),
+      ).toEqual('7658513ccebc15fd4c4dec9ff8cdef8eb586f7fe5bad56f08b218650df37b1b6');
+    });
+  });
 
   describe('getCachePath()', () => {
     it('should strip the hash and query params off the url', async () => {
