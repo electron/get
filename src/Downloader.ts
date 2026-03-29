@@ -1,6 +1,6 @@
 /**
  * Generic interface for the artifact downloader library.
- * The default implementation is {@link GotDownloader},
+ * The default implementation is {@link FetchDownloader},
  * but any custom downloader can be passed to `@electron/get` via
  * the {@link ElectronDownloadRequestOptions.downloader} option.
  *
