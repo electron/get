@@ -123,17 +123,17 @@ locations are:
 * MacOS: `~/Library/Caches/electron/`
 * Windows: `%LOCALAPPDATA%/electron/Cache` or `~/AppData/Local/electron/Cache/`
 
-By default, the module uses [`got`](https://github.com/sindresorhus/got) as the
-downloader. As a result, you can use the same [options](https://github.com/sindresorhus/got#options)
-via `downloadOptions`.
+By default, the module uses the built-in [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+as the downloader. As a result, you can pass [`RequestInit`](https://developer.mozilla.org/en-US/docs/Web/API/RequestInit)
+options via `downloadOptions`.
 
 ### Progress Bar
 
 By default, a progress bar is shown when downloading an artifact for more than 30 seconds. To
 disable, set the `ELECTRON_GET_NO_PROGRESS` environment variable to any non-empty value, or set
 `quiet` to `true` in `downloadOptions`. If you need to monitor progress yourself via the API, set
-`getProgressCallback` in `downloadOptions`, which has the same function signature as `got`'s
-[`downloadProgress` event callback](https://github.com/sindresorhus/got#ondownloadprogress-progress).
+`getProgressCallback` in `downloadOptions`, which receives a `Progress` object with `transferred`,
+`total`, and `percent` properties.
 
 ### Proxies
 
