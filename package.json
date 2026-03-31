@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:docs": "npx typedoc",
+    "build:docs": "typedoc",
     "eslint": "eslint --ext .ts src test",
     "lint": "npm run prettier && npm run eslint",
     "prepare": "husky",
