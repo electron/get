@@ -1,7 +1,7 @@
 import { Downloader } from './Downloader.js';
-import { GotDownloader, GotDownloaderOptions } from './GotDownloader.js';
+import { FetchDownloader, FetchDownloaderOptions, HTTPError, Progress } from './FetchDownloader.js';
 
-export { Downloader, GotDownloader, GotDownloaderOptions };
+export { Downloader, FetchDownloader, FetchDownloaderOptions, HTTPError, Progress };
 
 /**
  * Custom downloaders can implement any set of options.
@@ -140,7 +140,7 @@ export interface ElectronDownloadRequestOptions {
   /**
    * Options passed to the downloader module.
    *
-   * @see {@link GotDownloaderOptions} for options for the default {@link GotDownloader}.
+   * @see {@link FetchDownloaderOptions} for options for the default {@link FetchDownloader}.
    */
   downloadOptions?: DownloadOptions;
   /**
@@ -149,7 +149,7 @@ export interface ElectronDownloadRequestOptions {
   mirrorOptions?: MirrorOptions;
   /**
    * A custom {@link Downloader} class used to download artifacts. Defaults to the
-   * built-in {@link GotDownloader}.
+   * built-in {@link FetchDownloader}.
    */
   downloader?: Downloader<DownloadOptions>;
   /**

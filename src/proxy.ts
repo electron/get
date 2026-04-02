@@ -1,7 +1,6 @@
 import { createRequire } from 'node:module';
 
 import debug from 'debug';
-import { getEnv, setEnv } from './utils.js';
 
 const d = debug('@electron/get:proxy');
 const require = createRequire(import.meta.url);
@@ -13,31 +12,18 @@ const require = createRequire(import.meta.url);
  * If the `ELECTRON_GET_USE_PROXY` environment variable is set to `true`, this function will be
  * called automatically for `@electron/get` requests.
  *
- * @category Utility
- * @see {@link https://github.com/gajus/global-agent?tab=readme-ov-file#environment-variables | `global-agent`}
- * documentation for available environment variables.
+ * Supported environment variables are `HTTP_PROXY`, `HTTPS_PROXY`, and `NO_PROXY`.
  *
- * @example
- * ```sh
- * export GLOBAL_AGENT_HTTPS_PROXY="$HTTPS_PROXY"
- * ```
+ * @category Utility
+ * @see {@link https://undici.nodejs.org/#/docs/api/EnvHttpProxyAgent | `EnvHttpProxyAgent`}
+ * documentation for available environment variables.
  */
 export function initializeProxy(): void {
   try {
-    // See: https://github.com/electron/get/pull/214#discussion_r798845713
-    const env = getEnv('GLOBAL_AGENT_');
-
-    setEnv('GLOBAL_AGENT_HTTP_PROXY', env('HTTP_PROXY'));
-    setEnv('GLOBAL_AGENT_HTTPS_PROXY', env('HTTPS_PROXY'));
-    setEnv('GLOBAL_AGENT_NO_PROXY', env('NO_PROXY'));
-
-    /**
-     * TODO: replace global-agent with a hpagent. @BlackHole1
-     * https://github.com/sindresorhus/got/blob/HEAD/documentation/tips.md#proxying
-     */
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('global-agent').bootstrap();
+    const { EnvHttpProxyAgent, setGlobalDispatcher } = require('undici');
+    setGlobalDispatcher(new EnvHttpProxyAgent());
   } catch (e) {
-    d('Could not load either proxy modules, built-in proxy support not available:', e);
+    d('Could not load undici, built-in proxy support not available:', e);
   }
 }
