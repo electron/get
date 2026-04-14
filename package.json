@@ -54,15 +54,13 @@
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx}": [
+    "*.{js,ts}": [
       "oxfmt --write",
       "oxlint --fix"
+    ],
+    "*.{json,css,html}": [
+      "oxfmt --write"
     ]
   },
   "keywords": [
