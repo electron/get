@@ -13,11 +13,9 @@
   "scripts": {
     "build": "tsc",
     "build:docs": "typedoc",
-    "eslint": "eslint --ext .ts src test",
-    "lint": "npm run prettier && npm run eslint",
+    "lint": "oxfmt --check . && oxlint",
+    "lint:fix": "oxfmt --write . && oxlint --fix",
     "prepare": "husky",
-    "prettier": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
-    "prettier:write": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "test": "vitest run --coverage",
     "test:nonetwork": "npm run lint && vitest run --coverage --testPathIgnorePatterns network.spec"
@@ -45,29 +43,24 @@
     "@types/node": "~22.12.0",
     "@types/progress": "^2.0.3",
     "@types/semver": "^7.5.8",
-    "@typescript-eslint/eslint-plugin": "^8.19.1",
-    "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^4.1.2",
     "esbuild-plugin-file-path-extensions": "^2.1.4",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-import": "^2.31.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.4.2",
-    "typedoc": "~0.25.13",
-    "typescript": "~5.4.5",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
+    "oxlint-tsgolint": "^0.20.0",
+    "typedoc": "~0.28.0",
+    "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
+    "*.{js,ts}": [
+      "oxfmt --write",
+      "oxlint --fix"
+    ],
+    "*.{json}": [
+      "oxfmt --write"
     ]
   },
   "keywords": [
