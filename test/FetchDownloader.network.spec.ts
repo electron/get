@@ -50,10 +50,12 @@ describe('FetchDownloader', () => {
     it('should throw an error if the file write stream fails', async () => {
       const downloader = new FetchDownloader();
       const createWriteStream = fs.createWriteStream;
+      const writeError = new Error('ENOSPC: no space left on device, write');
       const spy = vi.spyOn(fs, 'createWriteStream');
       spy.mockImplementationOnce((path: PathLike) => {
         const stream = createWriteStream(path);
-        setTimeout(() => stream.emit('error', 'bad write error thing'), 0);
+        stream._write = (_chunk, _encoding, callback): void => callback(writeError);
+        stream._writev = (_chunks, callback): void => callback(writeError);
         return stream;
       });
       await withTempDirectory(async (dir) => {
@@ -63,8 +65,9 @@ describe('FetchDownloader', () => {
             'https://github.com/electron/electron/releases/download/v2.0.18/SHASUMS256.txt',
             testFile,
           ),
-        ).rejects.toMatchInlineSnapshot(`"bad write error thing"`);
+        ).rejects.toThrowError(writeError);
       }, TempDirCleanUpMode.CLEAN);
+      spy.mockRestore();
     });
 
     it('should download to a deep uncreated path', async () => {
