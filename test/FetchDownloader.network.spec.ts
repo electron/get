@@ -4,14 +4,19 @@ import util from 'node:util';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { GotDownloader } from '../src/GotDownloader';
+import { FetchDownloader } from '../src/FetchDownloader';
+import { initializeProxy } from '../src/proxy';
 import { TempDirCleanUpMode, withTempDirectory } from '../src/utils';
 import { PathLike } from 'node:fs';
 
-describe('GotDownloader', () => {
+if (process.env.ELECTRON_GET_USE_PROXY) {
+  initializeProxy();
+}
+
+describe('FetchDownloader', () => {
   describe('download()', () => {
     it('should download a remote file to the given file path', async () => {
-      const downloader = new GotDownloader();
+      const downloader = new FetchDownloader();
       let progressCallbackCalled = false;
       await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
@@ -33,7 +38,7 @@ describe('GotDownloader', () => {
     });
 
     it('should throw an error if the file does not exist', async () => {
-      const downloader = new GotDownloader();
+      const downloader = new FetchDownloader();
       await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'test.txt');
         const url = 'https://github.com/electron/electron/releases/download/v2.0.18/bad.file';
@@ -43,7 +48,7 @@ describe('GotDownloader', () => {
     });
 
     it('should throw an error if the file write stream fails', async () => {
-      const downloader = new GotDownloader();
+      const downloader = new FetchDownloader();
       const createWriteStream = fs.createWriteStream;
       const spy = vi.spyOn(fs, 'createWriteStream');
       spy.mockImplementationOnce((path: PathLike) => {
@@ -63,7 +68,7 @@ describe('GotDownloader', () => {
     });
 
     it('should download to a deep uncreated path', async () => {
-      const downloader = new GotDownloader();
+      const downloader = new FetchDownloader();
       await withTempDirectory(async (dir) => {
         const testFile = path.resolve(dir, 'f', 'b', 'test.txt');
         expect(fs.existsSync(testFile)).toEqual(false);
