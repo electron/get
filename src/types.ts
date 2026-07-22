@@ -193,9 +193,9 @@ export type ElectronPlatformArtifactDetails = {
   platform: string;
   /**
    * The target artifact architecture. These are Node-style architecture names, for example:
-   * * `ia32`
+   * * `ia32` (Electron 43 and earlier)
    * * `x64`
-   * * `armv7l`
+   * * `armv7l` (Electron 43 and earlier)
    *
    * @see Node.js {@link https://nodejs.org/api/process.html#processarch | process.arch} docs
    */
@@ -252,9 +252,9 @@ export type ElectronPlatformArtifactDetailsWithDefaults = Omit<
   platform?: string;
   /**
    * The target artifact architecture. These are Node-style architecture names, for example:
-   * * `ia32`
+   * * `ia32` (Electron 43 and earlier)
    * * `x64`
-   * * `armv7l`
+   * * `armv7l` (Electron 43 and earlier)
    *
    * @see Node.js {@link https://nodejs.org/api/process.html#processarch | process.arch} docs
    */
