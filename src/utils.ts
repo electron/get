@@ -2,6 +2,7 @@ import childProcess from 'node:child_process';
 import fs from 'graceful-fs';
 import os from 'node:os';
 import path from 'node:path';
+import semver from 'semver';
 
 import {
   ElectronDownloadCacheMode,
@@ -114,6 +115,39 @@ export function isOfficialLinuxIA32Download(
     Number(version.slice(1).split('.')[0]) >= 4 &&
     typeof mirrorOptions === 'undefined'
   );
+}
+
+// Electron 44 dropped support for 32-bit Windows (win32/ia32) and for
+// armv7l Linux. The last official releases to ship these artifacts are
+// v44.0.0-alpha.3 on the release channel and v45.0.0-nightly.20260713 on
+// the nightly channel.
+const FIRST_RELEASE_WITHOUT_32_BIT_SUPPORT = '44.0.0-alpha.4';
+const FIRST_NIGHTLY_WITHOUT_32_BIT_SUPPORT = '45.0.0-nightly.20260714';
+
+export function isOfficialDropped32BitDownload(
+  platform: string,
+  arch: string,
+  version: string,
+  mirrorOptions?: object,
+): boolean {
+  // Custom mirrors may legitimately host their own builds for these platforms
+  if (typeof mirrorOptions !== 'undefined') {
+    return false;
+  }
+
+  if (!((platform === 'win32' && arch === 'ia32') || (platform === 'linux' && arch === 'armv7l'))) {
+    return false;
+  }
+
+  const parsedVersion = semver.parse(version);
+  if (parsedVersion === null) {
+    return false;
+  }
+
+  const firstVersionWithoutArtifacts = parsedVersion.prerelease.includes('nightly')
+    ? FIRST_NIGHTLY_WITHOUT_32_BIT_SUPPORT
+    : FIRST_RELEASE_WITHOUT_32_BIT_SUPPORT;
+  return semver.gte(parsedVersion, firstVersionWithoutArtifacts);
 }
 
 /**
