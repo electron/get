@@ -271,6 +271,72 @@ describe('Public API', () => {
       expect(await util.promisify(fs.readFile)(driverPath2, 'utf8')).toEqual('cached content');
     });
 
+    describe('dropped 32-bit support', () => {
+      it('should throw for official win32/ia32 downloads of Electron >= 44.0.0-alpha.4', async () => {
+        await expect(
+          downloadArtifact({
+            cacheRoot,
+            downloader,
+            artifactName: 'electron',
+            version: '44.0.0',
+            platform: 'win32',
+            arch: 'ia32',
+          }),
+        ).rejects.toThrow('Electron v44.0.0 does not have a published win32/ia32 artifact.');
+      });
+
+      it('should throw for official linux/armv7l downloads of Electron >= 44.0.0-alpha.4', async () => {
+        await expect(
+          downloadArtifact({
+            cacheRoot,
+            downloader,
+            artifactName: 'electron',
+            version: '44.0.0-alpha.4',
+            platform: 'linux',
+            arch: 'armv7l',
+          }),
+        ).rejects.toThrow(
+          'Electron v44.0.0-alpha.4 does not have a published linux/armv7l artifact.',
+        );
+      });
+
+      it('should not throw for Electron 43 and earlier', async () => {
+        const zipPath = await downloadArtifact({
+          cacheRoot,
+          downloader,
+          artifactName: 'electron',
+          version: '2.0.9',
+          platform: 'linux',
+          arch: 'armv7l',
+        });
+        expect(fs.existsSync(zipPath)).toEqual(true);
+        expect(path.basename(zipPath)).toEqual('electron-v2.0.9-linux-armv7l.zip');
+      });
+
+      it('should not throw when a custom mirror is used', async () => {
+        const zipPath = await downloadArtifact({
+          cacheRoot,
+          unsafelyDisableChecksums: true,
+          artifactName: 'electron',
+          version: '44.0.0',
+          platform: 'win32',
+          arch: 'ia32',
+          mirrorOptions: {
+            mirror: 'https://mymirror.example.com/',
+          },
+          downloader: {
+            async download(url: string, targetPath: string): Promise<void> {
+              expect(url).toEqual(
+                'https://mymirror.example.com/v44.0.0/electron-v44.0.0-win32-ia32.zip',
+              );
+              await util.promisify(fs.writeFile)(targetPath, 'faked from mirror');
+            },
+          },
+        });
+        expect(await util.promisify(fs.readFile)(zipPath, 'utf8')).toEqual('faked from mirror');
+      });
+    });
+
     describe('tempDirectory', () => {
       let customTemp: string;
 

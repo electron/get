@@ -22,6 +22,7 @@ import {
   getHostArch,
   getNodeArch,
   ensureIsTruthyString,
+  isOfficialDropped32BitDownload,
   isOfficialLinuxIA32Download,
   mkdtemp,
   doesCallerOwnTemporaryOutput,
@@ -200,6 +201,22 @@ export async function downloadArtifact(
   ) {
     console.warn('Official Linux/ia32 support is deprecated.');
     console.warn('For more info: https://electronjs.org/blog/linux-32bit-support');
+  }
+
+  if (
+    !details.isGeneric &&
+    isOfficialDropped32BitDownload(
+      details.platform,
+      details.arch,
+      details.version,
+      details.mirrorOptions,
+    )
+  ) {
+    throw new Error(
+      `Electron ${details.version} does not have a published ${details.platform}/${details.arch} artifact. ` +
+        'Electron 44 and newer no longer publish win32/ia32 or linux/armv7l builds; ' +
+        'the last release line with 32-bit support is Electron 43, which is supported until January 2027.',
+    );
   }
 
   return await withTempDirectoryIn(

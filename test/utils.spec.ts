@@ -8,6 +8,7 @@ import {
   withTempDirectory,
   getHostArch,
   ensureIsTruthyString,
+  isOfficialDropped32BitDownload,
   isOfficialLinuxIA32Download,
   getEnv,
   setEnv,
@@ -152,6 +153,78 @@ describe('utils', () => {
     it('should be false if wrong platform/arch specified', () => {
       expect(isOfficialLinuxIA32Download('win32', 'ia32', 'v4.0.0')).toEqual(false);
       expect(isOfficialLinuxIA32Download('linux', 'x64', 'v4.0.0')).toEqual(false);
+    });
+  });
+
+  describe('isOfficialDropped32BitDownload()', () => {
+    it('should be true for win32/ia32 from v44.0.0-alpha.4 onward', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0-alpha.4')).toEqual(true);
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0-beta.1')).toEqual(true);
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0')).toEqual(true);
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v45.1.2')).toEqual(true);
+    });
+
+    it('should be true for linux/armv7l from v44.0.0-alpha.4 onward', () => {
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v44.0.0-alpha.4')).toEqual(true);
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v44.0.0')).toEqual(true);
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v45.1.2')).toEqual(true);
+    });
+
+    it('should be false for the Electron 44 prereleases that still shipped 32-bit builds', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0-alpha.1')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0-alpha.3')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v44.0.0-alpha.3')).toEqual(false);
+    });
+
+    it('should be false for Electron 43 and earlier', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v43.0.0')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v43.5.1')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v43.5.1')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v2.0.9')).toEqual(false);
+    });
+
+    it('should be true for nightlies from v45.0.0-nightly.20260714 onward', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v45.0.0-nightly.20260714')).toEqual(
+        true,
+      );
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v45.0.0-nightly.20260714')).toEqual(
+        true,
+      );
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v46.0.0-nightly.20270101')).toEqual(
+        true,
+      );
+    });
+
+    it('should be false for nightlies that still shipped 32-bit builds', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0-nightly.20260501')).toEqual(
+        false,
+      );
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'v45.0.0-nightly.20260713')).toEqual(
+        false,
+      );
+      expect(isOfficialDropped32BitDownload('linux', 'armv7l', 'v45.0.0-nightly.20260713')).toEqual(
+        false,
+      );
+    });
+
+    it('should be false if mirrorOptions specified', () => {
+      expect(
+        isOfficialDropped32BitDownload('win32', 'ia32', 'v44.0.0', { mirror: 'mymirror' }),
+      ).toEqual(false);
+      expect(
+        isOfficialDropped32BitDownload('linux', 'armv7l', 'v44.0.0', { mirror: 'mymirror' }),
+      ).toEqual(false);
+    });
+
+    it('should be false for platform/arch combinations that were never dropped', () => {
+      expect(isOfficialDropped32BitDownload('linux', 'ia32', 'v44.0.0')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('win32', 'armv7l', 'v44.0.0')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('win32', 'x64', 'v44.0.0')).toEqual(false);
+      expect(isOfficialDropped32BitDownload('darwin', 'arm64', 'v44.0.0')).toEqual(false);
+    });
+
+    it('should be false for unparseable versions', () => {
+      expect(isOfficialDropped32BitDownload('win32', 'ia32', 'vnot-a-version')).toEqual(false);
     });
   });
 
